@@ -3,6 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- SEO & Open Graph -->
+  <meta name="description" content="Únete como voluntario/a a Vacío Lleno. Clasificar, etiquetar, coordinar envíos o comunicar. Sin experiencia necesaria. Tu tiempo mueve los libros." />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="Vacío Lleno" />
+  <link rel="canonical" href="https://vaciolleno.org/vaciolleno-voluntarios.html" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Vacío Lleno" />
+  <meta property="og:title" content="Voluntarios — Vacío Lleno" />
+  <meta property="og:description" content="Únete como voluntario/a a Vacío Lleno. Clasificar, etiquetar, coordinar envíos o comunicar. Sin experiencia necesaria. Tu tiempo mueve los libros." />
+  <meta property="og:url" content="https://vaciolleno.org/vaciolleno-voluntarios.html" />
+  <meta property="og:image" content="https://vaciolleno.org/og-image.png" />
+  <meta property="og:locale" content="es_ES" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Voluntarios — Vacío Lleno" />
+  <meta name="twitter:description" content="Únete como voluntario/a a Vacío Lleno. Clasificar, etiquetar, coordinar envíos o comunicar. Sin experiencia necesaria. Tu tiempo mueve los libros." />
+  <meta name="twitter:image" content="https://vaciolleno.org/og-image.png" />
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="512x512" href="favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <meta name="theme-color" content="#0f1f3d" />
   <title>Voluntarios — Vacío Lleno</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -738,7 +760,10 @@
     <ul class="nav-links">
       <li><a href="vaciolleno-home.html">Inicio</a></li>
       <li><a href="vaciolleno-proyecto.html">El Proyecto</a></li>
-      <li><a href="#" class="active">Voluntarios</a></li>
+      <li><a href="vaciolleno-voluntarios.html" class="active">Voluntarios</a></li>
+      <li><a href="vaciolleno-libros.html">Libros</a></li>
+      <li><a href="vaciolleno-impacto.html">Impacto</a></li>
+      <li><a href="vaciolleno-manifiesto.html">Manifiesto</a></li>
       <li><a href="#">Impacto</a></li>
     </ul>
     <a href="vaciolleno-donaciones.html" class="nav-cta">Donar</a>
@@ -1213,6 +1238,13 @@
   <footer>
     <span class="footer-logo">VACÍO LLENO</span>
     <span class="footer-copy">© 2025 · Todos los libros circulan libres · vaciolleno.org</span>
+  
+    <div style="font-family:var(--mono,monospace);font-size:0.55rem;letter-spacing:0.08em;display:flex;gap:1.5rem;flex-wrap:wrap;">
+      <a href="vaciolleno-legal-privacidad.html" style="color:rgba(240,236,227,0.2);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='rgba(240,236,227,0.55)'" onmouseout="this.style.color='rgba(240,236,227,0.2)'">Privacidad</a>
+      <a href="vaciolleno-legal-cookies.html" style="color:rgba(240,236,227,0.2);text-decoration:none;" onmouseover="this.style.color='rgba(240,236,227,0.55)'" onmouseout="this.style.color='rgba(240,236,227,0.2)'">Cookies</a>
+      <a href="vaciolleno-legal-terminos.html" style="color:rgba(240,236,227,0.2);text-decoration:none;" onmouseover="this.style.color='rgba(240,236,227,0.55)'" onmouseout="this.style.color='rgba(240,236,227,0.2)'">Términos</a>
+      <a href="vaciolleno-legal-aviso.html" style="color:rgba(240,236,227,0.2);text-decoration:none;" onmouseover="this.style.color='rgba(240,236,227,0.55)'" onmouseout="this.style.color='rgba(240,236,227,0.2)'">Aviso Legal</a>
+    </div>
   </footer>
 
   <script>
@@ -1264,6 +1296,111 @@
       });
     });
   </script>
+
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- COOKIE BANNER                                           -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div id="cookieBanner" style="
+    display:none;
+    position:fixed; bottom:0; left:0; right:0; z-index:9999;
+    background:#0f1f3d;
+    border-top:1px solid rgba(201,168,76,0.25);
+    padding:1.25rem 4rem;
+    font-family:'DM Mono',monospace;
+  ">
+    <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;">
+      <div style="flex:1;min-width:280px;">
+        <p style="font-size:0.72rem;line-height:1.7;color:rgba(232,240,255,0.65);margin:0;">
+          Usamos cookies técnicas necesarias para el funcionamiento del sitio y de los pagos (Stripe).
+          No usamos cookies publicitarias ni rastreamos tu navegación con fines comerciales.
+          <a href="vaciolleno-legal-cookies.html" style="color:rgba(201,168,76,0.8);text-decoration:none;border-bottom:1px solid rgba(201,168,76,0.3);">Política de cookies →</a>
+        </p>
+      </div>
+      <div style="display:flex;gap:0.75rem;flex-shrink:0;flex-wrap:wrap;align-items:center;">
+        <a href="vaciolleno-legal-cookies.html" style="
+          font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;
+          padding:0.6rem 1.1rem;
+          border:1px solid rgba(232,240,255,0.15);
+          color:rgba(232,240,255,0.4);
+          text-decoration:none;
+          transition:all 0.2s;
+        " onmouseover="this.style.borderColor='rgba(232,240,255,0.4)';this.style.color='rgba(232,240,255,0.7)'"
+           onmouseout="this.style.borderColor='rgba(232,240,255,0.15)';this.style.color='rgba(232,240,255,0.4)'">
+          Más info
+        </a>
+        <button onclick="rejectCookies()" style="
+          font-family:'DM Mono',monospace;
+          font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;
+          padding:0.6rem 1.1rem;
+          background:transparent;
+          border:1px solid rgba(232,240,255,0.15);
+          color:rgba(232,240,255,0.4);
+          cursor:pointer;
+          transition:all 0.2s;
+        " onmouseover="this.style.borderColor='rgba(232,240,255,0.4)';this.style.color='rgba(232,240,255,0.7)'"
+           onmouseout="this.style.borderColor='rgba(232,240,255,0.15)';this.style.color='rgba(232,240,255,0.4)'">
+          Solo técnicas
+        </button>
+        <button onclick="acceptCookies()" style="
+          font-family:'DM Mono',monospace;
+          font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;
+          padding:0.6rem 1.25rem;
+          background:rgba(201,168,76,0.9);
+          border:1px solid transparent;
+          color:#0f1f3d;
+          cursor:pointer;
+          font-weight:500;
+          transition:all 0.2s;
+        " onmouseover="this.style.background='rgba(201,168,76,1)'"
+           onmouseout="this.style.background='rgba(201,168,76,0.9)'">
+          Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Cookie banner logic
+    (function() {
+      var consent = localStorage.getItem('vl_cookie_consent');
+      if (!consent) {
+        setTimeout(function() {
+          var banner = document.getElementById('cookieBanner');
+          if (banner) {
+            banner.style.display = 'block';
+            banner.style.animation = 'slideUpBanner 0.4s ease forwards';
+          }
+        }, 1200);
+      }
+    })();
+
+    function acceptCookies() {
+      localStorage.setItem('vl_cookie_consent', 'all');
+      hideBanner();
+    }
+
+    function rejectCookies() {
+      localStorage.setItem('vl_cookie_consent', 'essential');
+      hideBanner();
+    }
+
+    function hideBanner() {
+      var banner = document.getElementById('cookieBanner');
+      if (banner) {
+        banner.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        banner.style.opacity = '0';
+        banner.style.transform = 'translateY(100%)';
+        setTimeout(function() { banner.style.display = 'none'; }, 300);
+      }
+    }
+  </script>
+  <style>
+    @keyframes slideUpBanner {
+      from { opacity:0; transform:translateY(20px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+  </style>
 
 </body>
 </html>

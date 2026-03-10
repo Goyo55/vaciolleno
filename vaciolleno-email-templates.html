@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Templates — Vacío Lleno</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --paper: #f2ede4; --ink: #1c1a14; --ink-mid: rgba(28,26,20,0.5);
+      --navy: #0f1f3d; --gold: #c9a84c; --red: #8b1a1a;
+      --green: #2d6a4f;
+      --serif: 'Libre Baskerville', Georgia, serif;
+      --sans: 'DM Sans', sans-serif;
+      --mono: 'DM Mono', monospace;
+    }
+    body { background: #e8e2d6; font-family: var(--sans); padding: 2rem; color: var(--ink); }
+
+    /* SELECTOR UI */
+    .selector-bar {
+      max-width: 860px; margin: 0 auto 2rem;
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+    }
+    .sel-btn {
+      font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 0.5rem 1rem;
+      background: rgba(28,26,20,0.08); border: 1px solid rgba(28,26,20,0.12);
+      color: var(--ink-mid); cursor: pointer; transition: all 0.2s;
+    }
+    .sel-btn:hover { background: rgba(28,26,20,0.14); color: var(--ink); }
+    .sel-btn.active { background: var(--navy); border-color: var(--navy); color: var(--paper); }
+
+    .sel-label {
+      font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--ink-mid); align-self: center;
+      margin-right: 0.5rem;
+    }
+
+    /* EMAIL WRAPPER */
+    .email-outer {
+      max-width: 860px; margin: 0 auto;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+    }
+
+    /* EMAIL CLIENT BAR */
+    .client-bar {
+      background: #2c2c2c; padding: 0.75rem 1.25rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .client-dots { display: flex; gap: 0.4rem; }
+    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot-r { background: #ff5f57; }
+    .dot-y { background: #febc2e; }
+    .dot-g { background: #28c840; }
+    .client-title { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.3); margin: 0 auto; }
+
+    /* EMAIL HEADER */
+    .email-meta {
+      background: #f9f6f1; padding: 1.25rem 2.5rem;
+      border-bottom: 1px solid rgba(28,26,20,0.08);
+    }
+    .email-meta-row {
+      display: grid; grid-template-columns: 60px 1fr;
+      gap: 0.3rem; margin-bottom: 0.4rem;
+      font-size: 0.82rem;
+    }
+    .email-meta-row:last-child { margin-bottom: 0; }
+    .email-meta-label { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-mid); padding-top: 0.1rem; }
+    .email-meta-value { color: var(--ink); }
+    .email-subject-row { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(28,26,20,0.07); }
+    .email-subject-text { font-weight: 500; font-size: 0.95rem; color: var(--ink); }
+
+    /* EMAIL BODY */
+    .email-body {
+      background: #ffffff;
+      padding: 0;
+    }
+
+    /* EMAIL TEMPLATE — rendered */
+    .tpl { display: none; }
+    .tpl.active { display: block; }
+
+    /* Common email inner styles */
+    .email-inner {
+      max-width: 600px; margin: 0 auto;
+      padding: 0;
+      font-family: Georgia, serif;
+      color: #1c1a14;
+      line-height: 1.7;
+    }
+
+    .email-header-strip {
+      background: #0f1f3d;
+      padding: 2rem 2.5rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .email-header-logo-text {
+      font-family: Georgia, serif; font-size: 1.1rem;
+      font-weight: 700; color: rgba(242,237,228,0.9);
+      letter-spacing: 0.04em;
+    }
+    .email-header-hole {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 2px solid rgba(201,168,76,0.5);
+      background: transparent;
+      flex-shrink: 0;
+    }
+
+    .email-content { padding: 2.5rem 2.5rem 1.5rem; }
+
+    .email-salutation {
+      font-size: 1rem; font-weight: 700;
+      color: #1c1a14; margin-bottom: 1.25rem;
+    }
+
+    .email-p {
+      font-size: 0.9rem; line-height: 1.8;
+      color: rgba(28,26,20,0.7); margin-bottom: 1rem;
+    }
+    .email-p strong { color: #1c1a14; }
+
+    .email-highlight {
+      background: rgba(15,31,61,0.04);
+      border-left: 3px solid #c9a84c;
+      padding: 1rem 1.25rem; margin: 1.5rem 0;
+    }
+    .email-highlight p { font-size: 0.85rem; color: rgba(28,26,20,0.65); margin: 0; }
+    .email-highlight strong { color: #1c1a14; }
+
+    .email-btn {
+      display: inline-block; margin: 1.5rem 0;
+      padding: 0.85rem 2rem;
+      background: #0f1f3d; color: #f2ede4;
+      text-decoration: none; font-family: 'Courier New', monospace;
+      font-size: 0.72rem; letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .email-divider {
+      border: none; border-top: 1px solid rgba(28,26,20,0.07);
+      margin: 1.5rem 0;
+    }
+
+    .email-sign {
+      font-size: 0.88rem; color: rgba(28,26,20,0.6);
+      margin-bottom: 0.35rem;
+    }
+    .email-sign-name {
+      font-family: Georgia, serif; font-weight: 700;
+      font-size: 1rem; color: #1c1a14;
+    }
+    .email-sign-role {
+      font-family: 'Courier New', monospace; font-size: 0.62rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(28,26,20,0.35); margin-top: 0.2rem;
+    }
+
+    .email-footer-strip {
+      background: #f9f6f1;
+      padding: 1.25rem 2.5rem;
+      border-top: 1px solid rgba(28,26,20,0.07);
+    }
+    .email-footer-strip p {
+      font-family: 'Courier New', monospace; font-size: 0.58rem;
+      letter-spacing: 0.06em; line-height: 1.7;
+      color: rgba(28,26,20,0.3); margin: 0;
+    }
+    .email-footer-strip a { color: rgba(28,26,20,0.35); }
+
+    /* COPY BUTTON */
+    .copy-bar {
+      background: #f9f6f1; padding: 0.75rem 1.25rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid rgba(28,26,20,0.07);
+    }
+    .copy-note { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.08em; color: var(--ink-mid); }
+    .copy-btn {
+      font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 0.45rem 1rem;
+      background: var(--navy); color: var(--paper);
+      border: none; cursor: pointer; transition: background 0.2s;
+    }
+    .copy-btn:hover { background: var(--gold); color: var(--navy); }
+  </style>
+</head>
+<body>
+
+  <div class="selector-bar">
+    <span class="sel-label">Tipo:</span>
+    <button class="sel-btn active" onclick="showTpl('voluntario')">Voluntario/a</button>
+    <button class="sel-btn" onclick="showTpl('donacion-dinero')">Donación dinero</button>
+    <button class="sel-btn" onclick="showTpl('donacion-libros')">Donación libros</button>
+    <button class="sel-btn" onclick="showTpl('contacto')">Contacto general</button>
+  </div>
+
+  <div class="email-outer">
+    <div class="client-bar">
+      <div class="client-dots">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+      </div>
+      <span class="client-title" id="clientTitle">Respuesta automática — Registro de voluntario/a</span>
+    </div>
+
+    <!-- META HEADERS -->
+    <div class="email-meta">
+      <div class="email-meta-row">
+        <span class="email-meta-label">De</span>
+        <span class="email-meta-value">Vacío Lleno &lt;hola@vaciolleno.org&gt;</span>
+      </div>
+      <div class="email-meta-row">
+        <span class="email-meta-label">Para</span>
+        <span class="email-meta-value" id="metaPara">[Nombre] &lt;[email]&gt;</span>
+      </div>
+      <div class="email-meta-row">
+        <span class="email-meta-label">Reply-to</span>
+        <span class="email-meta-value">hola@vaciolleno.org</span>
+      </div>
+      <div class="email-meta-row email-subject-row">
+        <span class="email-meta-label">Asunto</span>
+        <span class="email-subject-text" id="metaAsunto">Te has unido a Vacío Lleno — Lo que viene ahora</span>
+      </div>
+    </div>
+
+    <!-- EMAIL BODY -->
+    <div class="email-body">
+
+      <!-- ══════════════════════════════════════ -->
+      <!-- TPL 1: VOLUNTARIO -->
+      <!-- ══════════════════════════════════════ -->
+      <div class="tpl active" id="tpl-voluntario">
+        <div class="email-inner">
+          <div class="email-header-strip">
+            <div class="email-header-hole"></div>
+            <span class="email-header-logo-text">VACÍO LLENO</span>
+          </div>
+          <div class="email-content">
+            <p class="email-salutation">Hola, [Nombre].</p>
+            <p class="email-p">
+              Hemos recibido tu solicitud de voluntariado. Bienvenido/a a la insurgencia.
+            </p>
+            <p class="email-p">
+              En las próximas <strong>48 horas</strong> te escribimos personalmente para presentarte al equipo, confirmarte el rol que más encaja con tu disponibilidad y contarte los próximos pasos concretos.
+            </p>
+            <div class="email-highlight">
+              <p><strong>Lo que seleccionaste:</strong><br>
+              Rol: [Rol seleccionado]<br>
+              Disponibilidad: [Disponibilidad]<br>
+              Ciudad: [Ciudad]</p>
+            </div>
+            <p class="email-p">
+              Mientras tanto, si quieres conocer el proyecto en profundidad — la filosofía detrás de la perforación, el sistema A/B/C y hacia dónde vamos — puedes leer el manifiesto completo:
+            </p>
+            <a href="https://vaciolleno.org/vaciolleno-manifiesto.html" class="email-btn">Leer el manifiesto →</a>
+            <hr class="email-divider">
+            <p class="email-sign">Un saludo,</p>
+            <p class="email-sign-name">El equipo de Vacío Lleno</p>
+            <p class="email-sign-role">Insurgencia intelectual · vaciolleno.org</p>
+          </div>
+          <div class="email-footer-strip">
+            <p>
+              Has recibido este correo porque completaste el formulario de voluntariado en vaciolleno.org.<br>
+              Si fue un error, ignora este mensaje. No compartimos tu dirección con terceros.<br>
+              <a href="https://vaciolleno.org/vaciolleno-legal-privacidad.html">Política de privacidad</a> · <a href="https://vaciolleno.org/vaciolleno-legal-aviso.html">Aviso legal</a>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════ -->
+      <!-- TPL 2: DONACIÓN DINERO -->
+      <!-- ══════════════════════════════════════ -->
+      <div class="tpl" id="tpl-donacion-dinero">
+        <div class="email-inner">
+          <div class="email-header-strip">
+            <div class="email-header-hole"></div>
+            <span class="email-header-logo-text">VACÍO LLENO</span>
+          </div>
+          <div class="email-content">
+            <p class="email-salutation">Gracias.</p>
+            <p class="email-p">
+              Tu donación ha llegado. No es un mensaje automático vacío — es un reconocimiento real de que acabas de poner en movimiento algo que durará mucho más que esta transacción.
+            </p>
+            <div class="email-highlight">
+              <p>
+                <strong>Resumen de tu donación:</strong><br>
+                Importe: <strong>[€XX.XX]</strong><br>
+                Fecha: [DD/MM/AAAA]<br>
+                Referencia: [ID-STRIPE]<br>
+                <!-- Si anónimo: -->
+                Código único: <strong>[VL-XXXX-XXXX]</strong> — tu huella invisible en el proyecto.
+              </p>
+            </div>
+            <p class="email-p">
+              Con <strong>[€XX]</strong>, el proyecto puede distribuir aproximadamente <strong>[N] libro(s)</strong> perforado(s) a Latinoamérica. Cada libro pasará por unas 40 manos antes de que deje de circular — si alguna vez lo hace.
+            </p>
+            <p class="email-p">
+              Puedes ver el impacto en tiempo real de lo que has contribuido a construir:
+            </p>
+            <a href="https://vaciolleno.org/vaciolleno-impacto.html" class="email-btn">Ver impacto en vivo →</a>
+            <hr class="email-divider">
+            <p class="email-sign">Con gratitud,</p>
+            <p class="email-sign-name">El equipo de Vacío Lleno</p>
+            <p class="email-sign-role">Insurgencia intelectual · vaciolleno.org</p>
+          </div>
+          <div class="email-footer-strip">
+            <p>
+              Este mensaje confirma tu donación procesada a través de Stripe. Guárdalo como comprobante.<br>
+              Vacío Lleno no almacena datos de tarjeta. Tu información está protegida bajo el RGPD.<br>
+              <a href="https://vaciolleno.org/vaciolleno-legal-privacidad.html">Privacidad</a> · <a href="https://vaciolleno.org/vaciolleno-legal-terminos.html">Términos</a>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════ -->
+      <!-- TPL 3: DONACIÓN LIBROS -->
+      <!-- ══════════════════════════════════════ -->
+      <div class="tpl" id="tpl-donacion-libros">
+        <div class="email-inner">
+          <div class="email-header-strip">
+            <div class="email-header-hole"></div>
+            <span class="email-header-logo-text">VACÍO LLENO</span>
+          </div>
+          <div class="email-content">
+            <p class="email-salutation">Hola, [Nombre].</p>
+            <p class="email-p">
+              Hemos recibido tu formulario de donación de libros. Esto es exactamente lo que hace que el proyecto funcione.
+            </p>
+            <p class="email-p">
+              En las próximas <strong>48 horas</strong> te contactamos para coordinar la recogida o el envío, según lo que te venga mejor.
+            </p>
+            <div class="email-highlight">
+              <p>
+                <strong>Lo que nos has comunicado:</strong><br>
+                Número aprox. de libros: [N]<br>
+                Ciudad: [Ciudad]<br>
+                Método preferido: [Recogida / Envío]
+              </p>
+            </div>
+            <p class="email-p">
+              Una vez recibamos los libros, los clasificaremos según el sistema A/B/C del proyecto:
+            </p>
+            <p class="email-p" style="padding-left:1rem;border-left:2px solid rgba(28,26,20,0.1);">
+              <strong>30% (Categoría A)</strong> — perforados y distribuidos gratis en Latinoamérica.<br>
+              <strong>50% (Categoría B)</strong> — vendidos para financiar los envíos.<br>
+              <strong>20% (Categoría C)</strong> — donados a bibliotecas locales.
+            </p>
+            <p class="email-p">
+              Cada libro tuyo tiene posibilidades reales de pasar por 40 manos distintas en los próximos años. Eso empieza contigo.
+            </p>
+            <hr class="email-divider">
+            <p class="email-sign">Hasta pronto,</p>
+            <p class="email-sign-name">El equipo de Vacío Lleno</p>
+            <p class="email-sign-role">Insurgencia intelectual · vaciolleno.org</p>
+          </div>
+          <div class="email-footer-strip">
+            <p>
+              Has recibido este correo porque completaste el formulario de donación de libros en vaciolleno.org.<br>
+              Tus datos se usarán exclusivamente para coordinar la recogida y serán eliminados tras completarla.<br>
+              <a href="https://vaciolleno.org/vaciolleno-legal-privacidad.html">Política de privacidad</a>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════ -->
+      <!-- TPL 4: CONTACTO GENERAL -->
+      <!-- ══════════════════════════════════════ -->
+      <div class="tpl" id="tpl-contacto">
+        <div class="email-inner">
+          <div class="email-header-strip">
+            <div class="email-header-hole"></div>
+            <span class="email-header-logo-text">VACÍO LLENO</span>
+          </div>
+          <div class="email-content">
+            <p class="email-salutation">Hola, [Nombre].</p>
+            <p class="email-p">
+              Hemos recibido tu mensaje. Gracias por escribirnos.
+            </p>
+            <p class="email-p">
+              Te respondemos en un plazo máximo de <strong>48-72 horas</strong>. Si tu consulta es urgente o tiene que ver con una donación ya realizada, puedes escribir directamente a <a href="mailto:hola@vaciolleno.org" style="color:#8a6820;">hola@vaciolleno.org</a> indicando el motivo en el asunto.
+            </p>
+            <div class="email-highlight">
+              <p>
+                Mientras tanto, puede que encuentres lo que buscas en estas secciones del sitio:<br><br>
+                <a href="https://vaciolleno.org/vaciolleno-proyecto.html" style="color:#0f1f3d;">→ Cómo funciona el proyecto</a><br>
+                <a href="https://vaciolleno.org/vaciolleno-libros.html" style="color:#0f1f3d;">→ Las 10 categorías de libros</a><br>
+                <a href="https://vaciolleno.org/vaciolleno-voluntarios.html" style="color:#0f1f3d;">→ Cómo ser voluntario/a</a><br>
+                <a href="https://vaciolleno.org/vaciolleno-impacto.html" style="color:#0f1f3d;">→ Impacto en tiempo real</a>
+              </p>
+            </div>
+            <hr class="email-divider">
+            <p class="email-sign">Hasta pronto,</p>
+            <p class="email-sign-name">El equipo de Vacío Lleno</p>
+            <p class="email-sign-role">Insurgencia intelectual · vaciolleno.org</p>
+          </div>
+          <div class="email-footer-strip">
+            <p>
+              Has recibido este correo porque enviaste un mensaje a través de vaciolleno.org.<br>
+              No compartimos tu dirección con terceros. Tu privacidad está protegida bajo el RGPD.<br>
+              <a href="https://vaciolleno.org/vaciolleno-legal-privacidad.html">Política de privacidad</a> · <a href="https://vaciolleno.org/vaciolleno-legal-aviso.html">Aviso legal</a>
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /email-body -->
+
+    <div class="copy-bar">
+      <span class="copy-note">Copia el HTML y pégalo en tu herramienta de email (Mailchimp, Brevo, SendGrid…)</span>
+      <button class="copy-btn" onclick="copyEmailHTML()">Copiar HTML →</button>
+    </div>
+  </div><!-- /email-outer -->
+
+  <script>
+    const meta = {
+      'voluntario': {
+        title: 'Respuesta automática — Registro de voluntario/a',
+        para: '[Nombre] <[email]>',
+        asunto: 'Te has unido a Vacío Lleno — Lo que viene ahora',
+        replyto: 'hola@vaciolleno.org',
+      },
+      'donacion-dinero': {
+        title: 'Respuesta automática — Confirmación de donación',
+        para: '[Nombre] <[email]>',
+        asunto: 'Tu donación ha llegado — Gracias de parte de Vacío Lleno',
+        replyto: 'hola@vaciolleno.org',
+      },
+      'donacion-libros': {
+        title: 'Respuesta automática — Donación de libros recibida',
+        para: '[Nombre] <[email]>',
+        asunto: 'Tus libros van a viajar — Confirmación de Vacío Lleno',
+        replyto: 'hola@vaciolleno.org',
+      },
+      'contacto': {
+        title: 'Respuesta automática — Mensaje recibido',
+        para: '[Nombre] <[email]>',
+        asunto: 'Hemos recibido tu mensaje — Vacío Lleno',
+        replyto: 'hola@vaciolleno.org',
+      },
+    };
+
+    function showTpl(id) {
+      document.querySelectorAll('.tpl').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.sel-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tpl-' + id).classList.add('active');
+      event.currentTarget.classList.add('active');
+      const m = meta[id];
+      document.getElementById('clientTitle').textContent = m.title;
+      document.getElementById('metaPara').textContent = m.para;
+      document.getElementById('metaAsunto').textContent = m.asunto;
+      document.querySelector('.email-meta-row:nth-child(3) .email-meta-value').textContent = m.replyto;
+    }
+
+    function copyEmailHTML() {
+      const activeTpl = document.querySelector('.tpl.active .email-inner');
+      const html = activeTpl ? activeTpl.outerHTML : '';
+      navigator.clipboard.writeText(html).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = '✓ Copiado';
+        setTimeout(() => { btn.textContent = 'Copiar HTML →'; }, 2000);
+      });
+    }
+  </script>
+
+</body>
+</html>

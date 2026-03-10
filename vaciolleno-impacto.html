@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- SEO & Open Graph -->
+  <meta name="description" content="847 libros distribuidos. 12 países. 33.000 lectores estimados. Sigue el impacto de Vacío Lleno en tiempo real: mapa, estadísticas y actividad en vivo." />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="Vacío Lleno" />
+  <link rel="canonical" href="https://vaciolleno.org/vaciolleno-impacto.html" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Vacío Lleno" />
+  <meta property="og:title" content="Impacto en tiempo real — Vacío Lleno" />
+  <meta property="og:description" content="847 libros distribuidos. 12 países. 33.000 lectores estimados. Sigue el impacto de Vacío Lleno en tiempo real: mapa, estadísticas y actividad en vivo." />
+  <meta property="og:url" content="https://vaciolleno.org/vaciolleno-impacto.html" />
+  <meta property="og:image" content="https://vaciolleno.org/og-image.png" />
+  <meta property="og:locale" content="es_ES" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Impacto en tiempo real — Vacío Lleno" />
+  <meta name="twitter:description" content="847 libros distribuidos. 12 países. 33.000 lectores estimados. Sigue el impacto de Vacío Lleno en tiempo real: mapa, estadísticas y actividad en vivo." />
+  <meta name="twitter:image" content="https://vaciolleno.org/og-image.png" />
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="512x512" href="favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <meta name="theme-color" content="#0f1f3d" />
+  <title>Impacto — Vacío Lleno</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #070d1a;
+      --bg-2: #0c1528;
+      --bg-3: #111e38;
+      --navy: #0f1f3d;
+      --white: #e8f0ff;
+      --white-dim: rgba(232,240,255,0.5);
+      --white-faint: rgba(232,240,255,0.12);
+      --gold: #c9a84c;
+      --gold-glow: rgba(201,168,76,0.15);
+      --green: #00d4a1;
+      --green-glow: rgba(0,212,161,0.12);
+      --red: #ff4757;
+      --blue: #4a9eff;
+      --mono: 'DM Mono', monospace;
+      --display: 'Syne', sans-serif;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--sans);
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* SCANLINE OVERLAY */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.03) 2px,
+        rgba(0,0,0,0.03) 4px
+      );
+      pointer-events: none; z-index: 9998;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 4rem;
+      background: rgba(7,13,26,0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(201,168,76,0.08);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 0.75rem;
+      text-decoration: none;
+    }
+    .nav-logo-text {
+      font-family: var(--display); font-size: 1rem;
+      font-weight: 700; color: var(--white); letter-spacing: 0.06em;
+    }
+    .nav-logo svg { width: 28px; height: 28px; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-family: var(--mono); font-size: 0.65rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--white-dim); text-decoration: none; transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+    .nav-cta {
+      font-family: var(--mono); font-size: 0.65rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--gold);
+      color: var(--gold); text-decoration: none; transition: all 0.25s;
+    }
+    .nav-cta:hover { background: var(--gold); color: var(--bg); }
+
+    /* LIVE INDICATOR */
+    .live-badge {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--green);
+    }
+    .live-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--green);
+      animation: livePulse 2s ease-in-out infinite;
+    }
+    @keyframes livePulse {
+      0%,100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,212,161,0.4); }
+      50% { opacity: 0.7; box-shadow: 0 0 0 5px rgba(0,212,161,0); }
+    }
+
+    /* HERO DASHBOARD */
+    .dashboard {
+      padding: 7rem 4rem 2rem;
+      max-width: 1400px; margin: 0 auto;
+    }
+
+    .dashboard-header {
+      display: flex; align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 3rem;
+    }
+
+    .dashboard-title {
+      font-family: var(--display);
+      font-size: clamp(2.5rem, 5vw, 5rem);
+      font-weight: 800; line-height: 0.95;
+      letter-spacing: -0.02em;
+    }
+
+    .dashboard-title .line-1 { display: block; color: var(--white); }
+    .dashboard-title .line-2 {
+      display: block;
+      background: linear-gradient(90deg, var(--gold), var(--green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .dashboard-meta {
+      text-align: right;
+    }
+    .dashboard-time {
+      font-family: var(--mono); font-size: 0.7rem;
+      letter-spacing: 0.1em; color: var(--white-dim);
+      margin-bottom: 0.25rem;
+    }
+    .dashboard-date {
+      font-family: var(--mono); font-size: 1.1rem;
+      color: var(--white); letter-spacing: 0.05em;
+    }
+
+    /* MAIN KPI ROW */
+    .kpi-row {
+      display: grid; grid-template-columns: repeat(6, 1fr);
+      gap: 2px; margin-bottom: 2px;
+    }
+
+    .kpi {
+      background: var(--bg-2);
+      padding: 1.5rem 1.25rem;
+      border: 1px solid var(--white-faint);
+      position: relative; overflow: hidden;
+      transition: border-color 0.3s;
+    }
+
+    .kpi:hover { border-color: rgba(201,168,76,0.3); }
+
+    .kpi::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--kpi-color, var(--gold)), transparent);
+      opacity: 0.5;
+    }
+
+    .kpi-label {
+      font-family: var(--mono); font-size: 0.55rem;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--white-dim); margin-bottom: 0.75rem;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+
+    .kpi-value {
+      font-family: var(--display); font-size: 2rem;
+      font-weight: 800; line-height: 1;
+      color: var(--kpi-color, var(--gold));
+      margin-bottom: 0.35rem;
+    }
+
+    .kpi-delta {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.06em; color: var(--green);
+    }
+    .kpi-delta.down { color: var(--red); }
+
+    /* MAIN GRID */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 2px; margin-bottom: 2px;
+    }
+
+    /* MAP */
+    .map-panel {
+      background: var(--bg-2);
+      border: 1px solid var(--white-faint);
+      padding: 2rem;
+      position: relative; overflow: hidden;
+      min-height: 480px;
+    }
+
+    .panel-header {
+      display: flex; align-items: center;
+      justify-content: space-between; margin-bottom: 1.5rem;
+    }
+
+    .panel-title {
+      font-family: var(--mono); font-size: 0.65rem;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--white-dim);
+    }
+
+    .panel-badge {
+      font-family: var(--mono); font-size: 0.55rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.2rem 0.6rem;
+      border: 1px solid var(--green-glow);
+      color: var(--green); background: var(--green-glow);
+    }
+
+    /* SVG MAP */
+    .latam-map {
+      width: 100%; height: 380px;
+      position: relative;
+    }
+
+    .latam-map svg {
+      width: 100%; height: 100%;
+    }
+
+    /* Map country nodes */
+    .map-node {
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .map-node:hover .node-ring { opacity: 1; }
+
+    /* ACTIVE BOOK PING */
+    @keyframes ping {
+      0% { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(3); opacity: 0; }
+    }
+
+    .ping-dot {
+      animation: ping 2s ease-out infinite;
+    }
+
+    /* SIDEBAR PANELS */
+    .sidebar { display: flex; flex-direction: column; gap: 2px; }
+
+    .side-panel {
+      background: var(--bg-2);
+      border: 1px solid var(--white-faint);
+      padding: 1.5rem;
+      flex: 1;
+    }
+
+    /* BOOK TRACKER */
+    .book-feed {
+      display: flex; flex-direction: column; gap: 0.6rem;
+      max-height: 320px; overflow-y: auto;
+    }
+
+    .book-feed::-webkit-scrollbar { width: 2px; }
+    .book-feed::-webkit-scrollbar-track { background: transparent; }
+    .book-feed::-webkit-scrollbar-thumb { background: var(--white-faint); }
+
+    .feed-item {
+      display: flex; gap: 0.75rem; align-items: flex-start;
+      padding: 0.75rem;
+      background: rgba(255,255,255,0.02);
+      border-left: 2px solid transparent;
+      transition: all 0.3s;
+      animation: slideIn 0.4s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-8px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .feed-item.new { border-left-color: var(--green); }
+    .feed-item.transit { border-left-color: var(--gold); }
+    .feed-item.delivered { border-left-color: var(--blue); }
+
+    .feed-icon { font-size: 1rem; flex-shrink: 0; margin-top: 0.1rem; }
+
+    .feed-content { flex: 1; min-width: 0; }
+
+    .feed-title {
+      font-size: 0.78rem; color: var(--white);
+      white-space: nowrap; overflow: hidden;
+      text-overflow: ellipsis; margin-bottom: 0.2rem;
+      font-weight: 400;
+    }
+
+    .feed-meta {
+      font-family: var(--mono); font-size: 0.58rem;
+      letter-spacing: 0.05em; color: var(--white-dim);
+    }
+
+    .feed-time {
+      font-family: var(--mono); font-size: 0.55rem;
+      color: var(--white-faint); flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    /* CIRCULATION CHART */
+    .chart-panel {
+      background: var(--bg-2);
+      border: 1px solid var(--white-faint);
+      padding: 1.75rem;
+    }
+
+    .chart-bars {
+      display: flex; align-items: flex-end;
+      gap: 3px; height: 80px; margin-top: 1.5rem;
+    }
+
+    .chart-bar-wrap {
+      flex: 1; display: flex;
+      flex-direction: column; align-items: center;
+      gap: 4px; height: 100%;
+      justify-content: flex-end;
+    }
+
+    .chart-bar {
+      width: 100%; border-radius: 1px;
+      background: var(--gold);
+      transition: height 1s ease;
+      min-height: 2px;
+    }
+
+    .chart-bar-label {
+      font-family: var(--mono); font-size: 0.5rem;
+      color: var(--white-faint); letter-spacing: 0.05em;
+    }
+
+    /* BOTTOM GRID */
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2px;
+    }
+
+    /* BOOK JOURNEY */
+    .journey-panel {
+      background: var(--bg-2);
+      border: 1px solid var(--white-faint);
+      padding: 1.75rem;
+    }
+
+    .journey-title {
+      font-family: var(--display); font-size: 0.85rem;
+      font-weight: 700; color: var(--white);
+      margin-bottom: 0.3rem;
+      white-space: nowrap; overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .journey-author {
+      font-family: var(--mono); font-size: 0.58rem;
+      color: var(--white-dim); margin-bottom: 1.25rem;
+    }
+
+    .journey-steps {
+      position: relative;
+      padding-left: 1rem;
+    }
+
+    .journey-steps::before {
+      content: ''; position: absolute;
+      left: 3px; top: 0; bottom: 0;
+      width: 1px; background: var(--white-faint);
+    }
+
+    .journey-step {
+      position: relative; padding: 0 0 1rem 1rem;
+    }
+
+    .journey-step::before {
+      content: ''; position: absolute;
+      left: -4px; top: 5px;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      border: 1.5px solid var(--white-faint);
+      background: var(--bg-2);
+    }
+
+    .journey-step.done::before {
+      border-color: var(--green);
+      background: var(--green);
+    }
+
+    .journey-step.active::before {
+      border-color: var(--gold);
+      background: var(--gold);
+      animation: stepPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes stepPulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(201,168,76,0.5); }
+      50% { box-shadow: 0 0 0 4px rgba(201,168,76,0); }
+    }
+
+    .journey-step-label {
+      font-family: var(--mono); font-size: 0.58rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--white-faint); margin-bottom: 0.15rem;
+    }
+
+    .journey-step.done .journey-step-label { color: var(--green); }
+    .journey-step.active .journey-step-label { color: var(--gold); }
+
+    .journey-step-value {
+      font-size: 0.8rem; color: var(--white-dim);
+    }
+
+    /* COUNTRIES PANEL */
+    .countries-panel {
+      background: var(--bg-2);
+      border: 1px solid var(--white-faint);
+      padding: 1.75rem;
+    }
+
+    .country-rows { display: flex; flex-direction: column; gap: 0.6rem; }
+
+    .country-row {
+      display: flex; align-items: center;
+      gap: 0.75rem;
+    }
+
+    .country-flag { font-size: 1rem; flex-shrink: 0; }
+
+    .country-name {
+      font-size: 0.8rem; color: var(--white);
+      min-width: 80px;
+    }
+
+    .country-bar-track {
+      flex: 1; height: 3px;
+      background: var(--white-faint); border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .country-bar-fill {
+      height: 100%; background: var(--gold);
+      border-radius: 2px; transition: width 1.5s ease;
+    }
+
+    .country-count {
+      font-family: var(--mono); font-size: 0.62rem;
+      color: var(--white-dim); min-width: 30px;
+      text-align: right;
+    }
+
+    /* CATEGORY BREAKDOWN */
+    .breakdown-panel {
+      background: var(--bg-2);
+      border: 1px solid var(--white-faint);
+      padding: 1.75rem;
+    }
+
+    .donut-wrap {
+      display: flex; gap: 1.5rem;
+      align-items: center; margin-top: 1rem;
+    }
+
+    .donut-svg { flex-shrink: 0; }
+
+    .donut-legend { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
+
+    .legend-item {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.75rem; color: var(--white-dim);
+    }
+
+    .legend-dot {
+      width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0;
+    }
+
+    /* TESTIMONIAL TICKER */
+    .ticker {
+      background: rgba(201,168,76,0.05);
+      border: 1px solid rgba(201,168,76,0.1);
+      padding: 1rem 4rem;
+      overflow: hidden; position: relative;
+    }
+
+    .ticker-inner {
+      display: flex; gap: 6rem;
+      animation: tickerScroll 30s linear infinite;
+      white-space: nowrap;
+    }
+
+    @keyframes tickerScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .ticker-item {
+      display: flex; align-items: center; gap: 1rem;
+      font-size: 0.8rem; flex-shrink: 0;
+    }
+
+    .ticker-quote {
+      font-style: italic; color: var(--white-dim);
+    }
+
+    .ticker-source {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.08em; color: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .ticker-sep {
+      color: var(--white-faint); font-size: 1.2rem;
+    }
+
+    /* CTA */
+    .impact-cta {
+      padding: 6rem 4rem;
+      max-width: 1400px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: center;
+    }
+
+    .cta-left {}
+
+    .cta-eyebrow {
+      font-family: var(--mono); font-size: 0.62rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1.5rem;
+    }
+
+    .cta-title {
+      font-family: var(--display);
+      font-size: clamp(2rem, 3.5vw, 3.5rem);
+      font-weight: 800; line-height: 1.05;
+      color: var(--white); margin-bottom: 1.5rem;
+    }
+
+    .cta-body {
+      font-size: 0.95rem; line-height: 1.8;
+      color: var(--white-dim); margin-bottom: 2.5rem;
+    }
+
+    .cta-buttons { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    .btn-gold {
+      display: inline-block; padding: 1rem 2.5rem;
+      background: var(--gold); color: var(--bg);
+      font-family: var(--mono); font-size: 0.72rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      text-decoration: none; font-weight: 500;
+      transition: all 0.25s;
+    }
+    .btn-gold:hover { background: var(--white); }
+
+    .btn-ghost {
+      display: inline-block; padding: 1rem 2.5rem;
+      border: 1px solid var(--white-faint);
+      color: var(--white-dim);
+      font-family: var(--mono); font-size: 0.72rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      text-decoration: none; transition: all 0.25s;
+    }
+    .btn-ghost:hover { border-color: var(--white); color: var(--white); }
+
+    /* MINI STATS RIGHT */
+    .cta-stats {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 2px;
+    }
+
+    .mini-stat {
+      background: var(--bg-2);
+      border: 1px solid var(--white-faint);
+      padding: 2rem 1.5rem;
+      transition: border-color 0.3s;
+    }
+
+    .mini-stat:hover { border-color: rgba(201,168,76,0.3); }
+
+    .mini-stat-num {
+      font-family: var(--display); font-size: 2.5rem;
+      font-weight: 800; line-height: 1;
+      background: linear-gradient(135deg, var(--gold), var(--green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .mini-stat-label {
+      font-family: var(--mono); font-size: 0.58rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--white-dim);
+    }
+
+    /* FOOTER */
+    footer {
+      background: #030710;
+      padding: 2.5rem 4rem;
+      display: flex; align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--white-faint);
+    }
+    .footer-logo {
+      font-family: var(--display); font-size: 0.9rem;
+      font-weight: 700; color: rgba(232,240,255,0.2);
+    }
+    .footer-copy {
+      font-family: var(--mono); font-size: 0.55rem;
+      letter-spacing: 0.1em; color: rgba(232,240,255,0.1);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1100px) {
+      .kpi-row { grid-template-columns: repeat(3,1fr); }
+      .main-grid { grid-template-columns: 1fr; }
+      .bottom-grid { grid-template-columns: 1fr; }
+      .impact-cta { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      nav { padding: 1.25rem 1.5rem; }
+      .nav-links { display: none; }
+      .dashboard { padding: 6rem 1.5rem 2rem; }
+      .dashboard-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .kpi-row { grid-template-columns: repeat(2,1fr); }
+      .ticker { padding: 1rem 1.5rem; }
+      .impact-cta { padding: 4rem 1.5rem; }
+      footer { padding: 2rem 1.5rem; flex-direction: column; gap: 1rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="vaciolleno-home.html" class="nav-logo">
+      <svg viewBox="0 0 60 60" fill="none">
+        <rect x="8" y="10" width="44" height="40" rx="2" fill="#1a3260"/>
+        <circle cx="30" cy="30" r="10" fill="#0f1f3d" stroke="rgba(201,168,76,0.5)" stroke-width="1.5"/>
+      </svg>
+      <span class="nav-logo-text">VACÍO LLENO</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="vaciolleno-home.html">Inicio</a></li>
+      <li><a href="vaciolleno-proyecto.html">El Proyecto</a></li>
+      <li><a href="vaciolleno-voluntarios.html">Voluntarios</a></li>
+      <li><a href="vaciolleno-libros.html">Libros</a></li>
+      <li><a href="vaciolleno-impacto.html" class="active">Impacto</a></li>
+      <li><a href="vaciolleno-manifiesto.html">Manifiesto</a></li>
+    </ul>
+    <a href="vaciolleno-donaciones.html" class="nav-cta">Donar</a>
+  </nav>
+
+  <!-- DASHBOARD -->
+  <div class="dashboard">
+
+    <!-- HEADER -->
+    <div class="dashboard-header">
+      <h1 class="dashboard-title">
+        <span class="line-1">Impacto</span>
+        <span class="line-2">en tiempo real</span>
+      </h1>
+      <div class="dashboard-meta">
+        <div class="dashboard-time">Última actualización</div>
+        <div class="dashboard-date" id="liveTime">—</div>
+        <div class="live-badge" style="justify-content:flex-end;margin-top:0.5rem;">
+          <div class="live-dot"></div> En vivo
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI ROW -->
+    <div class="kpi-row">
+      <div class="kpi" style="--kpi-color:var(--gold);">
+        <div class="kpi-label">📚 Libros distribuidos</div>
+        <div class="kpi-value" id="kpi1">847</div>
+        <div class="kpi-delta">↑ +12 esta semana</div>
+      </div>
+      <div class="kpi" style="--kpi-color:var(--green);">
+        <div class="kpi-label">🌍 Países alcanzados</div>
+        <div class="kpi-value" id="kpi2">12</div>
+        <div class="kpi-delta">↑ +1 este mes</div>
+      </div>
+      <div class="kpi" style="--kpi-color:var(--blue);">
+        <div class="kpi-label">👐 Lectores estimados</div>
+        <div class="kpi-value" id="kpi3">33.8K</div>
+        <div class="kpi-delta">↑ 40 lectores/libro</div>
+      </div>
+      <div class="kpi" style="--kpi-color:#ff9f43;">
+        <div class="kpi-label">○ Libros perforados</div>
+        <div class="kpi-value" id="kpi4">254</div>
+        <div class="kpi-delta">↑ +4 esta semana</div>
+      </div>
+      <div class="kpi" style="--kpi-color:#a29bfe;">
+        <div class="kpi-label">✋ Voluntarios activos</div>
+        <div class="kpi-value" id="kpi5">23</div>
+        <div class="kpi-delta">↑ +3 este mes</div>
+      </div>
+      <div class="kpi" style="--kpi-color:var(--green);">
+        <div class="kpi-label">💶 Fondos recaudados</div>
+        <div class="kpi-value" id="kpi6">€4.2K</div>
+        <div class="kpi-delta">↑ +€340 esta semana</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TICKER — testimonials -->
+  <div class="ticker">
+    <div class="ticker-inner" id="tickerInner">
+      <div class="ticker-item">
+        <span class="ticker-quote">"El primer libro de economía que tuve en mis manos."</span>
+        <span class="ticker-source">— Receptor · Caracas, Venezuela</span>
+      </div>
+      <span class="ticker-sep">·</span>
+      <div class="ticker-item">
+        <span class="ticker-quote">"Lo recibí perforado. Se lo di a mi hijo. Él a su amigo."</span>
+        <span class="ticker-source">— Receptor · Bogotá, Colombia</span>
+      </div>
+      <span class="ticker-sep">·</span>
+      <div class="ticker-item">
+        <span class="ticker-quote">"Nunca había visto un libro con agujero. Ahora entiendo por qué."</span>
+        <span class="ticker-source">— Receptor · Ciudad de México</span>
+      </div>
+      <span class="ticker-sep">·</span>
+      <div class="ticker-item">
+        <span class="ticker-quote">"Clasifico libros dos mañanas por semana. Es lo más útil que hago."</span>
+        <span class="ticker-source">— Carmen, 67 años · Voluntaria · Madrid</span>
+      </div>
+      <span class="ticker-sep">·</span>
+      <div class="ticker-item">
+        <span class="ticker-quote">"Donamos 40 libros de empresa. Nunca imaginé que llegarían tan lejos."</span>
+        <span class="ticker-source">— Donante · Barcelona</span>
+      </div>
+      <span class="ticker-sep">·</span>
+      <!-- Duplicate for seamless loop -->
+      <div class="ticker-item">
+        <span class="ticker-quote">"El primer libro de economía que tuve en mis manos."</span>
+        <span class="ticker-source">— Receptor · Caracas, Venezuela</span>
+      </div>
+      <span class="ticker-sep">·</span>
+      <div class="ticker-item">
+        <span class="ticker-quote">"Lo recibí perforado. Se lo di a mi hijo. Él a su amigo."</span>
+        <span class="ticker-source">— Receptor · Bogotá, Colombia</span>
+      </div>
+      <span class="ticker-sep">·</span>
+      <div class="ticker-item">
+        <span class="ticker-quote">"Nunca había visto un libro con agujero. Ahora entiendo por qué."</span>
+        <span class="ticker-source">— Receptor · Ciudad de México</span>
+      </div>
+      <span class="ticker-sep">·</span>
+      <div class="ticker-item">
+        <span class="ticker-quote">"Clasifico libros dos mañanas por semana. Es lo más útil que hago."</span>
+        <span class="ticker-source">— Carmen, 67 años · Voluntaria · Madrid</span>
+      </div>
+      <span class="ticker-sep">·</span>
+      <div class="ticker-item">
+        <span class="ticker-quote">"Donamos 40 libros de empresa. Nunca imaginé que llegarían tan lejos."</span>
+        <span class="ticker-source">— Donante · Barcelona</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard" style="padding-top:2rem;">
+
+    <!-- MAIN GRID: MAP + FEED -->
+    <div class="main-grid" style="margin-bottom:2px;">
+
+      <!-- MAP PANEL -->
+      <div class="map-panel">
+        <div class="panel-header">
+          <span class="panel-title">Mapa de distribución · Latinoamérica</span>
+          <span class="panel-badge">● En vivo</span>
+        </div>
+
+        <div class="latam-map">
+          <svg viewBox="0 0 500 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Grid -->
+            <defs>
+              <pattern id="mapgrid" width="25" height="25" patternUnits="userSpaceOnUse">
+                <path d="M 25 0 L 0 0 0 25" fill="none" stroke="rgba(232,240,255,0.03)" stroke-width="0.5"/>
+              </pattern>
+            </defs>
+            <rect width="500" height="520" fill="url(#mapgrid)"/>
+
+            <!-- MEXICO -->
+            <g class="map-node" onclick="showCountry('México', '🇲🇽', 187)">
+              <circle cx="130" cy="120" r="22" fill="rgba(201,168,76,0.08)" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+              <circle cx="130" cy="120" r="22" fill="none" stroke="rgba(201,168,76,0.4)" stroke-width="1" class="node-ring" opacity="0"/>
+              <circle cx="130" cy="120" r="7" fill="rgba(201,168,76,0.6)"/>
+              <circle cx="130" cy="120" r="7" fill="rgba(201,168,76,0.3)" class="ping-dot"/>
+              <text x="130" y="154" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" fill="rgba(201,168,76,0.6)" letter-spacing="0.05em">MX</text>
+              <text x="130" y="166" text-anchor="middle" font-family="DM Mono, monospace" font-size="8" fill="rgba(232,240,255,0.25)">187 libros</text>
+            </g>
+
+            <!-- COLOMBIA -->
+            <g class="map-node" onclick="showCountry('Colombia', '🇨🇴', 143)">
+              <circle cx="185" cy="230" r="18" fill="rgba(0,212,161,0.06)" stroke="rgba(0,212,161,0.15)" stroke-width="1"/>
+              <circle cx="185" cy="230" r="6" fill="rgba(0,212,161,0.5)"/>
+              <circle cx="185" cy="230" r="6" fill="rgba(0,212,161,0.3)" class="ping-dot" style="animation-delay:0.5s"/>
+              <text x="185" y="260" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" fill="rgba(0,212,161,0.5)" letter-spacing="0.05em">CO</text>
+              <text x="185" y="271" text-anchor="middle" font-family="DM Mono, monospace" font-size="8" fill="rgba(232,240,255,0.25)">143 libros</text>
+            </g>
+
+            <!-- VENEZUELA -->
+            <g class="map-node" onclick="showCountry('Venezuela', '🇻🇪', 128)">
+              <circle cx="245" cy="198" r="20" fill="rgba(255,71,87,0.08)" stroke="rgba(255,71,87,0.2)" stroke-width="1"/>
+              <circle cx="245" cy="198" r="7" fill="rgba(255,71,87,0.6)"/>
+              <circle cx="245" cy="198" r="7" fill="rgba(255,71,87,0.3)" class="ping-dot" style="animation-delay:1s"/>
+              <text x="245" y="228" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" fill="rgba(255,71,87,0.6)" letter-spacing="0.05em">VE</text>
+              <text x="245" y="239" text-anchor="middle" font-family="DM Mono, monospace" font-size="8" fill="rgba(232,240,255,0.25)">128 libros</text>
+            </g>
+
+            <!-- PERU -->
+            <g class="map-node" onclick="showCountry('Perú', '🇵🇪', 89)">
+              <circle cx="195" cy="330" r="16" fill="rgba(74,158,255,0.07)" stroke="rgba(74,158,255,0.18)" stroke-width="1"/>
+              <circle cx="195" cy="330" r="5" fill="rgba(74,158,255,0.5)"/>
+              <circle cx="195" cy="330" r="5" fill="rgba(74,158,255,0.3)" class="ping-dot" style="animation-delay:1.5s"/>
+              <text x="195" y="358" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" fill="rgba(74,158,255,0.5)" letter-spacing="0.05em">PE</text>
+              <text x="195" y="369" text-anchor="middle" font-family="DM Mono, monospace" font-size="8" fill="rgba(232,240,255,0.25)">89 libros</text>
+            </g>
+
+            <!-- ARGENTINA -->
+            <g class="map-node" onclick="showCountry('Argentina', '🇦🇷', 76)">
+              <circle cx="230" cy="440" r="17" fill="rgba(201,168,76,0.07)" stroke="rgba(201,168,76,0.18)" stroke-width="1"/>
+              <circle cx="230" cy="440" r="6" fill="rgba(201,168,76,0.45)"/>
+              <circle cx="230" cy="440" r="6" fill="rgba(201,168,76,0.2)" class="ping-dot" style="animation-delay:2s"/>
+              <text x="230" y="468" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" fill="rgba(201,168,76,0.5)" letter-spacing="0.05em">AR</text>
+              <text x="230" y="479" text-anchor="middle" font-family="DM Mono, monospace" font-size="8" fill="rgba(232,240,255,0.25)">76 libros</text>
+            </g>
+
+            <!-- CHILE -->
+            <g class="map-node" onclick="showCountry('Chile', '🇨🇱', 71)">
+              <circle cx="175" cy="420" r="14" fill="rgba(162,155,254,0.07)" stroke="rgba(162,155,254,0.18)" stroke-width="1"/>
+              <circle cx="175" cy="420" r="5" fill="rgba(162,155,254,0.45)"/>
+              <text x="175" y="447" text-anchor="middle" font-family="DM Mono, monospace" font-size="8" fill="rgba(162,155,254,0.5)" letter-spacing="0.05em">CL</text>
+            </g>
+
+            <!-- ECUADOR -->
+            <g class="map-node" onclick="showCountry('Ecuador', '🇪🇨', 54)">
+              <circle cx="168" cy="268" r="12" fill="rgba(0,212,161,0.05)" stroke="rgba(0,212,161,0.12)" stroke-width="1"/>
+              <circle cx="168" cy="268" r="4" fill="rgba(0,212,161,0.35)"/>
+              <text x="168" y="292" text-anchor="middle" font-family="DM Mono, monospace" font-size="8" fill="rgba(0,212,161,0.4)" letter-spacing="0.05em">EC</text>
+            </g>
+
+            <!-- CUBA -->
+            <g class="map-node" onclick="showCountry('Cuba', '🇨🇺', 48)">
+              <circle cx="195" cy="140" r="12" fill="rgba(255,71,87,0.06)" stroke="rgba(255,71,87,0.15)" stroke-width="1"/>
+              <circle cx="195" cy="140" r="4" fill="rgba(255,71,87,0.4)"/>
+              <text x="195" y="164" text-anchor="middle" font-family="DM Mono, monospace" font-size="8" fill="rgba(255,71,87,0.45)" letter-spacing="0.05em">CU</text>
+            </g>
+
+            <!-- BOLIVIA -->
+            <g class="map-node" onclick="showCountry('Bolivia', '🇧🇴', 31)">
+              <circle cx="240" cy="360" r="11" fill="rgba(201,168,76,0.05)" stroke="rgba(201,168,76,0.12)" stroke-width="1"/>
+              <circle cx="240" cy="360" r="4" fill="rgba(201,168,76,0.3)"/>
+              <text x="240" y="382" text-anchor="middle" font-family="DM Mono, monospace" font-size="8" fill="rgba(201,168,76,0.35)" letter-spacing="0.05em">BO</text>
+            </g>
+
+            <!-- NICARAGUA -->
+            <g class="map-node" onclick="showCountry('Nicaragua', '🇳🇮', 28)">
+              <circle cx="155" cy="180" r="10" fill="rgba(74,158,255,0.05)" stroke="rgba(74,158,255,0.12)" stroke-width="1"/>
+              <circle cx="155" cy="180" r="3.5" fill="rgba(74,158,255,0.3)"/>
+              <text x="155" y="202" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" fill="rgba(74,158,255,0.4)" letter-spacing="0.05em">NI</text>
+            </g>
+
+            <!-- PARAGUAY -->
+            <g class="map-node" onclick="showCountry('Paraguay', '🇵🇾', 19)">
+              <circle cx="275" cy="390" r="10" fill="rgba(162,155,254,0.05)" stroke="rgba(162,155,254,0.1)" stroke-width="1"/>
+              <circle cx="275" cy="390" r="3.5" fill="rgba(162,155,254,0.25)"/>
+              <text x="275" y="412" text-anchor="middle" font-family="DM Mono, monospace" font-size="7.5" fill="rgba(162,155,254,0.35)" letter-spacing="0.05em">PY</text>
+            </g>
+
+            <!-- Connecting arcs from Spain (off-map top-left) -->
+            <path d="M 40 30 Q 70 80 130 120" stroke="rgba(201,168,76,0.12)" stroke-width="1" fill="none" stroke-dasharray="4 4"/>
+            <path d="M 40 30 Q 100 120 185 230" stroke="rgba(0,212,161,0.1)" stroke-width="1" fill="none" stroke-dasharray="4 4"/>
+            <path d="M 40 30 Q 110 90 245 198" stroke="rgba(255,71,87,0.1)" stroke-width="1" fill="none" stroke-dasharray="4 4"/>
+
+            <!-- España label -->
+            <text x="25" y="25" font-family="DM Mono, monospace" font-size="8" fill="rgba(201,168,76,0.4)" letter-spacing="0.08em">ES →</text>
+
+            <!-- Animated traveling dots -->
+            <circle r="3" fill="rgba(201,168,76,0.8)">
+              <animateMotion dur="5s" repeatCount="indefinite">
+                <mpath href="#route1"/>
+              </animateMotion>
+            </circle>
+            <circle r="2.5" fill="rgba(0,212,161,0.7)">
+              <animateMotion dur="7s" begin="2s" repeatCount="indefinite">
+                <mpath href="#route2"/>
+              </animateMotion>
+            </circle>
+            <circle r="2" fill="rgba(255,71,87,0.7)">
+              <animateMotion dur="6s" begin="3.5s" repeatCount="indefinite">
+                <mpath href="#route3"/>
+              </animateMotion>
+            </circle>
+
+            <defs>
+              <path id="route1" d="M 40 30 Q 70 80 130 120"/>
+              <path id="route2" d="M 40 30 Q 100 120 185 230"/>
+              <path id="route3" d="M 40 30 Q 110 90 245 198"/>
+            </defs>
+          </svg>
+        </div>
+
+        <!-- Country tooltip -->
+        <div id="countryTooltip" style="display:none;position:absolute;bottom:2rem;left:2rem;background:var(--bg-3);border:1px solid rgba(201,168,76,0.2);padding:1rem 1.5rem;min-width:200px;">
+          <div id="tooltipContent"></div>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+
+        <!-- LIVE FEED -->
+        <div class="side-panel">
+          <div class="panel-header">
+            <span class="panel-title">Actividad reciente</span>
+            <span class="panel-badge">● Live</span>
+          </div>
+          <div class="book-feed" id="bookFeed">
+            <div class="feed-item delivered">
+              <span class="feed-icon">📗</span>
+              <div class="feed-content">
+                <div class="feed-title">Economía en una lección</div>
+                <div class="feed-meta">Entregado · Caracas, Venezuela</div>
+              </div>
+              <span class="feed-time">2m</span>
+            </div>
+            <div class="feed-item transit">
+              <span class="feed-icon">📦</span>
+              <div class="feed-content">
+                <div class="feed-title">Camino de servidumbre</div>
+                <div class="feed-meta">En tránsito → Bogotá, Colombia</div>
+              </div>
+              <span class="feed-time">18m</span>
+            </div>
+            <div class="feed-item new">
+              <span class="feed-icon">○</span>
+              <div class="feed-content">
+                <div class="feed-title">Padre Rico, Padre Pobre</div>
+                <div class="feed-meta">Perforado · Preparando envío</div>
+              </div>
+              <span class="feed-time">34m</span>
+            </div>
+            <div class="feed-item delivered">
+              <span class="feed-icon">📗</span>
+              <div class="feed-content">
+                <div class="feed-title">1984</div>
+                <div class="feed-meta">Entregado · Ciudad de México</div>
+              </div>
+              <span class="feed-time">1h</span>
+            </div>
+            <div class="feed-item transit">
+              <span class="feed-icon">📦</span>
+              <div class="feed-content">
+                <div class="feed-title">Los 7 hábitos</div>
+                <div class="feed-meta">En tránsito → Lima, Perú</div>
+              </div>
+              <span class="feed-time">2h</span>
+            </div>
+            <div class="feed-item new">
+              <span class="feed-icon">💰</span>
+              <div class="feed-content">
+                <div class="feed-title">Donación anónima recibida</div>
+                <div class="feed-meta">€15.07 · Código único asignado</div>
+              </div>
+              <span class="feed-time">3h</span>
+            </div>
+            <div class="feed-item delivered">
+              <span class="feed-icon">📗</span>
+              <div class="feed-content">
+                <div class="feed-title">Pensar rápido, pensar despacio</div>
+                <div class="feed-meta">Entregado · Buenos Aires, Argentina</div>
+              </div>
+              <span class="feed-time">5h</span>
+            </div>
+            <div class="feed-item transit">
+              <span class="feed-icon">📦</span>
+              <div class="feed-content">
+                <div class="feed-title">De cero a uno</div>
+                <div class="feed-meta">En tránsito → Santiago, Chile</div>
+              </div>
+              <span class="feed-time">7h</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHART -->
+        <div class="side-panel">
+          <div class="panel-header">
+            <span class="panel-title">Libros distribuidos · últimas 8 semanas</span>
+          </div>
+          <div class="chart-bars" id="chartBars">
+            <!-- Generated by JS -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- BOTTOM GRID -->
+    <div class="bottom-grid" style="margin-bottom:4rem;">
+
+      <!-- BOOK JOURNEY -->
+      <div class="journey-panel">
+        <div class="panel-header">
+          <span class="panel-title">Libro en seguimiento</span>
+        </div>
+        <div class="journey-title">Economía en una lección</div>
+        <div class="journey-author">Henry Hazlitt · VL-2025-0847</div>
+        <div class="journey-steps">
+          <div class="journey-step done">
+            <div class="journey-step-label">Recibido</div>
+            <div class="journey-step-value">Madrid · 12 nov 2025</div>
+          </div>
+          <div class="journey-step done">
+            <div class="journey-step-label">Clasificado</div>
+            <div class="journey-step-value">Categoría A · Voluntaria Carmen</div>
+          </div>
+          <div class="journey-step done">
+            <div class="journey-step-label">Perforado</div>
+            <div class="journey-step-value">Símbolo Vacío Lleno · 14 nov</div>
+          </div>
+          <div class="journey-step done">
+            <div class="journey-step-label">Enviado</div>
+            <div class="journey-step-value">Paquete ES→VE · 18 nov</div>
+          </div>
+          <div class="journey-step active">
+            <div class="journey-step-label">En circulación</div>
+            <div class="journey-step-value">Caracas · 3er lector activo</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COUNTRIES BREAKDOWN -->
+      <div class="countries-panel">
+        <div class="panel-header">
+          <span class="panel-title">Libros por país</span>
+        </div>
+        <div class="country-rows" id="countryRows">
+          <div class="country-row">
+            <span class="country-flag">🇲🇽</span>
+            <span class="country-name">México</span>
+            <div class="country-bar-track"><div class="country-bar-fill" style="width:100%"></div></div>
+            <span class="country-count">187</span>
+          </div>
+          <div class="country-row">
+            <span class="country-flag">🇨🇴</span>
+            <span class="country-name">Colombia</span>
+            <div class="country-bar-track"><div class="country-bar-fill" style="width:76%"></div></div>
+            <span class="country-count">143</span>
+          </div>
+          <div class="country-row">
+            <span class="country-flag">🇻🇪</span>
+            <span class="country-name">Venezuela</span>
+            <div class="country-bar-track"><div class="country-bar-fill" style="width:68%;background:var(--red)"></div></div>
+            <span class="country-count">128</span>
+          </div>
+          <div class="country-row">
+            <span class="country-flag">🇵🇪</span>
+            <span class="country-name">Perú</span>
+            <div class="country-bar-track"><div class="country-bar-fill" style="width:48%;background:var(--blue)"></div></div>
+            <span class="country-count">89</span>
+          </div>
+          <div class="country-row">
+            <span class="country-flag">🇦🇷</span>
+            <span class="country-name">Argentina</span>
+            <div class="country-bar-track"><div class="country-bar-fill" style="width:41%"></div></div>
+            <span class="country-count">76</span>
+          </div>
+          <div class="country-row">
+            <span class="country-flag">🇨🇱</span>
+            <span class="country-name">Chile</span>
+            <div class="country-bar-track"><div class="country-bar-fill" style="width:38%;background:#a29bfe"></div></div>
+            <span class="country-count">71</span>
+          </div>
+          <div class="country-row">
+            <span class="country-flag">🇨🇺</span>
+            <span class="country-name">Cuba</span>
+            <div class="country-bar-track"><div class="country-bar-fill" style="width:26%;background:var(--red)"></div></div>
+            <span class="country-count">48</span>
+          </div>
+          <div class="country-row">
+            <span class="country-flag">🇳🇮</span>
+            <span class="country-name">Nicaragua</span>
+            <div class="country-bar-track"><div class="country-bar-fill" style="width:15%;background:var(--blue)"></div></div>
+            <span class="country-count">28</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DONUT — CATEGORIES -->
+      <div class="breakdown-panel">
+        <div class="panel-header">
+          <span class="panel-title">Libros por categoría</span>
+        </div>
+        <div class="donut-wrap">
+          <div class="donut-svg">
+            <svg width="110" height="110" viewBox="0 0 110 110">
+              <!-- Donut segments -->
+              <circle cx="55" cy="55" r="40" fill="none" stroke="rgba(232,240,255,0.05)" stroke-width="16"/>
+              <!-- Economia 22% -->
+              <circle cx="55" cy="55" r="40" fill="none" stroke="#c9a84c" stroke-width="16"
+                stroke-dasharray="55.3 196.7" stroke-dashoffset="0" transform="rotate(-90 55 55)"/>
+              <!-- Filosofia 18% -->
+              <circle cx="55" cy="55" r="40" fill="none" stroke="#4a9eff" stroke-width="16"
+                stroke-dasharray="45.2 206.8" stroke-dashoffset="-55.3" transform="rotate(-90 55 55)"/>
+              <!-- Libertad 15% -->
+              <circle cx="55" cy="55" r="40" fill="none" stroke="#ff4757" stroke-width="16"
+                stroke-dasharray="37.7 214.3" stroke-dashoffset="-100.5" transform="rotate(-90 55 55)"/>
+              <!-- Psicologia 12% -->
+              <circle cx="55" cy="55" r="40" fill="none" stroke="#a29bfe" stroke-width="16"
+                stroke-dasharray="30.2 221.8" stroke-dashoffset="-138.2" transform="rotate(-90 55 55)"/>
+              <!-- Finanzas 11% -->
+              <circle cx="55" cy="55" r="40" fill="none" stroke="#00d4a1" stroke-width="16"
+                stroke-dasharray="27.6 224.4" stroke-dashoffset="-168.4" transform="rotate(-90 55 55)"/>
+              <!-- Resto 22% -->
+              <circle cx="55" cy="55" r="40" fill="none" stroke="rgba(232,240,255,0.15)" stroke-width="16"
+                stroke-dasharray="55.3 196.7" stroke-dashoffset="-196" transform="rotate(-90 55 55)"/>
+              <!-- Center -->
+              <text x="55" y="52" text-anchor="middle" font-family="Syne, sans-serif"
+                font-size="14" font-weight="700" fill="rgba(232,240,255,0.9)">847</text>
+              <text x="55" y="65" text-anchor="middle" font-family="DM Mono, monospace"
+                font-size="7" fill="rgba(232,240,255,0.3)" letter-spacing="0.05em">LIBROS</text>
+            </svg>
+          </div>
+          <div class="donut-legend">
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#c9a84c"></div>
+              Economía 22%
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#4a9eff"></div>
+              Filosofía 18%
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#ff4757"></div>
+              Libertad 15%
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#a29bfe"></div>
+              Psicología 12%
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#00d4a1"></div>
+              Finanzas 11%
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:rgba(232,240,255,0.15)"></div>
+              Otras 22%
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="impact-cta">
+    <div class="cta-left">
+      <div class="cta-eyebrow">Tú puedes mover estos números</div>
+      <h2 class="cta-title">Cada donación<br/>aparece aquí.</h2>
+      <p class="cta-body">
+        Este dashboard se actualiza en tiempo real. Cada libro que donas,
+        cada euro que aportas, cada hora que das como voluntario — todo
+        mueve estas cifras. Puedes ver el impacto exacto de lo que haces.
+      </p>
+      <div class="cta-buttons">
+        <a href="vaciolleno-donaciones.html" class="btn-gold">Donar ahora</a>
+        <a href="vaciolleno-voluntarios.html" class="btn-ghost">Ser voluntario</a>
+      </div>
+    </div>
+    <div class="cta-stats">
+      <div class="mini-stat">
+        <div class="mini-stat-num">40x</div>
+        <div class="mini-stat-label">Más impacto que un libro en repisa</div>
+      </div>
+      <div class="mini-stat">
+        <div class="mini-stat-num">€5</div>
+        <div class="mini-stat-label">Coste medio por libro distribuido</div>
+      </div>
+      <div class="mini-stat">
+        <div class="mini-stat-num">12</div>
+        <div class="mini-stat-label">Países alcanzados en el primer año</div>
+      </div>
+      <div class="mini-stat">
+        <div class="mini-stat-num">∞</div>
+        <div class="mini-stat-label">Ciclos de circulación por libro</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-logo">VACÍO LLENO</span>
+    <span class="footer-copy">© 2025 · Todos los libros circulan libres · vaciolleno.org</span>
+  
+    <div style="font-family:var(--mono,monospace);font-size:0.55rem;letter-spacing:0.08em;display:flex;gap:1.5rem;flex-wrap:wrap;">
+      <a href="vaciolleno-legal-privacidad.html" style="color:rgba(240,236,227,0.2);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='rgba(240,236,227,0.55)'" onmouseout="this.style.color='rgba(240,236,227,0.2)'">Privacidad</a>
+      <a href="vaciolleno-legal-cookies.html" style="color:rgba(240,236,227,0.2);text-decoration:none;" onmouseover="this.style.color='rgba(240,236,227,0.55)'" onmouseout="this.style.color='rgba(240,236,227,0.2)'">Cookies</a>
+      <a href="vaciolleno-legal-terminos.html" style="color:rgba(240,236,227,0.2);text-decoration:none;" onmouseover="this.style.color='rgba(240,236,227,0.55)'" onmouseout="this.style.color='rgba(240,236,227,0.2)'">Términos</a>
+      <a href="vaciolleno-legal-aviso.html" style="color:rgba(240,236,227,0.2);text-decoration:none;" onmouseover="this.style.color='rgba(240,236,227,0.55)'" onmouseout="this.style.color='rgba(240,236,227,0.2)'">Aviso Legal</a>
+    </div>
+  </footer>
+
+  <script>
+    // LIVE CLOCK
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('liveTime').textContent =
+        now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) +
+        ' · ' + now.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // CHART BARS
+    const weekData = [42, 58, 61, 79, 53, 88, 94, 102];
+    const maxVal = Math.max(...weekData);
+    const chartEl = document.getElementById('chartBars');
+    const weeks = ['S-7','S-6','S-5','S-4','S-3','S-2','S-1','HOY'];
+
+    weekData.forEach((val, i) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'chart-bar-wrap';
+      const pct = (val / maxVal) * 100;
+      const isLast = i === weekData.length - 1;
+      wrap.innerHTML = `
+        <div class="chart-bar" style="height:${pct}%;background:${isLast ? 'var(--green)' : 'rgba(201,168,76,0.4)'};${isLast ? 'box-shadow:0 0 12px rgba(0,212,161,0.3)' : ''}"></div>
+        <div class="chart-bar-label">${weeks[i]}</div>
+      `;
+      chartEl.appendChild(wrap);
+    });
+
+    // COUNTRY TOOLTIP
+    function showCountry(name, flag, books) {
+      const tooltip = document.getElementById('countryTooltip');
+      const content = document.getElementById('tooltipContent');
+      content.innerHTML = `
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;">País seleccionado</div>
+        <div style="font-family:var(--display);font-size:1.1rem;font-weight:700;color:var(--white);margin-bottom:0.25rem;">${flag} ${name}</div>
+        <div style="font-family:var(--mono);font-size:0.7rem;color:var(--white-dim);">${books} libros en circulación</div>
+        <div style="font-family:var(--mono);font-size:0.65rem;color:var(--green);margin-top:0.25rem;">~${books * 40} lectores estimados</div>
+      `;
+      tooltip.style.display = 'block';
+      setTimeout(() => { tooltip.style.display = 'none'; }, 4000);
+    }
+
+    // LIVE FEED SIMULATION — adds new events periodically
+    const feedEvents = [
+      { type: 'new', icon: '○', title: 'El hombre más rico de Babilonia', meta: 'Perforado · Preparando envío', time: 'ahora' },
+      { type: 'transit', icon: '📦', title: 'Rebelión en la granja', meta: 'En tránsito → Bogotá, Colombia', time: 'ahora' },
+      { type: 'delivered', icon: '📗', title: 'Por qué fracasan los países', meta: 'Entregado · Guayaquil, Ecuador', time: 'ahora' },
+      { type: 'new', icon: '💰', title: 'Donación anónima recibida', meta: '€5.03 · Código único asignado', time: 'ahora' },
+      { type: 'transit', icon: '📦', title: 'Los 7 hábitos', meta: 'En tránsito → Montevideo, Uruguay', time: 'ahora' },
+    ];
+
+    let feedIdx = 0;
+    setInterval(() => {
+      const event = feedEvents[feedIdx % feedEvents.length];
+      feedIdx++;
+      const feed = document.getElementById('bookFeed');
+      const item = document.createElement('div');
+      item.className = `feed-item ${event.type}`;
+      item.innerHTML = `
+        <span class="feed-icon">${event.icon}</span>
+        <div class="feed-content">
+          <div class="feed-title">${event.title}</div>
+          <div class="feed-meta">${event.meta}</div>
+        </div>
+        <span class="feed-time">${event.time}</span>
+      `;
+      feed.insertBefore(item, feed.firstChild);
+      if (feed.children.length > 10) feed.removeChild(feed.lastChild);
+
+      // Update KPI counter subtly
+      const kpi1 = document.getElementById('kpi1');
+      if (event.type === 'delivered') {
+        const curr = parseInt(kpi1.textContent);
+        kpi1.textContent = curr + 1;
+      }
+    }, 8000);
+  </script>
+
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- COOKIE BANNER                                           -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div id="cookieBanner" style="
+    display:none;
+    position:fixed; bottom:0; left:0; right:0; z-index:9999;
+    background:#0f1f3d;
+    border-top:1px solid rgba(201,168,76,0.25);
+    padding:1.25rem 4rem;
+    font-family:'DM Mono',monospace;
+  ">
+    <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;">
+      <div style="flex:1;min-width:280px;">
+        <p style="font-size:0.72rem;line-height:1.7;color:rgba(232,240,255,0.65);margin:0;">
+          Usamos cookies técnicas necesarias para el funcionamiento del sitio y de los pagos (Stripe).
+          No usamos cookies publicitarias ni rastreamos tu navegación con fines comerciales.
+          <a href="vaciolleno-legal-cookies.html" style="color:rgba(201,168,76,0.8);text-decoration:none;border-bottom:1px solid rgba(201,168,76,0.3);">Política de cookies →</a>
+        </p>
+      </div>
+      <div style="display:flex;gap:0.75rem;flex-shrink:0;flex-wrap:wrap;align-items:center;">
+        <a href="vaciolleno-legal-cookies.html" style="
+          font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;
+          padding:0.6rem 1.1rem;
+          border:1px solid rgba(232,240,255,0.15);
+          color:rgba(232,240,255,0.4);
+          text-decoration:none;
+          transition:all 0.2s;
+        " onmouseover="this.style.borderColor='rgba(232,240,255,0.4)';this.style.color='rgba(232,240,255,0.7)'"
+           onmouseout="this.style.borderColor='rgba(232,240,255,0.15)';this.style.color='rgba(232,240,255,0.4)'">
+          Más info
+        </a>
+        <button onclick="rejectCookies()" style="
+          font-family:'DM Mono',monospace;
+          font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;
+          padding:0.6rem 1.1rem;
+          background:transparent;
+          border:1px solid rgba(232,240,255,0.15);
+          color:rgba(232,240,255,0.4);
+          cursor:pointer;
+          transition:all 0.2s;
+        " onmouseover="this.style.borderColor='rgba(232,240,255,0.4)';this.style.color='rgba(232,240,255,0.7)'"
+           onmouseout="this.style.borderColor='rgba(232,240,255,0.15)';this.style.color='rgba(232,240,255,0.4)'">
+          Solo técnicas
+        </button>
+        <button onclick="acceptCookies()" style="
+          font-family:'DM Mono',monospace;
+          font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;
+          padding:0.6rem 1.25rem;
+          background:rgba(201,168,76,0.9);
+          border:1px solid transparent;
+          color:#0f1f3d;
+          cursor:pointer;
+          font-weight:500;
+          transition:all 0.2s;
+        " onmouseover="this.style.background='rgba(201,168,76,1)'"
+           onmouseout="this.style.background='rgba(201,168,76,0.9)'">
+          Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Cookie banner logic
+    (function() {
+      var consent = localStorage.getItem('vl_cookie_consent');
+      if (!consent) {
+        setTimeout(function() {
+          var banner = document.getElementById('cookieBanner');
+          if (banner) {
+            banner.style.display = 'block';
+            banner.style.animation = 'slideUpBanner 0.4s ease forwards';
+          }
+        }, 1200);
+      }
+    })();
+
+    function acceptCookies() {
+      localStorage.setItem('vl_cookie_consent', 'all');
+      hideBanner();
+    }
+
+    function rejectCookies() {
+      localStorage.setItem('vl_cookie_consent', 'essential');
+      hideBanner();
+    }
+
+    function hideBanner() {
+      var banner = document.getElementById('cookieBanner');
+      if (banner) {
+        banner.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        banner.style.opacity = '0';
+        banner.style.transform = 'translateY(100%)';
+        setTimeout(function() { banner.style.display = 'none'; }, 300);
+      }
+    }
+  </script>
+  <style>
+    @keyframes slideUpBanner {
+      from { opacity:0; transform:translateY(20px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+  </style>
+
+</body>
+</html>

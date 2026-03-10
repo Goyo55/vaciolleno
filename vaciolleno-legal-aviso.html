@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aviso Legal — Vacío Lleno</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --paper: #f2ede4;
+      --paper-dark: #e5dfd4;
+      --ink: #1c1a14;
+      --ink-mid: rgba(28,26,20,0.55);
+      --ink-faint: rgba(28,26,20,0.1);
+      --red: #8b1a1a;
+      --gold: #8a6820;
+      --navy: #0f1f3d;
+      --serif: "Libre Baskerville", Georgia, serif;
+      --sans: "DM Sans", sans-serif;
+      --mono: "DM Mono", monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--paper); color: var(--ink); font-family: var(--sans); font-weight: 300; }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 4rem;
+      background: rgba(242,237,228,0.97);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--ink-faint);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+    .nav-logo-text { font-family: var(--serif); font-size: 1rem; font-weight: 700; color: var(--ink); }
+    .nav-logo svg { width: 28px; height: 28px; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-mid); text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-cta { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.5rem 1.25rem; background: var(--navy); color: var(--paper); text-decoration: none; transition: all 0.25s; }
+    .nav-cta:hover { background: var(--red); }
+
+    /* LEGAL DOC */
+    .legal-wrap { max-width: 780px; margin: 0 auto; padding: 5rem 2rem 8rem; }
+
+    .legal-eyebrow { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--red); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem; }
+    .legal-eyebrow::before { content: ""; width: 24px; height: 1px; background: var(--red); }
+
+    .legal-title { font-family: var(--serif); font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 700; line-height: 1.1; color: var(--ink); margin-bottom: 1rem; }
+
+    .legal-meta { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; color: var(--ink-mid); margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 2px solid var(--ink); }
+
+    .legal-intro { font-family: var(--serif); font-style: italic; font-size: 1.05rem; line-height: 1.75; color: var(--ink); margin-bottom: 3rem; padding: 1.5rem 1.75rem; border-left: 3px solid var(--red); background: rgba(139,26,26,0.04); }
+
+    h2 { font-family: var(--serif); font-size: 1.3rem; font-weight: 700; color: var(--ink); margin: 2.5rem 0 0.85rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--ink-faint); }
+    h3 { font-family: var(--serif); font-size: 1.05rem; font-weight: 700; color: var(--ink); margin: 1.75rem 0 0.6rem; }
+
+    p { font-size: 0.92rem; line-height: 1.85; color: var(--ink-mid); margin-bottom: 1rem; }
+    p strong { color: var(--ink); font-weight: 600; }
+
+    ul, ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+    li { font-size: 0.9rem; line-height: 1.8; color: var(--ink-mid); margin-bottom: 0.3rem; }
+    li strong { color: var(--ink); }
+
+    .info-box { background: var(--paper-dark); border: 1px solid var(--ink-faint); padding: 1.5rem 1.75rem; margin: 1.5rem 0; }
+    .info-box p { margin-bottom: 0; }
+
+    .contact-block { background: var(--navy); color: var(--paper); padding: 2rem 2.5rem; margin: 2.5rem 0; }
+    .contact-block h3 { color: var(--paper); border: none; margin-top: 0; }
+    .contact-block p { color: rgba(242,237,228,0.65); }
+    .contact-block a { color: rgba(201,168,76,0.9); }
+
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
+    th { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; background: var(--ink); color: var(--paper); padding: 0.7rem 1rem; text-align: left; }
+    td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--ink-faint); color: var(--ink-mid); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    td strong { color: var(--ink); }
+
+    /* SIBLING LEGAL LINKS */
+    .legal-siblings { margin-top: 4rem; padding-top: 2rem; border-top: 2px solid var(--ink-faint); display: flex; flex-wrap: wrap; gap: 0.75rem; }
+    .sibling-link { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.5rem 1rem; border: 1px solid var(--ink-faint); color: var(--ink-mid); text-decoration: none; transition: all 0.2s; }
+    .sibling-link:hover { border-color: var(--ink); color: var(--ink); }
+    .sibling-link.current { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+    /* FOOTER */
+    footer { background: var(--ink); padding: 2.5rem 4rem; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: var(--serif); font-size: 1rem; font-weight: 700; color: rgba(242,237,228,0.25); }
+    .footer-copy { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.1em; color: rgba(242,237,228,0.12); }
+
+    @media (max-width: 768px) {
+      nav { padding: 1.25rem 1.5rem; }
+      .nav-links { display: none; }
+      .legal-wrap { padding: 3rem 1.5rem 5rem; }
+      footer { padding: 2rem 1.5rem; flex-direction: column; gap: 1rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="vaciolleno-home.html" class="nav-logo">
+      <img src="logo-icon.png" alt="Vacío Lleno" style="width:28px;height:28px;object-fit:contain;" />
+      <span class="nav-logo-text">VACÍO LLENO</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="vaciolleno-home.html">Inicio</a></li>
+      <li><a href="vaciolleno-proyecto.html">El Proyecto</a></li>
+      <li><a href="vaciolleno-voluntarios.html">Voluntarios</a></li>
+      <li><a href="vaciolleno-libros.html">Libros</a></li>
+      <li><a href="vaciolleno-impacto.html">Impacto</a></li>
+      <li><a href="vaciolleno-manifiesto.html">Manifiesto</a></li>
+    </ul>
+    <a href="vaciolleno-donaciones.html" class="nav-cta">Donar</a>
+  </nav>
+
+  <div class="legal-wrap">
+    <div class="legal-eyebrow">Documento legal</div>
+    <h1 class="legal-title">Aviso Legal</h1>
+    <p class="legal-meta">Última actualización: 1 de enero de 2025 · Vacío Lleno · vaciolleno.org</p>
+
+    <div class="legal-intro">
+      En cumplimiento del artículo 10 de la Ley 34/2002 de Servicios de la Sociedad de la Información y Comercio Electrónico (LSSI-CE), se facilita la siguiente información sobre el titular de este sitio web.
+    </div>
+
+    <h2>1. Datos identificativos del titular</h2>
+    <div class="info-box">
+      <p><strong>Denominación:</strong> Vacío Lleno</p>
+      <p><strong>Naturaleza:</strong> Iniciativa de impacto social sin ánimo de lucro</p>
+      <p><strong>País de operación:</strong> España</p>
+      <p><strong>Sitio web:</strong> vaciolleno.org</p>
+      <p><strong>Correo electrónico de contacto:</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a0c8cfccc1e0d6c1c3c9cfccccc5cecf8ecfd2c7">[email&#160;protected]</a></p>
+      <p><strong>Correo de privacidad:</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a8d8dac1dec9cbc1ccc9cce8dec9cbc1c7c4c4cdc6c786c7dacf">[email&#160;protected]</a></p>
+    </div>
+
+    <h2>2. Objeto del sitio web</h2>
+    <p>vaciolleno.org es el sitio oficial del proyecto Vacío Lleno, cuyo objeto es:</p>
+    <ul>
+      <li>Informar sobre la iniciativa de distribución libre de libros en Latinoamérica.</li>
+      <li>Recibir donaciones de libros físicos y donaciones económicas para financiar el proyecto.</li>
+      <li>Gestionar el registro de voluntarios que deseen colaborar.</li>
+      <li>Publicar información sobre el impacto y la actividad del proyecto.</li>
+    </ul>
+
+    <h2>3. Condiciones de acceso y uso</h2>
+    <p>El acceso al sitio web es libre y gratuito. El usuario se compromete a hacer un uso lícito del mismo, de conformidad con la legislación vigente, la buena fe, el orden público y los presentes términos de uso.</p>
+    <p>Vacío Lleno se reserva el derecho a denegar o retirar el acceso al sitio web en cualquier momento y sin previo aviso a aquellos usuarios que incumplan estas condiciones.</p>
+
+    <h2>4. Propiedad intelectual e industrial</h2>
+    <p>Todos los contenidos del sitio web — incluyendo textos, imágenes, diseño gráfico, logotipos, iconos, código fuente y cualquier otro elemento — son propiedad de Vacío Lleno o de sus legítimos titulares, y están protegidos por la legislación española e internacional sobre propiedad intelectual e industrial.</p>
+    <p>Queda expresamente prohibida la reproducción, distribución, comunicación pública o transformación de dichos contenidos sin la autorización previa y por escrito de Vacío Lleno, excepto en los casos previstos por la ley.</p>
+    <p>Se permite la cita o referencia al proyecto con fines periodísticos, académicos o divulgativos, siempre que se mencione la fuente y no se desvirtúe el contenido original.</p>
+
+    <h2>5. Exclusión de garantías y responsabilidad</h2>
+    <p>Vacío Lleno no garantiza la disponibilidad ininterrumpida del sitio web, ni la ausencia de errores en sus contenidos. Se realizan esfuerzos razonables para mantener la información actualizada y precisa, pero no se asume responsabilidad por inexactitudes o desactualizaciones.</p>
+    <p>Vacío Lleno no se hace responsable de los daños o perjuicios que pudieran derivarse de la utilización del sitio web, incluyendo daños por virus informáticos, siempre que se hayan adoptado las medidas de seguridad razonables.</p>
+
+    <h2>6. Enlaces a terceros</h2>
+    <p>El sitio puede contener enlaces a sitios web de terceros (Stripe, redes sociales, organizaciones colaboradoras). Vacío Lleno no controla dichos sitios y no asume responsabilidad sobre sus contenidos ni sus políticas de privacidad. La inclusión de un enlace no implica respaldo o relación comercial con el sitio enlazado.</p>
+
+    <h2>7. Legislación aplicable y jurisdicción</h2>
+    <p>Este aviso legal se rige por la legislación española, en particular por:</p>
+    <ul>
+      <li><strong>Ley 34/2002</strong> de Servicios de la Sociedad de la Información y Comercio Electrónico (LSSI-CE).</li>
+      <li><strong>Reglamento (UE) 2016/679</strong> General de Protección de Datos (RGPD).</li>
+      <li><strong>Ley Orgánica 3/2018</strong> de Protección de Datos Personales y garantía de los derechos digitales (LOPDGDD).</li>
+      <li><strong>Real Decreto Legislativo 1/1996</strong> que aprueba el Texto Refundido de la Ley de Propiedad Intelectual.</li>
+    </ul>
+    <p>Para la resolución de conflictos derivados del uso de este sitio web, las partes se someten a la jurisdicción de los Juzgados y Tribunales de Madrid, España.</p>
+
+    <h2>8. Actualización del aviso</h2>
+    <p>Vacío Lleno se reserva el derecho a modificar este aviso legal cuando sea necesario por cambios legales, organizativos o técnicos. La fecha de última modificación se indica siempre en la cabecera del documento.</p>
+
+    <div class="contact-block">
+      <h3>Contacto general</h3>
+      <p>Para cualquier consulta sobre este aviso legal o el funcionamiento del sitio:</p>
+      <p><a href="/cdn-cgi/l/email-protection#0a6265666b4a7c6b69636566666f64652465786d"><span class="__cf_email__" data-cfemail="d2babdbeb392a4b3b1bbbdbebeb7bcbdfcbda0b5">[email&#160;protected]</span></a></p>
+    </div>
+
+    <div class="legal-siblings">
+      <span style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-mid);align-self:center;">Documentos legales:</span>
+      <a href="vaciolleno-legal-privacidad.html" class="sibling-link ">Privacidad</a>
+      <a href="vaciolleno-legal-cookies.html" class="sibling-link ">Cookies</
