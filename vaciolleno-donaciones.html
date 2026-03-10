@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Donar — Vacío Lleno</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://js.stripe.com/v3/"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #0f1f3d;
+      --navy-mid: #1a3260;
+      --navy-light: #243f78;
+      --white: #f5f3ee;
+      --cream: #ede9df;
+      --gold: #c9a84c;
+      --gold-light: #e2c97e;
+      --red: #c0392b;
+      --green: #27ae60;
+      --mono: 'DM Mono', monospace;
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: var(--sans);
+      font-weight: 300;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 4rem;
+      background: rgba(15,31,61,0.97);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(201,168,76,0.1);
+    }
+
+    .nav-logo {
+      display: flex; align-items: center; gap: 0.75rem;
+      text-decoration: none;
+    }
+    .nav-logo-text {
+      font-family: var(--serif);
+      font-size: 1.1rem; font-weight: 700;
+      color: var(--white); letter-spacing: 0.05em;
+    }
+    .nav-logo svg { width: 36px; height: 36px; }
+    .nav-back {
+      font-family: var(--mono); font-size: 0.7rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(245,243,238,0.4); text-decoration: none;
+      display: flex; align-items: center; gap: 0.5rem;
+      transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--gold); }
+    .nav-back::before { content: '←'; }
+
+    /* PAGE LAYOUT */
+    .page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding-top: 5rem;
+    }
+
+    /* LEFT PANEL */
+    .panel-left {
+      background: var(--navy-mid);
+      padding: 5rem 4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: sticky;
+      top: 5rem;
+      height: calc(100vh - 5rem);
+      overflow-y: auto;
+    }
+
+    .panel-eyebrow {
+      font-family: var(--mono);
+      font-size: 0.65rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .panel-eyebrow::before {
+      content: ''; display: block;
+      width: 30px; height: 1px; background: var(--gold);
+    }
+
+    .panel-title {
+      font-family: var(--serif);
+      font-size: clamp(2.2rem, 3.5vw, 3.5rem);
+      font-weight: 900; line-height: 1.05;
+      margin-bottom: 2rem;
+    }
+
+    .panel-title .outline {
+      color: transparent;
+      -webkit-text-stroke: 1.5px var(--white);
+    }
+
+    .panel-body {
+      font-size: 0.95rem; line-height: 1.8;
+      color: rgba(245,243,238,0.6);
+      margin-bottom: 2.5rem;
+    }
+
+    .panel-body strong { color: var(--white); font-weight: 500; }
+
+    /* IMPACT PREVIEW */
+    .impact-preview {
+      border: 1px solid rgba(201,168,76,0.15);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .impact-preview-label {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1rem;
+    }
+
+    .impact-rows { display: flex; flex-direction: column; gap: 0.75rem; }
+
+    .impact-row {
+      display: flex; align-items: center; gap: 1rem;
+      font-size: 0.85rem; color: rgba(245,243,238,0.55);
+    }
+
+    .impact-row-amount {
+      font-family: var(--mono); font-size: 0.75rem;
+      color: var(--gold); min-width: 50px;
+    }
+
+    .impact-bar-track {
+      flex: 1; height: 2px;
+      background: rgba(255,255,255,0.08); position: relative;
+    }
+
+    .impact-bar-fill {
+      position: absolute; top: 0; left: 0; height: 100%;
+      background: var(--gold); transition: width 0.8s ease;
+    }
+
+    /* TESTIMONIAL */
+    .testimonial {
+      border-left: 2px solid var(--gold);
+      padding-left: 1.5rem;
+      margin-top: auto;
+    }
+
+    .testimonial-quote {
+      font-family: var(--serif); font-style: italic;
+      font-size: 1rem; line-height: 1.6;
+      color: rgba(245,243,238,0.7); margin-bottom: 0.75rem;
+    }
+
+    .testimonial-author {
+      font-family: var(--mono); font-size: 0.65rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(245,243,238,0.3);
+    }
+
+    /* RIGHT PANEL — FORM */
+    .panel-right {
+      padding: 5rem 4rem;
+      background: var(--navy);
+    }
+
+    /* DONATION TYPE TABS */
+    .donation-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      margin-bottom: 3rem;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .tab {
+      padding: 1.2rem;
+      text-align: center;
+      cursor: pointer;
+      font-family: var(--mono); font-size: 0.7rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(245,243,238,0.4);
+      transition: all 0.25s;
+      background: transparent;
+      border: none;
+    }
+
+    .tab.active {
+      background: var(--navy-mid);
+      color: var(--white);
+    }
+
+    .tab .tab-icon { display: block; font-size: 1.4rem; margin-bottom: 0.4rem; }
+
+    /* FORM SECTION TITLE */
+    .form-section-title {
+      font-family: var(--serif); font-size: 1.8rem;
+      font-weight: 700; margin-bottom: 0.5rem;
+    }
+
+    .form-section-sub {
+      font-size: 0.88rem; color: rgba(245,243,238,0.5);
+      margin-bottom: 2.5rem; line-height: 1.6;
+    }
+
+    /* FREQUENCY TOGGLE */
+    .freq-toggle {
+      display: flex; gap: 2px; margin-bottom: 2.5rem;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .freq-btn {
+      flex: 1; padding: 0.75rem;
+      font-family: var(--mono); font-size: 0.65rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      border: none; cursor: pointer;
+      background: transparent; color: rgba(245,243,238,0.4);
+      transition: all 0.2s;
+    }
+
+    .freq-btn.active {
+      background: var(--gold); color: var(--navy);
+      font-weight: 500;
+    }
+
+    /* AMOUNT SECTION */
+    .amount-label {
+      font-family: var(--mono); font-size: 0.65rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(245,243,238,0.4); margin-bottom: 1rem;
+    }
+
+    /* ANONYMOUS TOGGLE */
+    .anon-toggle-wrap {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 1.5rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 2rem;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .anon-toggle-wrap:hover { border-color: rgba(201,168,76,0.3); }
+    .anon-toggle-wrap.active { border-color: var(--gold); }
+
+    .anon-toggle-left { display: flex; flex-direction: column; gap: 0.3rem; }
+
+    .anon-toggle-title {
+      font-family: var(--sans); font-size: 0.9rem;
+      font-weight: 500; color: var(--white);
+    }
+
+    .anon-toggle-sub {
+      font-family: var(--mono); font-size: 0.65rem;
+      color: rgba(245,243,238,0.35); letter-spacing: 0.05em;
+    }
+
+    .toggle-switch {
+      width: 44px; height: 24px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px; position: relative;
+      transition: background 0.25s;
+    }
+
+    .toggle-switch.on { background: var(--gold); }
+
+    .toggle-knob {
+      position: absolute; top: 3px; left: 3px;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--white); transition: transform 0.25s;
+    }
+
+    .toggle-switch.on .toggle-knob { transform: translateX(20px); }
+
+    /* ANONYMOUS CODE DISPLAY */
+    .anon-code-box {
+      background: rgba(201,168,76,0.06);
+      border: 1px solid rgba(201,168,76,0.2);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      display: none;
+      animation: slideDown 0.3s ease;
+    }
+
+    .anon-code-box.visible { display: block; }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .anon-code-label {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 0.75rem;
+    }
+
+    .anon-code-number {
+      font-family: var(--mono); font-size: 2.5rem;
+      font-weight: 500; color: var(--white);
+      letter-spacing: 0.1em; margin-bottom: 0.5rem;
+    }
+
+    .anon-code-number .currency {
+      font-size: 1rem; color: rgba(245,243,238,0.4);
+      vertical-align: top; margin-top: 0.5rem;
+      display: inline-block;
+    }
+
+    .anon-code-desc {
+      font-size: 0.78rem; color: rgba(245,243,238,0.45);
+      line-height: 1.6;
+    }
+
+    /* AMOUNT INPUT */
+    .amount-input-wrap {
+      position: relative; margin-bottom: 1.5rem;
+    }
+
+    .amount-currency {
+      position: absolute; left: 1.2rem; top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--mono); font-size: 1.2rem;
+      color: rgba(245,243,238,0.3);
+    }
+
+    .amount-input {
+      width: 100%; padding: 1.2rem 1.5rem 1.2rem 3rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--white);
+      font-family: var(--mono); font-size: 2rem;
+      font-weight: 500; letter-spacing: 0.05em;
+      outline: none; transition: border-color 0.2s;
+      appearance: textfield;
+    }
+
+    .amount-input:focus { border-color: var(--gold); }
+    .amount-input::placeholder { color: rgba(245,243,238,0.15); }
+
+    /* SUGGESTED AMOUNTS */
+    .suggested-amounts {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 2px; margin-bottom: 2rem;
+    }
+
+    .suggested-amt {
+      padding: 0.75rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid transparent;
+      font-family: var(--mono); font-size: 0.8rem;
+      color: rgba(245,243,238,0.5); cursor: pointer;
+      text-align: center; transition: all 0.2s;
+    }
+
+    .suggested-amt:hover {
+      background: rgba(255,255,255,0.06);
+      color: var(--white);
+    }
+
+    .suggested-amt.selected {
+      border-color: var(--gold); color: var(--gold);
+      background: rgba(201,168,76,0.08);
+    }
+
+    .suggested-amt .amt-impact {
+      display: block; font-size: 0.55rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      opacity: 0.5; margin-top: 0.2rem;
+    }
+
+    /* NAME FIELD */
+    .field-group { margin-bottom: 1.5rem; }
+
+    .field-label {
+      font-family: var(--mono); font-size: 0.62rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(245,243,238,0.35); margin-bottom: 0.6rem;
+      display: block;
+    }
+
+    .field-input {
+      width: 100%; padding: 0.9rem 1.2rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--white); font-family: var(--sans);
+      font-size: 0.95rem; outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .field-input:focus { border-color: rgba(201,168,76,0.4); }
+    .field-input::placeholder { color: rgba(245,243,238,0.2); }
+
+    /* STRIPE CARD */
+    .stripe-container {
+      padding: 1rem 1.2rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 2rem;
+      transition: border-color 0.2s;
+    }
+
+    .stripe-container.focused { border-color: rgba(201,168,76,0.4); }
+
+    .stripe-secure {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(245,243,238,0.2); margin-top: 0.75rem;
+    }
+
+    .stripe-secure svg { opacity: 0.3; }
+
+    /* SUBMIT */
+    .btn-donate {
+      width: 100%; padding: 1.3rem;
+      background: var(--gold); color: var(--navy);
+      font-family: var(--mono); font-size: 0.8rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      font-weight: 500; border: none; cursor: pointer;
+      transition: all 0.25s; position: relative;
+      overflow: hidden;
+    }
+
+    .btn-donate::after {
+      content: ''; position: absolute;
+      inset: 0; background: var(--white);
+      transform: translateX(-101%); transition: transform 0.3s ease;
+    }
+
+    .btn-donate:hover::after { transform: translateX(0); }
+    .btn-donate span { position: relative; z-index: 1; }
+
+    .btn-donate:disabled {
+      opacity: 0.5; cursor: not-allowed;
+    }
+
+    .btn-donate:disabled::after { display: none; }
+
+    /* DONATE BOOK FORM */
+    .donate-book-form { display: none; }
+    .donate-book-form.active { display: block; }
+    .donate-money-form.active { display: block; }
+    .donate-money-form { display: none; }
+
+    /* BOOK CATEGORIES */
+    .book-cats {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0.5rem; margin-bottom: 1.5rem;
+    }
+
+    .book-cat {
+      padding: 0.6rem 0.8rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      font-size: 0.78rem; color: rgba(245,243,238,0.5);
+      cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+
+    .book-cat input[type="checkbox"] {
+      accent-color: var(--gold); cursor: pointer;
+    }
+
+    .book-cat:hover { border-color: rgba(201,168,76,0.2); color: var(--white); }
+
+    /* SUCCESS STATE */
+    .success-panel {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      min-height: 60vh;
+    }
+
+    .success-panel.visible { display: flex; }
+
+    .success-hole {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      border: 2px solid var(--gold);
+      display: flex; align-items: center;
+      justify-content: center;
+      margin: 0 auto 2rem;
+      position: relative;
+      animation: successPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes successPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(201,168,76,0.3); }
+      50% { box-shadow: 0 0 0 20px rgba(201,168,76,0); }
+    }
+
+    .success-code-display {
+      font-family: var(--mono); font-size: 3rem;
+      color: var(--gold); letter-spacing: 0.1em;
+      margin: 1rem 0;
+    }
+
+    .success-title {
+      font-family: var(--serif); font-size: 2rem;
+      font-weight: 700; margin-bottom: 1rem;
+    }
+
+    .success-body {
+      font-size: 0.9rem; line-height: 1.7;
+      color: rgba(245,243,238,0.5); max-width: 380px;
+      margin: 0 auto 2rem;
+    }
+
+    /* ERROR */
+    .error-msg {
+      background: rgba(192,57,43,0.1);
+      border: 1px solid rgba(192,57,43,0.3);
+      padding: 0.75rem 1rem;
+      font-size: 0.82rem; color: #e74c3c;
+      margin-bottom: 1rem; display: none;
+    }
+
+    .error-msg.visible { display: block; }
+
+    /* PROGRESS */
+    .form-progress {
+      display: flex; gap: 0.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .progress-step {
+      flex: 1; height: 2px;
+      background: rgba(255,255,255,0.08);
+      transition: background 0.3s;
+    }
+
+    .progress-step.done { background: var(--gold); }
+    .progress-step.active { background: rgba(201,168,76,0.4); }
+
+    /* LOADING SPINNER */
+    .spinner {
+      display: inline-block;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(15,31,61,0.3);
+      border-top-color: var(--navy);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle; margin-right: 0.5rem;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* REVEAL */
+    .reveal {
+      opacity: 0; transform: translateY(20px);
+      animation: fadeUp 0.6s forwards;
+    }
+
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    .reveal-1 { animation-delay: 0.1s; }
+    .reveal-2 { animation-delay: 0.2s; }
+    .reveal-3 { animation-delay: 0.3s; }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav { padding: 1.5rem 1.5rem; }
+      .page { grid-template-columns: 1fr; }
+      .panel-left {
+        position: relative; height: auto;
+        padding: 3rem 1.5rem;
+      }
+      .panel-right { padding: 3rem 1.5rem; }
+      .suggested-amounts { grid-template-columns: repeat(2,1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="vaciolleno-home.html" class="nav-logo">
+      <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="8" y="10" width="44" height="40" rx="2" fill="#1a3260" stroke="rgba(245,243,238,0.2)" stroke-width="1"/>
+        <circle cx="30" cy="30" r="10" fill="#0f1f3d" stroke="rgba(201,168,76,0.6)" stroke-width="1.5"/>
+      </svg>
+      <span class="nav-logo-text">VACÍO LLENO</span>
+    </a>
+    <a href="vaciolleno-home.html" class="nav-back">Volver al inicio</a>
+  </nav>
+
+  <div class="page">
+
+    <!-- LEFT PANEL -->
+    <div class="panel-left">
+      <div class="panel-eyebrow">Tu aportación</div>
+      <h1 class="panel-title">
+        Cada donación<br/>
+        es <span class="outline">única</span><br/>
+        en el mundo
+      </h1>
+      <p class="panel-body">
+        No hay montos mínimos. No hay presiones.
+        Si eliges ser anónimo, <strong>tu donación tendrá un código
+        irrepetible</strong> — una cifra exacta que solo tú conoces
+        y que solo existirá una vez en este año.
+      </p>
+
+      <div class="impact-preview">
+        <div class="impact-preview-label">Lo que mueve tu donación</div>
+        <div class="impact-rows" id="impactRows">
+          <div class="impact-row">
+            <span class="impact-row-amount">2€</span>
+            <div class="impact-bar-track"><div class="impact-bar-fill" style="width:15%"></div></div>
+            <span>1 libro perforado</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-row-amount">5€</span>
+            <div class="impact-bar-track"><div class="impact-bar-fill" style="width:30%"></div></div>
+            <span>2-3 libros</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-row-amount">15€</span>
+            <div class="impact-bar-track"><div class="impact-bar-fill" style="width:55%"></div></div>
+            <span>7 libros al otro lado</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-row-amount">50€</span>
+            <div class="impact-bar-track"><div class="impact-bar-fill" style="width:80%"></div></div>
+            <span>Caja completa · 20 libros</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-row-amount">100€</span>
+            <div class="impact-bar-track"><div class="impact-bar-fill" style="width:100%"></div></div>
+            <span>Financia un envío completo</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial">
+        <p class="testimonial-quote">"El primer libro de economía que tuve en mis manos llegó perforado. No entendí al principio. Después lo entendí todo."</p>
+        <span class="testimonial-author">— Receptor anónimo · Caracas, Venezuela</span>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="panel-right">
+
+      <!-- PROGRESS -->
+      <div class="form-progress reveal reveal-1">
+        <div class="progress-step done" id="step1"></div>
+        <div class="progress-step active" id="step2"></div>
+        <div class="progress-step" id="step3"></div>
+      </div>
+
+      <!-- TABS -->
+      <div class="donation-tabs reveal reveal-1">
+        <button class="tab active" id="tabMoney" onclick="switchTab('money')">
+          <span class="tab-icon">○</span>
+          Donar dinero
+        </button>
+        <button class="tab" id="tabBook" onclick="switchTab('book')">
+          <span class="tab-icon">📚</span>
+          Donar libros
+        </button>
+      </div>
+
+      <!-- === MONEY FORM === -->
+      <div class="donate-money-form active" id="moneyForm">
+
+        <div class="form-section-title reveal reveal-2">¿Cuánto quieres dar?</div>
+        <p class="form-section-sub reveal reveal-2">Lo que puedas. Sin mínimos. Sin juicios.</p>
+
+        <!-- FREQUENCY -->
+        <div class="freq-toggle reveal reveal-2">
+          <button class="freq-btn active" id="freqOnce" onclick="setFreq('once')">Una vez</button>
+          <button class="freq-btn" id="freqMonthly" onclick="setFreq('monthly')">Mensual</button>
+        </div>
+
+        <!-- ANONYMOUS TOGGLE -->
+        <div class="anon-toggle-wrap reveal reveal-2" id="anonToggle" onclick="toggleAnon()">
+          <div class="anon-toggle-left">
+            <span class="anon-toggle-title">Donar anónimamente</span>
+            <span class="anon-toggle-sub" id="anonSubtext">Tu nombre no aparecerá en ningún lugar</span>
+          </div>
+          <div class="toggle-switch" id="toggleSwitch">
+            <div class="toggle-knob"></div>
+          </div>
+        </div>
+
+        <!-- ANON CODE BOX -->
+        <div class="anon-code-box" id="anonCodeBox">
+          <div class="anon-code-label">Tu código único · Solo tú lo sabrás</div>
+          <div class="anon-code-number" id="anonCodeDisplay">
+            <span class="currency">€</span><span id="codeAmount">—</span>
+          </div>
+          <p class="anon-code-desc">
+            Esta cifra exacta es tu identidad en Vacío Lleno este año.
+            Nadie más donará esta cantidad. Es tu huella invisible —
+            como el agujero del libro: no se ve, pero está ahí.
+          </p>
+        </div>
+
+        <!-- AMOUNT INPUT -->
+        <div class="amount-label reveal reveal-2">Cantidad</div>
+        <div class="amount-input-wrap reveal reveal-2">
+          <span class="amount-currency">€</span>
+          <input
+            type="number"
+            class="amount-input"
+            id="amountInput"
+            placeholder="0.00"
+            min="1" step="0.01"
+            oninput="onAmountChange(this.value)"
+          />
+        </div>
+
+        <!-- SUGGESTED AMOUNTS -->
+        <div class="suggested-amounts reveal reveal-2" id="suggestedAmts">
+          <div class="suggested-amt" onclick="selectAmount(5)">
+            5€<span class="amt-impact">2 libros</span>
+          </div>
+          <div class="suggested-amt" onclick="selectAmount(15)">
+            15€<span class="amt-impact">7 libros</span>
+          </div>
+          <div class="suggested-amt" onclick="selectAmount(30)">
+            30€<span class="amt-impact">15 libros</span>
+          </div>
+          <div class="suggested-amt" onclick="selectAmount(50)">
+            50€<span class="amt-impact">Caja entera</span>
+          </div>
+        </div>
+
+        <!-- NAME (if not anon) -->
+        <div id="nameField" class="field-group reveal reveal-3">
+          <label class="field-label" for="donorName">Tu nombre (opcional)</label>
+          <input type="text" id="donorName" class="field-input" placeholder="Como quieres que te recordemos" />
+        </div>
+
+        <div class="field-group reveal reveal-3">
+          <label class="field-label" for="donorEmail">Email (para confirmación)</label>
+          <input type="email" id="donorEmail" class="field-input" placeholder="tu@email.com" />
+        </div>
+
+        <!-- STRIPE CARD -->
+        <div class="field-group reveal reveal-3">
+          <label class="field-label">Datos de pago · Procesado por Stripe</label>
+          <div class="stripe-container" id="stripeContainer">
+            <div id="cardElement"></div>
+          </div>
+          <div class="stripe-secure">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <rect x="2" y="5" width="8" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/>
+              <path d="M4 5V3.5a2 2 0 014 0V5" stroke="currentColor" stroke-width="1.2"/>
+            </svg>
+            Pago seguro · SSL · Stripe
+          </div>
+        </div>
+
+        <div class="error-msg" id="errorMsg"></div>
+
+        <button class="btn-donate reveal reveal-3" id="donateBtn" onclick="handleDonate()">
+          <span id="donateBtnText">Completar donación</span>
+        </button>
+
+        <p style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.08em;color:rgba(245,243,238,0.2);text-align:center;margin-top:1rem;line-height:1.6;">
+          Tu donación financia libros perforados que viajan a Latinoamérica.<br/>
+          Recibirás confirmación por email.
+        </p>
+
+      </div>
+
+      <!-- === BOOK FORM === -->
+      <div class="donate-book-form" id="bookForm">
+
+        <div class="form-section-title reveal reveal-2">Dona tus libros</div>
+        <p class="form-section-sub reveal reveal-2">
+          Libros que ya leíste y que pueden cambiar la vida de alguien más.
+          Cuéntanos qué tienes.
+        </p>
+
+        <div class="field-group">
+          <label class="field-label">¿Qué tipo de libros tienes?</label>
+          <div class="book-cats">
+            <label class="book-cat"><input type="checkbox" value="economia"> Economía</label>
+            <label class="book-cat"><input type="checkbox" value="emprendimiento"> Emprendimiento</label>
+            <label class="book-cat"><input type="checkbox" value="filosofia"> Filosofía</label>
+            <label class="book-cat"><input type="checkbox" value="critico"> Pensamiento crítico</label>
+            <label class="book-cat"><input type="checkbox" value="historia"> Historia</label>
+            <label class="book-cat"><input type="checkbox" value="psicologia"> Psicología</label>
+            <label class="book-cat"><input type="checkbox" value="finanzas"> Finanzas personales</label>
+            <label class="book-cat"><input type="checkbox" value="otro"> Otros</label>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">¿Cuántos libros aproximadamente?</label>
+          <input type="number" class="field-input" placeholder="Ej: 12" min="1" id="bookCount" />
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Cuéntanos sobre los libros (opcional)</label>
+          <textarea class="field-input" rows="3" placeholder="Títulos, autores, estado de los libros..." style="resize:vertical;font-family:var(--sans);"></textarea>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Tu nombre</label>
+          <input type="text" class="field-input" placeholder="Para coordinar la recogida" />
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Email o teléfono</label>
+          <input type="text" class="field-input" placeholder="Para ponernos en contacto contigo" />
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">¿Cómo prefieres hacerlo llegar?</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;">
+            <label class="book-cat"><input type="radio" name="delivery" value="send"> Lo envío por correo</label>
+            <label class="book-cat"><input type="radio" name="delivery" value="pickup"> Preferible recogida</label>
+            <label class="book-cat"><input type="radio" name="delivery" value="dropoff"> Lo llevo yo</label>
+            <label class="book-cat"><input type="radio" name="delivery" value="talk"> Hablemos primero</label>
+          </div>
+        </div>
+
+        <button class="btn-donate" onclick="handleBookDonate()">
+          <span>Enviar mi solicitud</span>
+        </button>
+
+      </div>
+
+      <!-- SUCCESS -->
+      <div class="success-panel" id="successPanel">
+        <div class="success-hole">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <circle cx="20" cy="20" r="18" stroke="rgba(201,168,76,0.3)" stroke-width="1"/>
+            <path d="M12 20l5 5 11-11" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="success-title" id="successTitle">Gracias.</div>
+        <div class="success-code-display" id="successCode"></div>
+        <p class="success-body" id="successBody">
+          Tu donación está en camino. Guarda este código — es tuyo,
+          único en el universo de Vacío Lleno este año.
+        </p>
+        <a href="vaciolleno-home.html" class="btn-primary" style="display:inline-block;padding:1rem 2.5rem;background:var(--gold);color:var(--navy);font-family:var(--mono);font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;">
+          <span>Volver al inicio</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ============================================
+    // STATE
+    // ============================================
+    let isAnon = false;
+    let currentAmount = null;
+    let currentFreq = 'once';
+    let generatedCode = null;
+    let stripe = null;
+    let cardElement = null;
+
+    // ============================================
+    // STRIPE INIT
+    // ============================================
+    // Replace with your actual Stripe publishable key
+    const STRIPE_KEY = 'pk_test_YOUR_STRIPE_PUBLISHABLE_KEY';
+
+    try {
+      stripe = Stripe(STRIPE_KEY);
+      const elements = stripe.elements({
+        fonts: [{ cssSrc: 'https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap' }]
+      });
+
+      cardElement = elements.create('card', {
+        style: {
+          base: {
+            color: '#f5f3ee',
+            fontFamily: '"DM Mono", monospace',
+            fontSmoothing: 'antialiased',
+            fontSize: '15px',
+            '::placeholder': { color: 'rgba(245,243,238,0.2)' },
+            iconColor: 'rgba(201,168,76,0.6)'
+          },
+          invalid: { color: '#e74c3c', iconColor: '#e74c3c' }
+        }
+      });
+
+      cardElement.mount('#cardElement');
+
+      cardElement.on('focus', () => {
+        document.getElementById('stripeContainer').classList.add('focused');
+      });
+      cardElement.on('blur', () => {
+        document.getElementById('stripeContainer').classList.remove('focused');
+      });
+
+    } catch(e) {
+      // Stripe key not set — show placeholder
+      document.getElementById('cardElement').innerHTML =
+        '<div style="font-family:var(--mono);font-size:0.75rem;color:rgba(245,243,238,0.3);padding:0.5rem 0;">[ Introduce tu clave Stripe para activar pagos reales ]</div>';
+    }
+
+    // ============================================
+    // ANONYMOUS CODE GENERATOR
+    // ============================================
+    // Generates unique cents combos: e.g. 10.09, 5.07, 2.03
+    // In production this would query your database to ensure uniqueness
+    const UNIQUE_CENTS = [
+      '01','02','03','04','06','07','08','09',
+      '11','12','13','14','16','17','18','19',
+      '21','22','23','24','26','27','28','29'
+    ];
+
+    function generateAnonCode(baseAmount) {
+      if (!baseAmount || baseAmount <= 0) return null;
+      const base = Math.floor(parseFloat(baseAmount));
+      const cents = UNIQUE_CENTS[Math.floor(Math.random() * UNIQUE_CENTS.length)];
+      return `${base}.${cents}`;
+    }
+
+    // ============================================
+    // TAB SWITCHING
+    // ============================================
+    function switchTab(type) {
+      document.getElementById('tabMoney').classList.toggle('active', type === 'money');
+      document.getElementById('tabBook').classList.toggle('active', type === 'book');
+      document.getElementById('moneyForm').classList.toggle('active', type === 'money');
+      document.getElementById('bookForm').classList.toggle('active', type === 'book');
+    }
+
+    // ============================================
+    // FREQUENCY
+    // ============================================
+    function setFreq(f) {
+      currentFreq = f;
+      document.getElementById('freqOnce').classList.toggle('active', f === 'once');
+      document.getElementById('freqMonthly').classList.toggle('active', f === 'monthly');
+    }
+
+    // ============================================
+    // ANONYMOUS TOGGLE
+    // ============================================
+    function toggleAnon() {
+      isAnon = !isAnon;
+      const sw = document.getElementById('toggleSwitch');
+      const nameField = document.getElementById('nameField');
+      const codeBox = document.getElementById('anonCodeBox');
+      const anonToggle = document.getElementById('anonToggle');
+      const subtext = document.getElementById('anonSubtext');
+
+      sw.classList.toggle('on', isAnon);
+      anonToggle.classList.toggle('active', isAnon);
+      nameField.style.display = isAnon ? 'none' : 'block';
+
+      if (isAnon) {
+        subtext.textContent = 'Tu donación tendrá un código único e irrepetible';
+        codeBox.classList.add('visible');
+        if (currentAmount) {
+          generatedCode = generateAnonCode(currentAmount);
+          document.getElementById('codeAmount').textContent = generatedCode;
+        } else {
+          document.getElementById('codeAmount').textContent = '—';
+        }
+        // Also update suggested amounts to show anon versions
+        updateSuggestedForAnon();
+      } else {
+        subtext.textContent = 'Tu nombre no aparecerá en ningún lugar';
+        codeBox.classList.remove('visible');
+        resetSuggestedAmounts();
+      }
+    }
+
+    // ============================================
+    // AMOUNT HANDLING
+    // ============================================
+    function onAmountChange(val) {
+      currentAmount = parseFloat(val);
+      clearSelectedAmounts();
+
+      if (isAnon && currentAmount > 0) {
+        generatedCode = generateAnonCode(currentAmount);
+        document.getElementById('codeAmount').textContent = generatedCode;
+      }
+
+      updateImpactPreview(currentAmount);
+    }
+
+    function selectAmount(amount) {
+      document.getElementById('amountInput').value = amount;
+      currentAmount = amount;
+      clearSelectedAmounts();
+
+      const btns = document.querySelectorAll('.suggested-amt');
+      btns.forEach(btn => {
+        if (parseFloat(btn.textContent) === amount || btn.onclick?.toString().includes(amount)) {
+          btn.classList.add('selected');
+        }
+      });
+
+      if (isAnon) {
+        generatedCode = generateAnonCode(amount);
+        document.getElementById('codeAmount').textContent = generatedCode;
+      }
+
+      updateImpactPreview(amount);
+    }
+
+    function clearSelectedAmounts() {
+      document.querySelectorAll('.suggested-amt').forEach(b => b.classList.remove('selected'));
+    }
+
+    function updateSuggestedForAnon() {
+      // When anon, show unique code suggestions instead of round numbers
+      const container = document.getElementById('suggestedAmts');
+      const anonAmounts = ['5.03', '10.07', '15.09', '30.02'];
+      container.innerHTML = anonAmounts.map(a =>
+        `<div class="suggested-amt" onclick="selectAnonAmount(${a})">
+          €${a}<span class="amt-impact">Código único</span>
+        </div>`
+      ).join('');
+    }
+
+    function selectAnonAmount(amount) {
+      document.getElementById('amountInput').value = amount;
+      currentAmount = amount;
+      generatedCode = amount.toString();
+      document.getElementById('codeAmount').textContent = amount.toFixed(2);
+      clearSelectedAmounts();
+      updateImpactPreview(amount);
+    }
+
+    function resetSuggestedAmounts() {
+      const container = document.getElementById('suggestedAmts');
+      container.innerHTML = `
+        <div class="suggested-amt" onclick="selectAmount(5)">5€<span class="amt-impact">2 libros</span></div>
+        <div class="suggested-amt" onclick="selectAmount(15)">15€<span class="amt-impact">7 libros</span></div>
+        <div class="suggested-amt" onclick="selectAmount(30)">30€<span class="amt-impact">15 libros</span></div>
+        <div class="suggested-amt" onclick="selectAmount(50)">50€<span class="amt-impact">Caja entera</span></div>
+      `;
+    }
+
+    function updateImpactPreview(amount) {
+      // Highlight relevant impact row
+      const rows = document.querySelectorAll('.impact-row');
+      rows.forEach(row => row.style.opacity = '0.4');
+      if (amount >= 100) rows[4].style.opacity = '1';
+      else if (amount >= 50) rows[3].style.opacity = '1';
+      else if (amount >= 15) rows[2].style.opacity = '1';
+      else if (amount >= 5) rows[1].style.opacity = '1';
+      else if (amount >= 2) rows[0].style.opacity = '1';
+    }
+
+    // ============================================
+    // DONATE HANDLER
+    // ============================================
+    async function handleDonate() {
+      const amount = parseFloat(document.getElementById('amountInput').value);
+      const email = document.getElementById('donorEmail').value;
+      const errorEl = document.getElementById('errorMsg');
+      const btn = document.getElementById('donateBtn');
+      const btnText = document.getElementById('donateBtnText');
+
+      // Validation
+      errorEl.classList.remove('visible');
+
+      if (!amount || amount < 1) {
+        showError('Por favor introduce una cantidad válida (mínimo 1€)');
+        return;
+      }
+
+      if (!email || !email.includes('@')) {
+        showError('Por favor introduce un email válido para confirmar tu donación');
+        return;
+      }
+
+      // Loading state
+      btn.disabled = true;
+      btnText.innerHTML = '<span class="spinner"></span>Procesando...';
+
+      try {
+        // In production: call your backend to create a PaymentIntent
+        // const response = await fetch('/api/create-payment-intent', {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   body: JSON.stringify({ amount: Math.round(amount * 100), currency: 'eur', isAnon })
+        // });
+        // const { clientSecret } = await response.json();
+
+        // For demo — simulate success
+        await new Promise(resolve => setTimeout(resolve, 1800));
+
+        // If Stripe is configured:
+        // const { error } = await stripe.confirmCardPayment(clientSecret, {
+        //   payment_method: { card: cardElement }
+        // });
+        // if (error) throw new Error(error.message);
+
+        showSuccess(amount);
+
+      } catch (err) {
+        showError(err.message || 'Algo salió mal. Por favor intenta de nuevo.');
+        btn.disabled = false;
+        btnText.textContent = 'Completar donación';
+      }
+    }
+
+    function handleBookDonate() {
+      const count = document.getElementById('bookCount').value;
+      if (!count || count < 1) {
+        alert('Por favor indica cuántos libros tienes');
+        return;
+      }
+      showBookSuccess();
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('errorMsg');
+      el.textContent = msg;
+      el.classList.add('visible');
+    }
+
+    function showSuccess(amount) {
+      document.getElementById('moneyForm').style.display = 'none';
+      document.querySelector('.donation-tabs').style.display = 'none';
+      document.querySelector('.form-progress').style.display = 'none';
+
+      const panel = document.getElementById('successPanel');
+      panel.classList.add('visible');
+
+      if (isAnon && generatedCode) {
+        document.getElementById('successCode').textContent = '€' + generatedCode;
+        document.getElementById('successTitle').textContent = 'Gracias.';
+        document.getElementById('successBody').textContent =
+          `Tu código es €${generatedCode}. Nadie más donará esta cantidad este año. Es tu huella invisible en Vacío Lleno — guárdala.`;
+      } else {
+        document.getElementById('successCode').textContent = '';
+        document.getElementById('successTitle').textContent = 'Gracias.';
+        document.getElementById('successBody').textContent =
+          `Tu donación de €${parseFloat(amount).toFixed(2)} está procesada. Recibirás confirmación en tu email. Los libros ya están en camino.`;
+      }
+
+      // Update progress
+      document.getElementById('step3').classList.add('done');
+      document.getElementById('step3').classList.remove('active');
+
+      // Scroll to top of panel
+      document.querySelector('.panel-right').scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showBookSuccess() {
+      document.getElementById('bookForm').style.display = 'none';
+      document.querySelector('.donation-tabs').style.display = 'none';
+      document.querySelector('.form-progress').style.display = 'none';
+
+      const panel = document.getElementById('successPanel');
+      panel.classList.add('visible');
+      document.getElementById('successTitle').textContent = 'Recibido.';
+      document.getElementById('successCode').textContent = '';
+      document.getElementById('successBody').textContent =
+        'Nos pondremos en contacto contigo en las próximas 48 horas para coordinar la recogida. Tus libros van a cambiar vidas.';
+    }
+
+    // ============================================
+    // INIT
+    // ============================================
+    // Update progress on interaction
+    document.getElementById('amountInput').addEventListener('input', () => {
+      document.getElementById('step2').classList.add('done');
+      document.getElementById('step2').classList.remove('active');
+      document.getElementById('step3').classList.add('active');
+    });
+  </script>
+
+</body>
+</html>
