@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>El Proyecto — Vacío Lleno</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #0f1f3d;
+      --navy-mid: #1a3260;
+      --cream: #f0ece3;
+      --cream-dark: #e2ddd4;
+      --ink: #1a1a2e;
+      --gold: #b8912f;
+      --gold-light: #d4a840;
+      --red: #8b1a1a;
+      --white: #faf8f4;
+      --mono: 'DM Mono', monospace;
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* CURSOR */
+    .cursor {
+      position: fixed; width: 10px; height: 10px;
+      border-radius: 50%; background: var(--gold);
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s, width 0.2s, height 0.2s;
+      mix-blend-mode: multiply;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.5rem 4rem;
+      background: rgba(240,236,227,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(26,26,46,0.08);
+    }
+
+    .nav-logo {
+      display: flex; align-items: center; gap: 0.75rem;
+      text-decoration: none;
+    }
+    .nav-logo-text {
+      font-family: var(--serif); font-size: 1.1rem;
+      font-weight: 700; color: var(--ink);
+      letter-spacing: 0.05em;
+    }
+    .nav-logo svg { width: 32px; height: 32px; }
+
+    .nav-links {
+      display: flex; gap: 2.5rem; list-style: none;
+    }
+    .nav-links a {
+      font-family: var(--mono); font-size: 0.7rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(26,26,46,0.45); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--ink); }
+
+    .nav-cta {
+      font-family: var(--mono); font-size: 0.7rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.6rem 1.5rem;
+      background: var(--navy); color: var(--cream);
+      text-decoration: none; transition: all 0.25s;
+    }
+    .nav-cta:hover { background: var(--gold); }
+
+    /* READING PROGRESS */
+    .reading-progress {
+      position: fixed; top: 0; left: 0;
+      height: 2px; background: var(--gold);
+      z-index: 200; width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    /* HERO — EDITORIAL */
+    .hero {
+      padding: 12rem 4rem 6rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .hero-issue {
+      font-family: var(--mono); font-size: 0.65rem;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: rgba(26,26,46,0.35); margin-bottom: 3rem;
+      display: flex; align-items: center; gap: 1.5rem;
+    }
+
+    .hero-issue::before {
+      content: ''; display: block;
+      width: 50px; height: 1px;
+      background: rgba(26,26,46,0.2);
+    }
+
+    .hero-headline {
+      font-family: var(--serif);
+      font-size: clamp(3rem, 6vw, 7rem);
+      font-weight: 900; line-height: 0.95;
+      letter-spacing: -0.02em;
+      margin-bottom: 3rem;
+    }
+
+    .hero-headline .line-1 { display: block; color: var(--ink); }
+    .hero-headline .line-2 {
+      display: block; color: transparent;
+      -webkit-text-stroke: 1.5px var(--ink);
+      font-style: italic;
+    }
+    .hero-headline .line-3 { display: block; color: var(--gold); }
+
+    .hero-deck {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: start;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(26,26,46,0.12);
+    }
+
+    .hero-lede {
+      font-family: var(--serif); font-size: 1.25rem;
+      font-style: italic; line-height: 1.65;
+      color: rgba(26,26,46,0.75);
+    }
+
+    .hero-meta {
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+
+    .hero-meta-item {
+      display: flex; gap: 1rem; align-items: flex-start;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(26,26,46,0.08);
+    }
+
+    .meta-label {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(26,26,46,0.35); min-width: 80px;
+      padding-top: 0.15rem;
+    }
+
+    .meta-value {
+      font-size: 0.88rem; color: var(--ink);
+      line-height: 1.5;
+    }
+
+    /* HOLE DIVIDER */
+    .hole-divider {
+      display: flex; align-items: center;
+      gap: 3rem; padding: 5rem 0;
+      max-width: 1100px; margin: 0 auto;
+      padding-left: 4rem; padding-right: 4rem;
+    }
+
+    .hole-divider-line {
+      flex: 1; height: 1px;
+      background: rgba(26,26,46,0.12);
+    }
+
+    .hole-symbol {
+      position: relative; flex-shrink: 0;
+    }
+
+    .hole-symbol svg { display: block; }
+
+    /* ARTICLE BODY */
+    .article {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 4rem;
+    }
+
+    /* CHAPTER */
+    .chapter {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 5rem;
+      margin-bottom: 7rem;
+      align-items: start;
+    }
+
+    .chapter-sidebar {
+      position: sticky; top: 7rem;
+    }
+
+    .chapter-num {
+      font-family: var(--serif); font-size: 5rem;
+      font-weight: 900; line-height: 1;
+      color: rgba(26,26,46,0.06);
+      margin-bottom: 1rem;
+    }
+
+    .chapter-label {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 0.5rem;
+    }
+
+    .chapter-title {
+      font-family: var(--serif); font-size: 1.1rem;
+      font-weight: 700; line-height: 1.3;
+      color: var(--ink);
+    }
+
+    .chapter-body h2 {
+      font-family: var(--serif); font-size: 2rem;
+      font-weight: 700; line-height: 1.2;
+      margin-bottom: 1.5rem; color: var(--ink);
+    }
+
+    .chapter-body h3 {
+      font-family: var(--serif); font-size: 1.3rem;
+      font-weight: 700; margin: 2rem 0 1rem;
+      color: var(--ink);
+    }
+
+    .chapter-body p {
+      font-size: 1.05rem; line-height: 1.85;
+      color: rgba(26,26,46,0.7);
+      margin-bottom: 1.5rem;
+    }
+
+    .chapter-body p strong {
+      color: var(--ink); font-weight: 500;
+    }
+
+    .chapter-body p em {
+      font-style: italic; color: var(--ink);
+    }
+
+    /* PULL QUOTE */
+    .pull-quote {
+      margin: 3rem 0;
+      padding: 2.5rem;
+      background: var(--navy);
+      color: var(--cream);
+      position: relative;
+    }
+
+    .pull-quote::before {
+      content: '"';
+      position: absolute; top: -1rem; left: 2rem;
+      font-family: var(--serif); font-size: 6rem;
+      line-height: 1; color: var(--gold); opacity: 0.4;
+    }
+
+    .pull-quote-text {
+      font-family: var(--serif); font-style: italic;
+      font-size: 1.4rem; line-height: 1.5;
+      color: var(--cream); margin-bottom: 1rem;
+    }
+
+    .pull-quote-attr {
+      font-family: var(--mono); font-size: 0.62rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(240,236,227,0.35);
+    }
+
+    /* CALLOUT BOX */
+    .callout {
+      border-left: 3px solid var(--gold);
+      padding: 1.5rem 2rem;
+      background: rgba(184,145,47,0.06);
+      margin: 2rem 0;
+    }
+
+    .callout-label {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 0.75rem;
+    }
+
+    .callout p {
+      font-size: 0.95rem !important;
+      color: var(--ink) !important;
+      margin-bottom: 0 !important;
+    }
+
+    /* ABC VISUAL */
+    .abc-visual {
+      display: grid; grid-template-columns: 3fr 5fr 2fr;
+      gap: 3px; margin: 2.5rem 0; height: 80px;
+    }
+
+    .abc-bar {
+      display: flex; flex-direction: column;
+      justify-content: flex-end; overflow: hidden;
+      position: relative;
+    }
+
+    .abc-bar-fill {
+      width: 100%; transition: height 1s ease;
+    }
+
+    .abc-bar.a .abc-bar-fill { background: var(--red); height: 100%; }
+    .abc-bar.b .abc-bar-fill { background: var(--gold); height: 100%; }
+    .abc-bar.c .abc-bar-fill { background: rgba(26,26,46,0.2); height: 100%; }
+
+    .abc-bar-label {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      text-align: center; padding: 0.4rem;
+      font-family: var(--mono); font-size: 0.65rem;
+      letter-spacing: 0.1em; font-weight: 500;
+    }
+
+    .abc-bar.a .abc-bar-label { color: #fff; }
+    .abc-bar.b .abc-bar-label { color: var(--navy); }
+    .abc-bar.c .abc-bar-label { color: rgba(26,26,46,0.5); }
+
+    /* PHASES TIMELINE */
+    .phases {
+      position: relative;
+      padding-left: 2rem;
+      margin: 2rem 0;
+    }
+
+    .phases::before {
+      content: ''; position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 1px; background: rgba(26,26,46,0.1);
+    }
+
+    .phase {
+      position: relative;
+      padding: 0 0 3rem 2.5rem;
+    }
+
+    .phase::before {
+      content: ''; position: absolute;
+      left: -4px; top: 0.4rem;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--cream-dark);
+      border: 2px solid rgba(26,26,46,0.2);
+      transition: all 0.3s;
+    }
+
+    .phase:hover::before {
+      background: var(--gold);
+      border-color: var(--gold);
+      transform: scale(1.3);
+    }
+
+    .phase-header {
+      display: flex; align-items: center;
+      gap: 1rem; margin-bottom: 0.75rem;
+    }
+
+    .phase-num {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .phase-time {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.1em; color: rgba(26,26,46,0.3);
+    }
+
+    .phase-title {
+      font-family: var(--serif); font-size: 1.15rem;
+      font-weight: 700; margin-bottom: 0.5rem;
+      color: var(--ink);
+    }
+
+    .phase-desc {
+      font-size: 0.88rem; line-height: 1.7;
+      color: rgba(26,26,46,0.55);
+    }
+
+    /* CATEGORIES GRID */
+    .cats-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 2px; margin: 2rem 0;
+    }
+
+    .cat-item {
+      padding: 1.25rem 1.5rem;
+      background: rgba(26,26,46,0.03);
+      border: 1px solid rgba(26,26,46,0.06);
+      display: flex; align-items: flex-start;
+      gap: 1rem; transition: all 0.2s;
+    }
+
+    .cat-item:hover {
+      background: var(--navy);
+      border-color: var(--navy);
+    }
+
+    .cat-item:hover .cat-name,
+    .cat-item:hover .cat-desc { color: var(--cream); }
+    .cat-item:hover .cat-num { color: var(--gold); }
+
+    .cat-num {
+      font-family: var(--mono); font-size: 0.65rem;
+      color: rgba(26,26,46,0.2); min-width: 24px;
+      padding-top: 0.15rem; transition: color 0.2s;
+    }
+
+    .cat-content { flex: 1; }
+
+    .cat-name {
+      font-family: var(--serif); font-size: 0.95rem;
+      font-weight: 700; margin-bottom: 0.2rem;
+      color: var(--ink); transition: color 0.2s;
+    }
+
+    .cat-desc {
+      font-size: 0.78rem; color: rgba(26,26,46,0.4);
+      line-height: 1.4; transition: color 0.2s;
+    }
+
+    /* STAT BLOCKS */
+    .stat-blocks {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 3px; margin: 2.5rem 0;
+    }
+
+    .stat-block {
+      padding: 2rem;
+      background: var(--navy);
+      text-align: center;
+    }
+
+    .stat-block-num {
+      font-family: var(--serif); font-size: 3rem;
+      font-weight: 900; color: var(--gold);
+      line-height: 1; margin-bottom: 0.5rem;
+    }
+
+    .stat-block-label {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(240,236,227,0.35);
+    }
+
+    /* PERFORATION ANIMATION */
+    .perforation-demo {
+      position: relative; height: 200px;
+      background: var(--navy); margin: 2.5rem 0;
+      display: flex; align-items: center;
+      justify-content: center; overflow: hidden;
+    }
+
+    .perf-book {
+      width: 120px; height: 160px;
+      background: var(--navy-mid);
+      border: 1px solid rgba(240,236,227,0.1);
+      position: relative; transition: all 0.5s;
+    }
+
+    .perf-hole {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 0; height: 0;
+      border-radius: 50%;
+      background: var(--cream);
+      transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .perf-hole.punched {
+      width: 50px; height: 50px;
+    }
+
+    .perf-label {
+      position: absolute; bottom: 1.5rem;
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(240,236,227,0.3); text-align: center;
+      width: 100%;
+    }
+
+    .perf-arrow {
+      color: rgba(240,236,227,0.2);
+      font-size: 2rem; margin: 0 2rem;
+    }
+
+    .perf-books-after {
+      display: flex; gap: 0.75rem;
+    }
+
+    .perf-book-small {
+      width: 40px; height: 55px;
+      background: var(--navy-mid);
+      border: 1px solid rgba(240,236,227,0.08);
+      position: relative; display: flex;
+      align-items: center; justify-content: center;
+    }
+
+    .perf-book-small::after {
+      content: ''; width: 14px; height: 14px;
+      border-radius: 50%; background: var(--cream);
+      opacity: 0.6;
+    }
+
+    /* FINAL CTA */
+    .final-cta {
+      background: var(--navy);
+      padding: 8rem 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .final-cta::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle at 20% 50%, rgba(201,168,76,0.05) 0%, transparent 60%),
+                        radial-gradient(circle at 80% 50%, rgba(201,168,76,0.05) 0%, transparent 60%);
+    }
+
+    .final-cta-inner {
+      position: relative; z-index: 1;
+      max-width: 600px; margin: 0 auto;
+    }
+
+    .final-cta-title {
+      font-family: var(--serif); font-size: clamp(2.5rem,5vw,5rem);
+      font-weight: 900; line-height: 1; color: var(--cream);
+      margin-bottom: 1.5rem;
+    }
+
+    .final-cta-title .gold { color: var(--gold); }
+
+    .final-cta-sub {
+      font-size: 1rem; line-height: 1.7;
+      color: rgba(240,236,227,0.5); margin-bottom: 3rem;
+    }
+
+    .cta-buttons {
+      display: flex; gap: 1rem;
+      justify-content: center; flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-block; padding: 1rem 2.5rem;
+      background: var(--gold); color: var(--navy);
+      font-family: var(--mono); font-size: 0.75rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      text-decoration: none; font-weight: 500;
+      transition: all 0.25s;
+    }
+    .btn-primary:hover { background: var(--cream); }
+
+    .btn-outline {
+      display: inline-block; padding: 1rem 2.5rem;
+      border: 1px solid rgba(240,236,227,0.2);
+      color: rgba(240,236,227,0.6);
+      font-family: var(--mono); font-size: 0.75rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      text-decoration: none; transition: all 0.25s;
+    }
+    .btn-outline:hover { border-color: var(--cream); color: var(--cream); }
+
+    /* FOOTER */
+    footer {
+      background: #080f1e; padding: 3rem 4rem;
+      display: flex; align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-logo {
+      font-family: var(--serif); font-size: 1rem;
+      font-weight: 700; color: rgba(240,236,227,0.3);
+    }
+
+    .footer-copy {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.1em; color: rgba(240,236,227,0.15);
+    }
+
+    /* REVEAL ANIMATIONS */
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-left {
+      opacity: 0; transform: translateX(-20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+
+    .d1 { transition-delay: 0.1s; }
+    .d2 { transition-delay: 0.2s; }
+    .d3 { transition-delay: 0.3s; }
+    .d4 { transition-delay: 0.4s; }
+
+    /* PAGE LOAD */
+    .hero-headline > span {
+      display: block; overflow: hidden;
+    }
+    .hero-headline > span > span {
+      display: block;
+      animation: slideUp 0.9s cubic-bezier(0.22,1,0.36,1) forwards;
+      opacity: 0; transform: translateY(100%);
+    }
+    .hero-headline .line-1 span { animation-delay: 0.2s; }
+    .hero-headline .line-2 span { animation-delay: 0.4s; }
+    .hero-headline .line-3 span { animation-delay: 0.6s; }
+
+    @keyframes slideUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-issue, .hero-deck {
+      opacity: 0; animation: fadeIn 0.8s 0.8s forwards;
+    }
+
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav { padding: 1.5rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { padding: 9rem 1.5rem 4rem; }
+      .hero-deck { grid-template-columns: 1fr; gap: 2rem; }
+      .hole-divider { padding: 3rem 1.5rem; }
+      .article { padding: 0 1.5rem; }
+      .chapter { grid-template-columns: 1fr; gap: 1.5rem; }
+      .chapter-sidebar { position: relative; top: 0; }
+      .chapter-num { font-size: 3rem; }
+      .cats-grid { grid-template-columns: 1fr; }
+      .stat-blocks { grid-template-columns: 1fr; }
+      .final-cta { padding: 5rem 1.5rem; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; padding: 2rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="reading-progress" id="readingProgress"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="vaciolleno-home.html" class="nav-logo">
+      <svg viewBox="0 0 60 60" fill="none">
+        <rect x="8" y="10" width="44" height="40" rx="2" fill="#1a3260"/>
+        <circle cx="30" cy="30" r="10" fill="#0f1f3d" stroke="rgba(184,145,47,0.7)" stroke-width="1.5"/>
+      </svg>
+      <span class="nav-logo-text">VACÍO LLENO</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="vaciolleno-home.html">Inicio</a></li>
+      <li><a href="#" class="active">El Proyecto</a></li>
+      <li><a href="#">Libros</a></li>
+      <li><a href="#">Impacto</a></li>
+    </ul>
+    <a href="vaciolleno-donaciones.html" class="nav-cta">Participar</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-issue">El Proyecto · Manifiesto e Instrucciones</div>
+
+    <h1 class="hero-headline">
+      <span class="line-1"><span>Por qué un</span></span>
+      <span class="line-2"><span>agujero</span></span>
+      <span class="line-3"><span>lo cambia todo</span></span>
+    </h1>
+
+    <div class="hero-deck">
+      <p class="hero-lede">
+        Una perforación circular atraviesa las páginas de un libro.
+        No es daño. Es una declaración — este libro ya no tiene dueño,
+        solo viajeros. Y eso lo cambia absolutamente todo.
+      </p>
+      <div class="hero-meta">
+        <div class="hero-meta-item">
+          <span class="meta-label">Misión</span>
+          <span class="meta-value">Distribuir conocimiento libre en Latinoamérica a través del sistema de perforación</span>
+        </div>
+        <div class="hero-meta-item">
+          <span class="meta-label">Operación</span>
+          <span class="meta-value">España → Latinoamérica · Sistema A/B/C</span>
+        </div>
+        <div class="hero-meta-item">
+          <span class="meta-label">Alcance</span>
+          <span class="meta-value">12 países · 847 libros en circulación · ∞ ciclos</span>
+        </div>
+        <div class="hero-meta-item">
+          <span class="meta-label">Hermano</span>
+          <span class="meta-value">HOLEPUNCH · Versión en inglés · Año 2</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOLE DIVIDER -->
+  <div class="hole-divider">
+    <div class="hole-divider-line"></div>
+    <div class="hole-symbol">
+      <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+        <circle cx="40" cy="40" r="38" stroke="rgba(26,26,46,0.1)" stroke-width="1"/>
+        <circle cx="40" cy="40" r="28" stroke="rgba(26,26,46,0.08)" stroke-width="0.5"/>
+        <circle cx="40" cy="40" r="18" fill="rgba(26,26,46,0.04)" stroke="rgba(184,145,47,0.3)" stroke-width="1"/>
+        <circle cx="40" cy="40" r="4" fill="var(--gold)" opacity="0.4">
+          <animate attributeName="r" values="4;8;4" dur="3s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.4;0.1;0.4" dur="3s" repeatCount="indefinite"/>
+        </circle>
+      </svg>
+    </div>
+    <div class="hole-divider-line"></div>
+  </div>
+
+  <!-- ARTICLE -->
+  <div class="article">
+
+    <!-- CHAPTER 1: EL VACÍO -->
+    <div class="chapter">
+      <div class="chapter-sidebar reveal-left">
+        <div class="chapter-num">01</div>
+        <div class="chapter-label">El problema</div>
+        <div class="chapter-title">El vacío que no es accidente</div>
+      </div>
+      <div class="chapter-body reveal">
+        <h2>Hay libros que nunca llegan</h2>
+        <p>
+          En Latinoamérica existe un <strong>vacío diseñado.</strong>
+          No es pobreza de ideas — es arquitectura deliberada.
+          Los sistemas educativos de la región llevan décadas omitiendo
+          sistemáticamente ciertos libros: economía de libre mercado,
+          filosofía del individuo, pensamiento crítico independiente,
+          historia económica real.
+        </p>
+        <p>
+          No es que esos libros no existan. Es que <em>no llegan.</em>
+          No están en las bibliotecas escolares. No aparecen en los
+          programas universitarios. No se venden en las librerías de
+          las ciudades medianas. Y cuando existen, su precio los hace
+          inalcanzables para quien más los necesita.
+        </p>
+
+        <div class="pull-quote">
+          <p class="pull-quote-text">
+            El vacío más peligroso no es el que se ve.
+            Es el que la gente no sabe que tiene.
+          </p>
+          <span class="pull-quote-attr">— Filosofía fundacional de Vacío Lleno</span>
+        </div>
+
+        <p>
+          Vacío Lleno nació de una pregunta simple:
+          <strong>¿Qué pasaría si los libros que más necesita
+          Latinoamérica llegaran gratis, de forma masiva,
+          y no pudieran dejar de circular?</strong>
+        </p>
+
+        <div class="stat-blocks">
+          <div class="stat-block">
+            <div class="stat-block-num">10</div>
+            <div class="stat-block-label">Categorías de conocimiento sistemáticamente ausentes</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-block-num">40+</div>
+            <div class="stat-block-label">Personas que lee un libro perforado antes de desgastarse</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-block-num">∞</div>
+            <div class="stat-block-label">Ciclos de circulación posibles</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOLE DIVIDER 2 -->
+    <div class="hole-divider" style="padding-top:0;padding-bottom:0;margin-bottom:7rem;">
+      <div class="hole-divider-line"></div>
+      <div class="hole-symbol">
+        <svg width="50" height="50" viewBox="0 0 50 50" fill="none">
+          <circle cx="25" cy="25" r="23" stroke="rgba(26,26,46,0.08)" stroke-width="1"/>
+          <circle cx="25" cy="25" r="12" fill="none" stroke="rgba(184,145,47,0.2)" stroke-width="0.5"/>
+        </svg>
+      </div>
+      <div class="hole-divider-line"></div>
+    </div>
+
+    <!-- CHAPTER 2: LA PERFORACIÓN -->
+    <div class="chapter">
+      <div class="chapter-sidebar reveal-left d1">
+        <div class="chapter-num">02</div>
+        <div class="chapter-label">La solución</div>
+        <div class="chapter-title">Por qué perforar un libro es liberarlo</div>
+      </div>
+      <div class="chapter-body reveal d1">
+        <h2>Una perforación que lo transforma todo</h2>
+        <p>
+          Un libro en una repisa impacta a <strong>una persona</strong>
+          en toda su vida útil. Ese mismo libro, una vez perforado,
+          <strong>no puede venderse.</strong> Solo puede regalarse.
+          Y eso lo convierte en algo completamente distinto.
+        </p>
+
+        <!-- DEMO VISUAL -->
+        <div class="perforation-demo" id="perfDemo">
+          <div class="perf-book" id="perfBook">
+            <div class="perf-hole" id="perfHole"></div>
+          </div>
+          <div class="perf-arrow">→</div>
+          <div class="perf-books-after">
+            <div class="perf-book-small"></div>
+            <div class="perf-book-small" style="opacity:0.8"></div>
+            <div class="perf-book-small" style="opacity:0.6"></div>
+            <div class="perf-book-small" style="opacity:0.4"></div>
+            <div class="perf-book-small" style="opacity:0.3"></div>
+          </div>
+          <div class="perf-label">1 libro perforado → 40+ lectores</div>
+        </div>
+
+        <p>
+          El agujero hace dos cosas simultáneamente:
+          <em>elimina el libro del sistema de propiedad capitalista</em>
+          y lo convierte en bien común permanente. Nadie puede comprarlo.
+          Nadie puede venderlo. Solo puede pasarlo hacia adelante.
+        </p>
+
+        <div class="callout">
+          <div class="callout-label">El simbolismo</div>
+          <p>
+            El agujero <em>es</em> el vacío educativo que deja el sistema.
+            El libro <em>es</em> el conocimiento que lo llena.
+            Juntos, son Vacío Lleno: el vacío que se convierte en lleno
+            a través de cada par de manos que lo sostiene.
+          </p>
+        </div>
+
+        <p>
+          La perforación es un acto de <strong>resistencia en cinco dimensiones:</strong>
+          económica (quiebra el modelo de propiedad informacional),
+          filosófica (el conocimiento no puede ser propiedad),
+          psicológica (crea ciclos de generosidad en lugar de acumulación),
+          social (construye redes de circulación comunitaria),
+          y política (desafía a sistemas que dependen de la ignorancia organizada).
+        </p>
+      </div>
+    </div>
+
+    <!-- CHAPTER 3: EL SISTEMA -->
+    <div class="chapter">
+      <div class="chapter-sidebar reveal-left d2">
+        <div class="chapter-num">03</div>
+        <div class="chapter-label">El mecanismo</div>
+        <div class="chapter-title">Cómo se sostiene todo</div>
+      </div>
+      <div class="chapter-body reveal d2">
+        <h2>El sistema A/B/C: nada se desperdicia</h2>
+        <p>
+          El gran reto de cualquier proyecto así es la sostenibilidad.
+          Los libros cuestan dinero. Los envíos internacionales cuestan
+          más. Vacío Lleno resuelve esto con una lógica elegante:
+          <strong>los propios libros financian su distribución.</strong>
+        </p>
+
+        <!-- ABC VISUAL -->
+        <div class="abc-visual">
+          <div class="abc-bar a">
+            <div class="abc-bar-fill"></div>
+            <div class="abc-bar-label">30% · Cat. A</div>
+          </div>
+          <div class="abc-bar b">
+            <div class="abc-bar-fill"></div>
+            <div class="abc-bar-label">50% · Cat. B</div>
+          </div>
+          <div class="abc-bar c">
+            <div class="abc-bar-fill"></div>
+            <div class="abc-bar-label">20% · Cat. C</div>
+          </div>
+        </div>
+
+        <h3>Categoría A — Los mejores (30%)</h3>
+        <p>
+          Los libros de mayor impacto potencial. Los que más falta hacen
+          en Latinoamérica. Se perforan con el símbolo de Vacío Lleno
+          y se distribuyen <strong>completamente gratis.</strong>
+          No tienen precio. Solo tienen destino.
+        </p>
+
+        <h3>Categoría B — El motor (50%)</h3>
+        <p>
+          Buenos libros que no cumplen los criterios de Categoría A
+          — pueden estar repetidos, ser de categorías menos urgentes,
+          o tener un estado físico que no justifica el envío internacional.
+          Se venden en nuestra tienda a <strong>precios justos.</strong>
+          Sus ingresos financian el envío de los libros Categoría A.
+          Son el corazón económico del proyecto.
+        </p>
+
+        <h3>Categoría C — Lo local (20%)</h3>
+        <p>
+          Van a bibliotecas comunitarias, escuelas y centros culturales
+          del entorno inmediato. El impacto empieza en casa.
+        </p>
+
+        <div class="callout">
+          <div class="callout-label">La frase que lo resume</div>
+          <p>
+            "Cada libro donado tiene dos vidas: o se perfora y viaja gratis
+            al otro lado del mundo llenando vacíos, o se vende para
+            financiar ese viaje. <strong>Nada se desperdicia.
+            Todo sirve al conocimiento.</strong>"
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 4: LAS CATEGORÍAS -->
+    <div class="chapter">
+      <div class="chapter-sidebar reveal-left d3">
+        <div class="chapter-num">04</div>
+        <div class="chapter-label">Los libros</div>
+        <div class="chapter-title">Qué conocimiento necesita Latinoamérica</div>
+      </div>
+      <div class="chapter-body reveal d3">
+        <h2>Diez vacíos que necesitamos llenar</h2>
+        <p>
+          No distribuimos cualquier libro. Distribuimos los libros que
+          los sistemas educativos de Latinoamérica <strong>deciden
+          no enseñar.</strong> Las diez categorías de Vacío Lleno son
+          diez tipos de conocimiento que forman personas libres,
+          críticas y capaces de transformar su entorno.
+        </p>
+
+        <div class="cats-grid">
+          <div class="cat-item">
+            <span class="cat-num">01</span>
+            <div class="cat-content">
+              <div class="cat-name">Economía & Emprendimiento</div>
+              <div class="cat-desc">Libre mercado, empresa, creación de valor</div>
+            </div>
+          </div>
+          <div class="cat-item">
+            <span class="cat-num">02</span>
+            <div class="cat-content">
+              <div class="cat-name">Pensamiento Crítico</div>
+              <div class="cat-desc">Lógica, argumentación, epistemología</div>
+            </div>
+          </div>
+          <div class="cat-item">
+            <span class="cat-num">03</span>
+            <div class="cat-content">
+              <div class="cat-name">Filosofía & Libertad</div>
+              <div class="cat-desc">Individuo, derechos, filosofía liberal</div>
+            </div>
+          </div>
+          <div class="cat-item">
+            <span class="cat-num">04</span>
+            <div class="cat-content">
+              <div class="cat-name">Historia Económica</div>
+              <div class="cat-desc">Por qué prosperan y fracasan los países</div>
+            </div>
+          </div>
+          <div class="cat-item">
+            <span class="cat-num">05</span>
+            <div class="cat-content">
+              <div class="cat-name">Finanzas Personales</div>
+              <div class="cat-desc">Herramientas que el sistema no enseña</div>
+            </div>
+          </div>
+          <div class="cat-item">
+            <span class="cat-num">06</span>
+            <div class="cat-content">
+              <div class="cat-name">Psicología & Desarrollo</div>
+              <div class="cat-desc">Autonomía, mentalidad, comportamiento</div>
+            </div>
+          </div>
+          <div class="cat-item">
+            <span class="cat-num">07</span>
+            <div class="cat-content">
+              <div class="cat-name">Biografías Inspiradoras</div>
+              <div class="cat-desc">Personas que cambiaron el mundo desde cero</div>
+            </div>
+          </div>
+          <div class="cat-item">
+            <span class="cat-num">08</span>
+            <div class="cat-content">
+              <div class="cat-name">Liderazgo & Comunicación</div>
+              <div class="cat-desc">Influencia, persuasión, liderazgo ético</div>
+            </div>
+          </div>
+          <div class="cat-item">
+            <span class="cat-num">09</span>
+            <div class="cat-content">
+              <div class="cat-name">Tecnología & Innovación</div>
+              <div class="cat-desc">El futuro que ya está pasando</div>
+            </div>
+          </div>
+          <div class="cat-item">
+            <span class="cat-num">10</span>
+            <div class="cat-content">
+              <div class="cat-name">Ciencia & Método</div>
+              <div class="cat-desc">Pensamiento científico, evidencia, razón</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 5: LAS FASES -->
+    <div class="chapter">
+      <div class="chapter-sidebar reveal-left">
+        <div class="chapter-num">05</div>
+        <div class="chapter-label">La hoja de ruta</div>
+        <div class="chapter-title">De 10 libros al mundo</div>
+      </div>
+      <div class="chapter-body reveal">
+        <h2>Empezar pequeño. Escalar con propósito.</h2>
+        <p>
+          Vacío Lleno no nació con infraestructura. Nació con libros
+          en casa y la convicción de que <strong>el primer paso
+          es simplemente el primer paso.</strong> Así es el camino:
+        </p>
+
+        <div class="phases">
+          <div class="phase">
+            <div class="phase-header">
+              <span class="phase-num">Fase 0</span>
+              <span class="phase-time">Ahora mismo</span>
+            </div>
+            <div class="phase-title">Los primeros 10 libros</div>
+            <p class="phase-desc">Libros personales. Envíos desde casa. Contactos directos en Latinoamérica. Aprender el proceso antes de escalarlo. La insurgencia empieza en el salón.</p>
+          </div>
+          <div class="phase">
+            <div class="phase-header">
+              <span class="phase-num">Fase 1</span>
+              <span class="phase-time">2–4 meses</span>
+            </div>
+            <div class="phase-title">Validación con 100 libros</div>
+            <p class="phase-desc">Primera red de voluntarios. Primeras donaciones de libros externas. Procesar el sistema A/B/C por primera vez. Confirmar que el modelo funciona.</p>
+          </div>
+          <div class="phase">
+            <div class="phase-header">
+              <span class="phase-num">Fase 2</span>
+              <span class="phase-time">5–8 meses</span>
+            </div>
+            <div class="phase-title">Crecimiento estratégico</div>
+            <p class="phase-desc">Primeras alianzas con ONGs latinoamericanas. Campaña de crowdfunding. Voluntarios mayores como núcleo operativo. Web completa activa.</p>
+          </div>
+          <div class="phase">
+            <div class="phase-header">
+              <span class="phase-num">Fase 3</span>
+              <span class="phase-time">9–12 meses</span>
+            </div>
+            <div class="phase-title">Operación estructurada</div>
+            <p class="phase-desc">Contacto con organizaciones grandes. Centros operativos físicos. Sistema de rastreo de libros en circulación. Impacto medible y documentado.</p>
+          </div>
+          <div class="phase">
+            <div class="phase-header">
+              <span class="phase-num">Fase 4</span>
+              <span class="phase-time">Año 2</span>
+            </div>
+            <div class="phase-title">HOLEPUNCH — Versión en inglés</div>
+            <p class="phase-desc">La misma misión, distinta cultura. Libros en inglés, mercado angloparlante, mensajes adaptados. Dos marcas hermanas, una sola insurgencia.</p>
+          </div>
+          <div class="phase">
+            <div class="phase-header">
+              <span class="phase-num">Fase 5</span>
+              <span class="phase-time">Año 3+</span>
+            </div>
+            <div class="phase-title">Red global sostenible</div>
+            <p class="phase-desc">Modelo autónomo. Sponsorships corporativos. Red de distribución en 30+ países. Miles de libros en circulación perpetua.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /article -->
+
+  <!-- FINAL CTA -->
+  <section class="final-cta">
+    <div class="final-cta-inner">
+      <h2 class="final-cta-title">
+        Ahora que<br/>
+        lo entiendes,<br/>
+        <span class="gold">únete.</span>
+      </h2>
+      <p class="final-cta-sub">
+        Hay tres formas de ser parte de la insurgencia intelectual.
+        Todas son igual de poderosas.
+      </p>
+      <div class="cta-buttons">
+        <a href="vaciolleno-donaciones.html" class="btn-primary">Donar ahora</a>
+        <a href="#" class="btn-outline">Ser voluntario</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-logo">VACÍO LLENO</span>
+    <span class="footer-copy">© 2025 · Todos los libros circulan libres · vaciolleno.org</span>
+  </footer>
+
+  <script>
+    // CURSOR
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+
+    // READING PROGRESS
+    window.addEventListener('scroll', () => {
+      const doc = document.documentElement;
+      const scrollTop = doc.scrollTop || document.body.scrollTop;
+      const scrollHeight = doc.scrollHeight - doc.clientHeight;
+      const pct = (scrollTop / scrollHeight) * 100;
+      document.getElementById('readingProgress').style.width = pct + '%';
+    });
+
+    // SCROLL REVEAL
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) e.target.classList.add('visible');
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal, .reveal-left').forEach(el => observer.observe(el));
+
+    // PERFORATION DEMO
+    const perfObserver = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          setTimeout(() => {
+            document.getElementById('perfHole').classList.add('punched');
+          }, 400);
+          perfObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    const perfDemo = document.getElementById('perfDemo');
+    if (perfDemo) perfObserver.observe(perfDemo);
+  </script>
+
+</body>
+</html>
