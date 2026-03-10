@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Libros — Vacío Lleno</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #0f1f3d;
+      --navy-mid: #1a3260;
+      --cream: #f4f0e6;
+      --cream-dark: #e8e2d6;
+      --ink: #1c1a14;
+      --ink-light: rgba(28,26,20,0.55);
+      --gold: #c9a84c;
+      --gold-deep: #9a7a2e;
+      --red: #8b1a1a;
+      --white: #fdf9f2;
+      --mono: 'DM Mono', monospace;
+      --serif: 'Libre Baskerville', Georgia, serif;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.5rem 4rem;
+      background: rgba(244,240,230,0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(28,26,20,0.08);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 0.75rem;
+      text-decoration: none;
+    }
+    .nav-logo-text {
+      font-family: var(--serif); font-size: 1rem;
+      font-weight: 700; color: var(--ink); letter-spacing: 0.04em;
+    }
+    .nav-logo svg { width: 30px; height: 30px; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-family: var(--mono); font-size: 0.68rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--ink-light); text-decoration: none; transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--ink); }
+    .nav-cta {
+      font-family: var(--mono); font-size: 0.68rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.6rem 1.5rem; background: var(--navy);
+      color: var(--cream); text-decoration: none; transition: all 0.25s;
+    }
+    .nav-cta:hover { background: var(--gold); color: var(--navy); }
+
+    /* HERO — LIBRARY CARD STYLE */
+    .hero {
+      padding: 9rem 4rem 5rem;
+      background: var(--navy);
+      position: relative; overflow: hidden;
+    }
+
+    /* Background pattern — card catalog grid */
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* Decorative vertical lines — library shelves */
+    .hero::after {
+      content: '';
+      position: absolute; top: 0; right: 0;
+      width: 40%;  height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(201,168,76,0.03));
+    }
+
+    .hero-inner {
+      max-width: 1200px; margin: 0 auto;
+      position: relative; z-index: 1;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 6rem; align-items: center;
+    }
+
+    .hero-left {}
+
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 2rem;
+      border: 1px solid rgba(201,168,76,0.2);
+      padding: 0.4rem 0.85rem;
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(2.5rem, 4.5vw, 5rem);
+      font-weight: 700; line-height: 1.05;
+      color: var(--white); margin-bottom: 2rem;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(245,243,238,0.6);
+    }
+
+    .hero-body {
+      font-size: 1rem; line-height: 1.8;
+      color: rgba(250,248,244,0.5); margin-bottom: 3rem;
+    }
+    .hero-body strong { color: rgba(250,248,244,0.85); font-weight: 500; }
+
+    /* LIBRARY CARD VISUAL */
+    .library-card-visual {
+      position: relative;
+    }
+
+    .lib-card {
+      background: var(--white);
+      padding: 2rem;
+      position: relative;
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.3);
+      transform: rotate(-1.5deg);
+      transition: transform 0.3s;
+    }
+
+    .lib-card:hover { transform: rotate(0deg); }
+
+    .lib-card-header {
+      display: flex; justify-content: space-between;
+      align-items: flex-start; margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .lib-card-title {
+      font-family: var(--serif); font-size: 0.8rem;
+      font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--ink);
+    }
+
+    .lib-card-num {
+      font-family: var(--mono); font-size: 0.65rem;
+      color: var(--ink-light);
+    }
+
+    .lib-card-field {
+      display: grid; grid-template-columns: 80px 1fr;
+      gap: 0.5rem; margin-bottom: 0.6rem;
+      font-size: 0.78rem;
+    }
+
+    .lib-card-field-label {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--ink-light); padding-top: 0.1rem;
+    }
+
+    .lib-card-field-value {
+      color: var(--ink); border-bottom: 1px solid rgba(28,26,20,0.15);
+      padding-bottom: 0.3rem;
+    }
+
+    .lib-card-holes {
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 30px;
+      display: flex; flex-direction: column;
+      justify-content: space-evenly; align-items: center;
+      background: rgba(28,26,20,0.04);
+      border-right: 1px solid rgba(28,26,20,0.08);
+    }
+
+    .lib-hole {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--cream);
+      border: 1px solid rgba(28,26,20,0.1);
+    }
+
+    .lib-card-inner { padding-left: 0.5rem; }
+
+    /* SEARCH & FILTER */
+    .search-section {
+      background: var(--cream-dark);
+      padding: 2.5rem 4rem;
+      border-bottom: 1px solid rgba(28,26,20,0.08);
+      position: sticky; top: 5rem; z-index: 50;
+    }
+
+    .search-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; gap: 1rem; align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      flex: 1; min-width: 200px;
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute; left: 1rem; top: 50%;
+      transform: translateY(-50%);
+      color: var(--ink-light); pointer-events: none;
+      font-size: 0.9rem;
+    }
+
+    .search-input {
+      width: 100%; padding: 0.85rem 1rem 0.85rem 2.5rem;
+      background: var(--white);
+      border: 1px solid rgba(28,26,20,0.1);
+      font-family: var(--sans); font-size: 0.9rem;
+      color: var(--ink); outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-input:focus { border-color: var(--gold); }
+    .search-input::placeholder { color: var(--ink-light); font-size: 0.85rem; }
+
+    .filter-btns {
+      display: flex; gap: 0.4rem; flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 0.6rem 1rem;
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      background: transparent;
+      border: 1px solid rgba(28,26,20,0.15);
+      color: var(--ink-light); cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-btn:hover { border-color: var(--ink); color: var(--ink); }
+    .filter-btn.active {
+      background: var(--navy); border-color: var(--navy);
+      color: var(--white);
+    }
+
+    .results-count {
+      font-family: var(--mono); font-size: 0.62rem;
+      letter-spacing: 0.1em; color: var(--ink-light);
+      white-space: nowrap;
+    }
+
+    /* CATEGORIES GRID */
+    .catalog {
+      max-width: 1200px; margin: 0 auto;
+      padding: 5rem 4rem;
+    }
+
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2px;
+    }
+
+    /* CATEGORY CARD */
+    .cat-card {
+      background: var(--white);
+      padding: 3rem 2.5rem;
+      position: relative; overflow: hidden;
+      transition: all 0.3s; cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .cat-card:hover {
+      border-color: rgba(201,168,76,0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 40px rgba(28,26,20,0.08);
+      z-index: 1;
+    }
+
+    /* Color accent per category */
+    .cat-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 4px; height: 100%;
+      background: var(--cat-color, var(--gold));
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform 0.3s ease;
+    }
+    .cat-card:hover::before { transform: scaleY(1); }
+
+    .cat-card-top {
+      display: flex; justify-content: space-between;
+      align-items: flex-start; margin-bottom: 2rem;
+    }
+
+    .cat-number {
+      font-family: var(--mono); font-size: 0.62rem;
+      letter-spacing: 0.18em; color: var(--ink-light);
+    }
+
+    .cat-urgency {
+      font-family: var(--mono); font-size: 0.55rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0.25rem 0.6rem;
+    }
+
+    .urgency-critical {
+      background: rgba(139,26,26,0.08);
+      color: var(--red); border: 1px solid rgba(139,26,26,0.2);
+    }
+    .urgency-high {
+      background: rgba(201,168,76,0.1);
+      color: var(--gold-deep); border: 1px solid rgba(201,168,76,0.25);
+    }
+    .urgency-medium {
+      background: rgba(28,26,20,0.05);
+      color: var(--ink-light); border: 1px solid rgba(28,26,20,0.1);
+    }
+
+    .cat-icon {
+      font-size: 2.5rem; margin-bottom: 1.25rem; display: block;
+    }
+
+    .cat-name {
+      font-family: var(--serif); font-size: 1.5rem;
+      font-weight: 700; line-height: 1.2;
+      color: var(--ink); margin-bottom: 0.5rem;
+    }
+
+    .cat-tagline {
+      font-family: var(--serif); font-style: italic;
+      font-size: 0.88rem; color: var(--ink-light);
+      margin-bottom: 1.25rem; line-height: 1.5;
+    }
+
+    .cat-desc {
+      font-size: 0.85rem; line-height: 1.7;
+      color: var(--ink-light); margin-bottom: 1.75rem;
+    }
+
+    /* BOOK EXAMPLES */
+    .cat-books {
+      display: flex; flex-direction: column; gap: 0.4rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .cat-book {
+      display: flex; gap: 0.75rem; align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px dashed rgba(28,26,20,0.08);
+      font-size: 0.78rem;
+    }
+
+    .cat-book:last-child { border-bottom: none; }
+
+    .cat-book-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--cat-color, var(--gold));
+      flex-shrink: 0;
+    }
+
+    .cat-book-title {
+      color: var(--ink); font-weight: 400;
+    }
+
+    .cat-book-author {
+      color: var(--ink-light); margin-left: auto;
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.05em; flex-shrink: 0;
+    }
+
+    .cat-footer {
+      display: flex; justify-content: space-between;
+      align-items: center;
+      padding-top: 1.25rem;
+      border-top: 1px solid rgba(28,26,20,0.06);
+    }
+
+    .cat-donate-link {
+      font-family: var(--mono); font-size: 0.62rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--gold-deep); text-decoration: none;
+      display: flex; align-items: center; gap: 0.4rem;
+      transition: gap 0.2s;
+    }
+    .cat-donate-link:hover { gap: 0.7rem; }
+    .cat-donate-link::after { content: '→'; }
+
+    .cat-stat {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.08em; color: var(--ink-light);
+    }
+
+    /* DONATE BOOKS CTA */
+    .donate-cta {
+      background: var(--navy);
+      padding: 7rem 4rem;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+
+    .donate-cta::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 40px,
+        rgba(201,168,76,0.02) 40px,
+        rgba(201,168,76,0.02) 41px
+      );
+    }
+
+    .donate-cta-inner {
+      position: relative; z-index: 1;
+      max-width: 700px; margin: 0 auto;
+    }
+
+    .donate-cta-eyebrow {
+      font-family: var(--mono); font-size: 0.62rem;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1.5rem;
+    }
+
+    .donate-cta-title {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 4vw, 4rem);
+      font-weight: 700; line-height: 1.1;
+      color: var(--white); margin-bottom: 1.5rem;
+    }
+
+    .donate-cta-body {
+      font-size: 1rem; line-height: 1.75;
+      color: rgba(250,248,244,0.45); margin-bottom: 3rem;
+    }
+
+    .cta-cards {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 2px; margin-bottom: 3rem;
+    }
+
+    .cta-card {
+      padding: 1.75rem 1.5rem;
+      background: rgba(255,255,255,0.04);
+      text-align: left;
+      transition: background 0.3s;
+    }
+    .cta-card:hover { background: rgba(255,255,255,0.08); }
+
+    .cta-card-icon { font-size: 1.5rem; margin-bottom: 0.75rem; display: block; }
+    .cta-card-title {
+      font-family: var(--serif); font-size: 1rem;
+      font-weight: 700; color: var(--white); margin-bottom: 0.5rem;
+    }
+    .cta-card-desc {
+      font-size: 0.78rem; line-height: 1.6;
+      color: rgba(250,248,244,0.35);
+    }
+
+    .btn-primary {
+      display: inline-block; padding: 1rem 2.5rem;
+      background: var(--gold); color: var(--navy);
+      font-family: var(--mono); font-size: 0.75rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      text-decoration: none; font-weight: 500;
+      transition: all 0.25s; margin: 0 0.5rem;
+    }
+    .btn-primary:hover { background: var(--white); }
+
+    .btn-outline {
+      display: inline-block; padding: 1rem 2.5rem;
+      border: 1px solid rgba(250,248,244,0.2);
+      color: rgba(250,248,244,0.6);
+      font-family: var(--mono); font-size: 0.75rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      text-decoration: none; transition: all 0.25s;
+      margin: 0 0.5rem;
+    }
+    .btn-outline:hover { border-color: var(--white); color: var(--white); }
+
+    /* NO RESULTS */
+    .no-results {
+      display: none; text-align: center;
+      padding: 5rem 2rem; grid-column: 1/-1;
+    }
+    .no-results.visible { display: block; }
+    .no-results-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .no-results-text {
+      font-family: var(--serif); font-size: 1.2rem;
+      color: var(--ink-light);
+    }
+
+    /* FOOTER */
+    footer {
+      background: #080f1e; padding: 3rem 4rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-logo {
+      font-family: var(--serif); font-size: 1rem;
+      font-weight: 700; color: rgba(240,236,227,0.25);
+    }
+    .footer-copy {
+      font-family: var(--mono); font-size: 0.58rem;
+      letter-spacing: 0.1em; color: rgba(240,236,227,0.12);
+    }
+
+    /* REVEAL */
+    .reveal {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* LOAD ANIM */
+    .hero-left > * {
+      opacity: 0; transform: translateY(16px);
+      animation: fadeUp 0.7s forwards;
+    }
+    .hero-left > *:nth-child(1) { animation-delay: 0.1s; }
+    .hero-left > *:nth-child(2) { animation-delay: 0.25s; }
+    .hero-left > *:nth-child(3) { animation-delay: 0.4s; }
+    .library-card-visual {
+      opacity: 0; animation: fadeIn 0.9s 0.5s forwards;
+    }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    /* HIDDEN CLASS */
+    .cat-card.hidden { display: none; }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav { padding: 1.5rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { padding: 7rem 1.5rem 4rem; }
+      .hero-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .library-card-visual { display: none; }
+      .search-section { padding: 1.5rem; top: 5rem; }
+      .search-inner { flex-direction: column; align-items: stretch; }
+      .filter-btns { overflow-x: auto; flex-wrap: nowrap; }
+      .catalog { padding: 3rem 1.5rem; }
+      .catalog-grid { grid-template-columns: 1fr; }
+      .donate-cta { padding: 5rem 1.5rem; }
+      .cta-cards { grid-template-columns: 1fr; }
+      footer { padding: 2rem 1.5rem; flex-direction: column; gap: 1rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="vaciolleno-home.html" class="nav-logo">
+      <svg viewBox="0 0 60 60" fill="none">
+        <rect x="8" y="10" width="44" height="40" rx="2" fill="#1a3260"/>
+        <circle cx="30" cy="30" r="10" fill="#0f1f3d" stroke="rgba(201,168,76,0.6)" stroke-width="1.5"/>
+      </svg>
+      <span class="nav-logo-text">VACÍO LLENO</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="vaciolleno-home.html">Inicio</a></li>
+      <li><a href="vaciolleno-proyecto.html">El Proyecto</a></li>
+      <li><a href="vaciolleno-voluntarios.html">Voluntarios</a></li>
+      <li><a href="#" class="active">Libros</a></li>
+    </ul>
+    <a href="vaciolleno-donaciones.html" class="nav-cta">Donar</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-left">
+        <div class="hero-tag">Catálogo · 10 categorías prioritarias</div>
+        <h1 class="hero-title">
+          Los libros que<br/>
+          <em>nadie</em><br/>
+          te enseñó
+        </h1>
+        <p class="hero-body">
+          Diez categorías de conocimiento que los sistemas educativos
+          de Latinoamérica <strong>deciden no incluir.</strong>
+          No por olvido — por diseño. Estos son los libros que
+          Vacío Lleno pone en circulación perpetua.
+        </p>
+      </div>
+
+      <!-- LIBRARY CARD VISUAL -->
+      <div class="library-card-visual">
+        <div class="lib-card">
+          <div class="lib-card-holes">
+            <div class="lib-hole"></div>
+            <div class="lib-hole"></div>
+            <div class="lib-hole"></div>
+          </div>
+          <div class="lib-card-inner">
+            <div class="lib-card-header">
+              <span class="lib-card-title">Ficha de Catalogación</span>
+              <span class="lib-card-num">VL-2025-0847</span>
+            </div>
+            <div class="lib-card-field">
+              <span class="lib-card-field-label">Autor</span>
+              <span class="lib-card-field-value">Hazlitt, Henry</span>
+            </div>
+            <div class="lib-card-field">
+              <span class="lib-card-field-label">Título</span>
+              <span class="lib-card-field-value">Economía en una lección</span>
+            </div>
+            <div class="lib-card-field">
+              <span class="lib-card-field-label">Categoría</span>
+              <span class="lib-card-field-value">A — Distribución libre</span>
+            </div>
+            <div class="lib-card-field">
+              <span class="lib-card-field-label">Destino</span>
+              <span class="lib-card-field-value">Caracas, Venezuela ●</span>
+            </div>
+            <div class="lib-card-field">
+              <span class="lib-card-field-label">Estado</span>
+              <span class="lib-card-field-value" style="color:#27ae60;">● Perforado · En tránsito</span>
+            </div>
+            <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px dashed rgba(28,26,20,0.12);">
+              <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.1em;color:var(--ink-light);margin-bottom:0.5rem;">REGISTRO DE LECTURA</div>
+              <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                <span style="width:28px;height:12px;background:rgba(28,26,20,0.08);border-radius:2px;"></span>
+                <span style="width:28px;height:12px;background:rgba(28,26,20,0.08);border-radius:2px;"></span>
+                <span style="width:28px;height:12px;background:rgba(28,26,20,0.08);border-radius:2px;"></span>
+                <span style="width:28px;height:12px;background:rgba(201,168,76,0.4);border-radius:2px;"></span>
+                <span style="width:28px;height:12px;background:rgba(28,26,20,0.04);border:1px dashed rgba(28,26,20,0.1);border-radius:2px;"></span>
+                <span style="width:28px;height:12px;background:rgba(28,26,20,0.04);border:1px dashed rgba(28,26,20,0.1);border-radius:2px;"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEARCH & FILTERS -->
+  <div class="search-section">
+    <div class="search-inner">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input
+          type="text"
+          class="search-input"
+          id="searchInput"
+          placeholder="Buscar categoría o libro..."
+          oninput="filterCatalog()"
+        />
+      </div>
+      <div class="filter-btns">
+        <button class="filter-btn active" onclick="filterByTag(this,'all')">Todas</button>
+        <button class="filter-btn" onclick="filterByTag(this,'urgente')">🔴 Urgentes</button>
+        <button class="filter-btn" onclick="filterByTag(this,'economia')">Economía</button>
+        <button class="filter-btn" onclick="filterByTag(this,'filosofia')">Filosofía</button>
+        <button class="filter-btn" onclick="filterByTag(this,'practica')">Prácticas</button>
+      </div>
+      <span class="results-count" id="resultsCount">10 categorías</span>
+    </div>
+  </div>
+
+  <!-- CATALOG -->
+  <div class="catalog">
+    <div class="catalog-grid" id="catalogGrid">
+
+      <!-- CAT 1 -->
+      <div class="cat-card reveal" data-tags="economia urgente" style="--cat-color:#8b1a1a;">
+        <div class="cat-card-top">
+          <span class="cat-number">01 · ECONOMÍA</span>
+          <span class="cat-urgency urgency-critical">Urgente</span>
+        </div>
+        <span class="cat-icon">📊</span>
+        <div class="cat-name">Economía & Emprendimiento</div>
+        <div class="cat-tagline">"Lo que tu escuela nunca quiso que entendieras sobre el dinero."</div>
+        <p class="cat-desc">
+          El conocimiento que separa a quien entiende cómo funciona realmente
+          el mundo de quien solo lo padece. Libre mercado, creación de valor,
+          empresa, inversión — las herramientas que los sistemas colectivistas
+          prefieren que no existan en las manos del ciudadano común.
+        </p>
+        <div class="cat-books">
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">Economía en una lección</span>
+            <span class="cat-book-author">Hazlitt</span>
+          </div>
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">Padre Rico, Padre Pobre</span>
+            <span class="cat-book-author">Kiyosaki</span>
+          </div>
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">Por qué fracasan los países</span>
+            <span class="cat-book-author">Acemoglu</span>
+          </div>
+        </div>
+        <div class="cat-footer">
+          <a href="vaciolleno-donaciones.html" class="cat-donate-link">Donar libros de esta categoría</a>
+          <span class="cat-stat">127 en circulación</span>
+        </div>
+      </div>
+
+      <!-- CAT 2 -->
+      <div class="cat-card reveal" data-tags="filosofia urgente" style="--cat-color:#c9a84c;">
+        <div class="cat-card-top">
+          <span class="cat-number">02 · FILOSOFÍA</span>
+          <span class="cat-urgency urgency-critical">Urgente</span>
+        </div>
+        <span class="cat-icon">🏛️</span>
+        <div class="cat-name">Pensamiento Crítico & Filosofía</div>
+        <div class="cat-tagline">"Pensar por uno mismo es el acto más subversivo que existe."</div>
+        <p class="cat-desc">
+          Lógica, epistemología, argumentación. Los sistemas de pensamiento
+          que permiten cuestionar narrativas impuestas y construir razonamientos
+          propios. Filosofía liberal, del individuo, de la libertad — la base
+          intelectual de toda resistencia legítima.
+        </p>
+        <div class="cat-books">
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">Rebelión en la Granja</span>
+            <span class="cat-book-author">Orwell</span>
+          </div>
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">Camino de servidumbre</span>
+            <span class="cat-book-author">Hayek</span>
+          </div>
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">El manantial</span>
+            <span class="cat-book-author">Rand</span>
+          </div>
+        </div>
+        <div class="cat-footer">
+          <a href="vaciolleno-donaciones.html" class="cat-donate-link">Donar libros de esta categoría</a>
+          <span class="cat-stat">98 en circulación</span>
+        </div>
+      </div>
+
+      <!-- CAT 3 -->
+      <div class="cat-card reveal" data-tags="filosofia urgente" style="--cat-color:#2c5f8a;">
+        <div class="cat-card-top">
+          <span class="cat-number">03 · LIBERTAD</span>
+          <span class="cat-urgency urgency-critical">Urgente</span>
+        </div>
+        <span class="cat-icon">🗽</span>
+        <div class="cat-name">Libertad & Derechos</div>
+        <div class="cat-tagline">"Nadie puede quitarte lo que ya sabes."</div>
+        <p class="cat-desc">
+          Historia de las libertades civiles, derechos individuales,
+          constitucionalismo. El conocimiento sobre lo que el estado
+          puede y no puede hacer — fundamental en sociedades donde
+          los límites del poder son deliberadamente borrosos.
+        </p>
+        <div class="cat-books">
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">1984</span>
+            <span class="cat-book-author">Orwell</span>
+          </div>
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">La Ley</span>
+            <span class="cat-book-author">Bastiat</span>
+          </div>
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">Sobre la libertad</span>
+            <span class="cat-book-author">Mill</span>
+          </div>
+        </div>
+        <div class="cat-footer">
+          <a href="vaciolleno-donaciones.html" class="cat-donate-link">Donar libros de esta categoría</a>
+          <span class="cat-stat">84 en circulación</span>
+        </div>
+      </div>
+
+      <!-- CAT 4 -->
+      <div class="cat-card reveal" data-tags="economia practica" style="--cat-color:#4a6741;">
+        <div class="cat-card-top">
+          <span class="cat-number">04 · FINANZAS</span>
+          <span class="cat-urgency urgency-high">Alta prioridad</span>
+        </div>
+        <span class="cat-icon">💰</span>
+        <div class="cat-name">Finanzas Personales</div>
+        <div class="cat-tagline">"Lo que nadie te enseñó sobre el dinero que tienes."</div>
+        <p class="cat-desc">
+          Ahorro, inversión, deuda, activos y pasivos. Herramientas
+          financieras básicas que en muchos países latinoamericanos
+          directamente no se enseñan — dejando a las personas
+          dependientes de sistemas que prefieren mantenerlas así.
+        </p>
+        <div class="cat-books">
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">El hombre más rico de Babilonia</span>
+            <span class="cat-book-author">Clason</span>
+          </div>
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">El inversor inteligente</span>
+            <span class="cat-book-author">Graham</span>
+          </div>
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">Dinero: domina el juego</span>
+            <span class="cat-book-author">Robbins</span>
+          </div>
+        </div>
+        <div class="cat-footer">
+          <a href="vaciolleno-donaciones.html" class="cat-donate-link">Donar libros de esta categoría</a>
+          <span class="cat-stat">76 en circulación</span>
+        </div>
+      </div>
+
+      <!-- CAT 5 -->
+      <div class="cat-card reveal" data-tags="economia" style="--cat-color:#6b3a2a;">
+        <div class="cat-card-top">
+          <span class="cat-number">05 · HISTORIA</span>
+          <span class="cat-urgency urgency-high">Alta prioridad</span>
+        </div>
+        <span class="cat-icon">📜</span>
+        <div class="cat-name">Historia Económica & Política</div>
+        <div class="cat-tagline">"Para no repetir lo que ya se vivió en otro lugar."</div>
+        <p class="cat-desc">
+          Por qué prosperan y fracasan los países. Historia de los
+          sistemas económicos, sus consecuencias reales y sus víctimas
+          reales. El antídoto contra la nostalgia de sistemas que
+          en la práctica nunca funcionaron.
+        </p>
+        <div class="cat-books">
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">Por qué fracasan los países</span>
+            <span class="cat-book-author">Acemoglu & Robinson</span>
+          </div>
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">El orden espontáneo</span>
+            <span class="cat-book-author">Hayek</span>
+          </div>
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">Capitalismo y libertad</span>
+            <span class="cat-book-author">Friedman</span>
+          </div>
+        </div>
+        <div class="cat-footer">
+          <a href="vaciolleno-donaciones.html" class="cat-donate-link">Donar libros de esta categoría</a>
+          <span class="cat-stat">61 en circulación</span>
+        </div>
+      </div>
+
+      <!-- CAT 6 -->
+      <div class="cat-card reveal" data-tags="practica" style="--cat-color:#7b6fa0;">
+        <div class="cat-card-top">
+          <span class="cat-number">06 · PSICOLOGÍA</span>
+          <span class="cat-urgency urgency-high">Alta prioridad</span>
+        </div>
+        <span class="cat-icon">🧠</span>
+        <div class="cat-name">Psicología & Desarrollo Personal</div>
+        <div class="cat-tagline">"Entender cómo funcionas para dejar de ser predecible."</div>
+        <p class="cat-desc">
+          Comportamiento humano, sesgos cognitivos, autonomía psicológica.
+          El conocimiento para entender los mecanismos de manipulación —
+          política, publicitaria, social — y resistirlos desde adentro.
+        </p>
+        <div class="cat-books">
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">Pensar rápido, pensar despacio</span>
+            <span class="cat-book-author">Kahneman</span>
+          </div>
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">Los 7 hábitos</span>
+            <span class="cat-book-author">Covey</span>
+          </div>
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">El hombre en busca de sentido</span>
+            <span class="cat-book-author">Frankl</span>
+          </div>
+        </div>
+        <div class="cat-footer">
+          <a href="vaciolleno-donaciones.html" class="cat-donate-link">Donar libros de esta categoría</a>
+          <span class="cat-stat">89 en circulación</span>
+        </div>
+      </div>
+
+      <!-- CAT 7 -->
+      <div class="cat-card reveal" data-tags="practica" style="--cat-color:#c9a84c;">
+        <div class="cat-card-top">
+          <span class="cat-number">07 · BIOGRAFÍAS</span>
+          <span class="cat-urgency urgency-medium">Media prioridad</span>
+        </div>
+        <span class="cat-icon">👤</span>
+        <div class="cat-name">Biografías Inspiradoras</div>
+        <div class="cat-tagline">"Vidas que demuestran que es posible."</div>
+        <p class="cat-desc">
+          Personas que construyeron algo desde cero, que resistieron
+          sistemas adversos, que transformaron su entorno con ideas.
+          No motivación vacía — evidencia histórica de que
+          el individuo puede cambiar el mundo.
+        </p>
+        <div class="cat-books">
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">Steve Jobs</span>
+            <span class="cat-book-author">Isaacson</span>
+          </div>
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">La historia de mis experimentos</span>
+            <span class="cat-book-author">Gandhi</span>
+          </div>
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">Elon Musk</span>
+            <span class="cat-book-author">Vance</span>
+          </div>
+        </div>
+        <div class="cat-footer">
+          <a href="vaciolleno-donaciones.html" class="cat-donate-link">Donar libros de esta categoría</a>
+          <span class="cat-stat">54 en circulación</span>
+        </div>
+      </div>
+
+      <!-- CAT 8 -->
+      <div class="cat-card reveal" data-tags="practica" style="--cat-color:#2c7a5f;">
+        <div class="cat-card-top">
+          <span class="cat-number">08 · LIDERAZGO</span>
+          <span class="cat-urgency urgency-medium">Media prioridad</span>
+        </div>
+        <span class="cat-icon">🎯</span>
+        <div class="cat-name">Liderazgo & Comunicación</div>
+        <div class="cat-tagline">"Para quienes quieren mover el mundo, no solo habitarlo."</div>
+        <p class="cat-desc">
+          Influencia, persuasión ética, liderazgo transformador.
+          Las habilidades de comunicación y movilización que
+          convierten ideas en movimientos — fundamentales para
+          quien quiere ser agente de cambio real.
+        </p>
+        <div class="cat-books">
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">Cómo ganar amigos</span>
+            <span class="cat-book-author">Carnegie</span>
+          </div>
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">Empieza con el por qué</span>
+            <span class="cat-book-author">Sinek</span>
+          </div>
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">Las 21 leyes del liderazgo</span>
+            <span class="cat-book-author">Maxwell</span>
+          </div>
+        </div>
+        <div class="cat-footer">
+          <a href="vaciolleno-donaciones.html" class="cat-donate-link">Donar libros de esta categoría</a>
+          <span class="cat-stat">43 en circulación</span>
+        </div>
+      </div>
+
+      <!-- CAT 9 -->
+      <div class="cat-card reveal" data-tags="practica" style="--cat-color:#1a5276;">
+        <div class="cat-card-top">
+          <span class="cat-number">09 · TECNOLOGÍA</span>
+          <span class="cat-urgency urgency-medium">Media prioridad</span>
+        </div>
+        <span class="cat-icon">⚡</span>
+        <div class="cat-name">Tecnología & Innovación</div>
+        <div class="cat-tagline">"El futuro no espera a quien no lo entiende."</div>
+        <p class="cat-desc">
+          Inteligencia artificial, economía digital, innovación disruptiva.
+          El conocimiento tecnológico que separará a quienes participen
+          de la nueva economía de quienes sean desplazados por ella —
+          una brecha que ya está abriendo.
+        </p>
+        <div class="cat-books">
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">De cero a uno</span>
+            <span class="cat-book-author">Thiel</span>
+          </div>
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">La era de la inteligencia artificial</span>
+            <span class="cat-book-author">Kissinger</span>
+          </div>
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">El dilema del innovador</span>
+            <span class="cat-book-author">Christensen</span>
+          </div>
+        </div>
+        <div class="cat-footer">
+          <a href="vaciolleno-donaciones.html" class="cat-donate-link">Donar libros de esta categoría</a>
+          <span class="cat-stat">38 en circulación</span>
+        </div>
+      </div>
+
+      <!-- CAT 10 -->
+      <div class="cat-card reveal" data-tags="filosofia" style="--cat-color:#4a4a4a;">
+        <div class="cat-card-top">
+          <span class="cat-number">10 · CIENCIA</span>
+          <span class="cat-urgency urgency-medium">Media prioridad</span>
+        </div>
+        <span class="cat-icon">🔬</span>
+        <div class="cat-name">Ciencia & Método</div>
+        <div class="cat-tagline">"La realidad no necesita tu permiso para existir."</div>
+        <p class="cat-desc">
+          Pensamiento científico, método empírico, escepticismo racional.
+          El antídoto contra la pseudociencia, la superstición y la
+          manipulación a través de información falsa. En un mundo
+          de narrativas, la evidencia es poder.
+        </p>
+        <div class="cat-books">
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">Breve historia del tiempo</span>
+            <span class="cat-book-author">Hawking</span>
+          </div>
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">El mundo y sus demonios</span>
+            <span class="cat-book-author">Sagan</span>
+          </div>
+          <div class="cat-book">
+            <div class="cat-book-dot"></div>
+            <span class="cat-book-title">El gen egoísta</span>
+            <span class="cat-book-author">Dawkins</span>
+          </div>
+        </div>
+        <div class="cat-footer">
+          <a href="vaciolleno-donaciones.html" class="cat-donate-link">Donar libros de esta categoría</a>
+          <span class="cat-stat">37 en circulación</span>
+        </div>
+      </div>
+
+      <!-- NO RESULTS -->
+      <div class="no-results" id="noResults">
+        <div class="no-results-icon">○</div>
+        <div class="no-results-text">No se encontraron categorías con ese criterio.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- DONATE CTA -->
+  <section class="donate-cta">
+    <div class="donate-cta-inner">
+      <div class="donate-cta-eyebrow">Tus libros · Su misión</div>
+      <h2 class="donate-cta-title">
+        ¿Tienes libros<br/>de estas categorías?
+      </h2>
+      <p class="donate-cta-body">
+        Cada libro que tienes en casa y ya leíste puede convertirse
+        en la primera vez que alguien en Latinoamérica lee sobre
+        economía libre, filosofía crítica, o simplemente sobre
+        cómo funciona el dinero. Es así de directo.
+      </p>
+      <div class="cta-cards">
+        <div class="cta-card">
+          <span class="cta-card-icon">📚</span>
+          <div class="cta-card-title">Donar libros</div>
+          <div class="cta-card-desc">Los tuyos, los de la estantería, los que ya no vas a releer.</div>
+        </div>
+        <div class="cta-card">
+          <span class="cta-card-icon">○</span>
+          <div class="cta-card-title">Donar dinero</div>
+          <div class="cta-card-desc">Para comprar libros urgentes que no llegan por donaciones.</div>
+        </div>
+        <div class="cta-card">
+          <span class="cta-card-icon">📋</span>
+          <div class="cta-card-title">Solicitar libros</div>
+          <div class="cta-card-desc">Si estás en Latinoamérica y necesitas libros de estas categorías.</div>
+        </div>
+      </div>
+      <div>
+        <a href="vaciolleno-donaciones.html" class="btn-primary">Donar ahora</a>
+        <a href="vaciolleno-voluntarios.html" class="btn-outline">Ser voluntario</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-logo">VACÍO LLENO</span>
+    <span class="footer-copy">© 2025 · Todos los libros circulan libres · vaciolleno.org</span>
+  </footer>
+
+  <script>
+    // SCROLL REVEAL
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // SEARCH
+    function filterCatalog() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.cat-card[data-tags]');
+      let visible = 0;
+
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        const match = text.includes(q);
+        card.classList.toggle('hidden', !match);
+        if (match) visible++;
+      });
+
+      document.getElementById('resultsCount').textContent =
+        visible + ' categoría' + (visible !== 1 ? 's' : '');
+      document.getElementById('noResults').classList.toggle('visible', visible === 0);
+    }
+
+    // FILTER BY TAG
+    let activeTag = 'all';
+
+    function filterByTag(btn, tag) {
+      activeTag = tag;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const cards = document.querySelectorAll('.cat-card[data-tags]');
+      let visible = 0;
+
+      cards.forEach(card => {
+        const tags = card.dataset.tags || '';
+        const match = tag === 'all' || tags.includes(tag);
+        card.classList.toggle('hidden', !match);
+        if (match) visible++;
+      });
+
+      document.getElementById('resultsCount').textContent =
+        visible + ' categoría' + (visible !== 1 ? 's' : '');
+      document.getElementById('noResults').classList.toggle('visible', visible === 0);
+
+      // Clear search
+      document.getElementById('searchInput').value = '';
+    }
+  </script>
+
+</body>
+</html>
