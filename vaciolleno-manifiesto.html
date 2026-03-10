@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manifiesto — Vacío Lleno</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700&family=Bebas+Neue&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --paper: #f0ebe0;
+      --paper-dark: #e2dccf;
+      --paper-darker: #d4cdc0;
+      --ink: #1a1510;
+      --ink-mid: rgba(26,21,16,0.55);
+      --ink-faint: rgba(26,21,16,0.15);
+      --red: #9b1b1b;
+      --red-muted: rgba(155,27,27,0.08);
+      --gold: #8a6820;
+      --serif: 'Spectral', Georgia, serif;
+      --display: 'Bebas Neue', 'Impact', sans-serif;
+      --mono: 'DM Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--serif);
+      overflow-x: hidden;
+    }
+
+    /* READING PROGRESS */
+    #progress {
+      position: fixed; top: 0; left: 0; z-index: 999;
+      height: 2px; width: 0%;
+      background: var(--red);
+      transition: width 0.1s linear;
+    }
+
+    /* NAV — newspaper masthead style */
+    .masthead {
+      border-bottom: 3px double var(--ink);
+      padding: 1rem 4rem 0;
+    }
+
+    .masthead-top {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--ink-faint);
+      margin-bottom: 0.75rem;
+    }
+
+    .masthead-date {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.12em; color: var(--ink-mid);
+    }
+
+    .masthead-nav {
+      display: flex; gap: 2rem; list-style: none;
+    }
+
+    .masthead-nav a {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--ink-mid); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .masthead-nav a:hover, .masthead-nav a.active { color: var(--red); }
+
+    .masthead-cta {
+      font-family: var(--mono); font-size: 0.58rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.4rem 1rem;
+      background: var(--ink); color: var(--paper);
+      text-decoration: none; transition: all 0.2s;
+    }
+    .masthead-cta:hover { background: var(--red); }
+
+    /* TITLE BLOCK */
+    .title-block {
+      text-align: center;
+      padding: 1.5rem 0 1rem;
+    }
+
+    .publication-name {
+      font-family: var(--display);
+      font-size: clamp(4rem, 10vw, 10rem);
+      letter-spacing: 0.02em;
+      line-height: 0.9;
+      color: var(--ink);
+      text-transform: uppercase;
+      display: block;
+    }
+
+    .publication-sub {
+      font-family: var(--mono); font-size: 0.62rem;
+      letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--ink-mid); margin-top: 0.5rem;
+      display: block;
+    }
+
+    /* HERO ARTICLE */
+    .hero-article {
+      display: grid;
+      grid-template-columns: 1fr 2px 1fr;
+      border-top: 1px solid var(--ink);
+      border-bottom: 1px solid var(--ink);
+    }
+
+    .col-divider {
+      background: var(--ink-faint);
+      margin: 2rem 0;
+    }
+
+    .hero-col-1 {
+      padding: 3rem 3rem 3rem 4rem;
+    }
+
+    .hero-col-2 {
+      padding: 3rem 4rem 3rem 3rem;
+      display: flex; flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* BIG PULL QUOTE */
+    .big-quote {
+      font-family: var(--display);
+      font-size: clamp(3rem, 6vw, 7rem);
+      line-height: 0.92;
+      letter-spacing: 0.01em;
+      color: var(--ink);
+      margin-bottom: 2rem;
+    }
+
+    .big-quote em {
+      color: var(--red);
+      font-style: normal;
+    }
+
+    .article-byline {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--ink-mid); margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .article-byline::before {
+      content: ''; width: 24px; height: 1px; background: var(--red);
+    }
+
+    .article-deck {
+      font-size: 1.1rem; font-weight: 300;
+      line-height: 1.7; color: var(--ink);
+      margin-bottom: 1.5rem;
+      font-style: italic;
+      border-left: 3px solid var(--red);
+      padding-left: 1.25rem;
+    }
+
+    .article-body p {
+      font-size: 0.95rem; line-height: 1.8;
+      color: var(--ink-mid);
+      margin-bottom: 1.1rem;
+    }
+
+    .article-body p strong { color: var(--ink); font-weight: 600; }
+
+    /* DROP CAP */
+    .article-body p:first-child::first-letter {
+      font-family: var(--display);
+      font-size: 4.5rem; font-weight: 700;
+      float: left; line-height: 0.8;
+      margin: 0.1em 0.12em 0 0;
+      color: var(--red);
+    }
+
+    /* HERO VISUAL — book with hole */
+    .hero-visual {
+      display: flex; align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background: var(--paper-dark);
+      position: relative;
+    }
+
+    .hero-visual-inner {
+      position: relative;
+    }
+
+    .book-stack {
+      position: relative; width: 180px; height: 220px;
+    }
+
+    .book-layer {
+      position: absolute;
+      width: 160px; height: 200px;
+      background: var(--ink);
+      border-radius: 2px 6px 6px 2px;
+    }
+
+    .book-layer:nth-child(1) { left: 14px; top: 10px; background: rgba(26,21,16,0.2); }
+    .book-layer:nth-child(2) { left: 7px; top: 5px; background: rgba(26,21,16,0.45); }
+    .book-layer:nth-child(3) { left: 0; top: 0; background: var(--ink); }
+
+    .book-hole {
+      position: absolute;
+      width: 70px; height: 70px;
+      border-radius: 50%;
+      background: var(--paper);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -55%);
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .book-spine-line {
+      position: absolute; left: 10px; top: 0; bottom: 0;
+      width: 2px; background: rgba(255,255,255,0.07);
+    }
+
+    .book-title-text {
+      position: absolute;
+      bottom: 2rem; left: 0; right: 0;
+      text-align: center;
+    }
+
+    .book-title-text span {
+      font-family: var(--mono); font-size: 0.55rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(240,235,224,0.3);
+    }
+
+    /* ANNO CAPTION */
+    .hero-caption {
+      margin-top: 1.5rem;
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.08em; line-height: 1.6;
+      color: var(--ink-mid); text-align: center;
+      padding: 0 1rem;
+    }
+
+    /* ARTICLES GRID */
+    .articles-section {
+      padding: 0 4rem;
+    }
+
+    .section-header {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1.25rem 0;
+      border-bottom: 2px solid var(--ink);
+      margin-bottom: 0;
+    }
+
+    .section-tag {
+      font-family: var(--display);
+      font-size: 1.1rem; letter-spacing: 0.08em;
+      color: var(--ink);
+    }
+
+    .section-rule {
+      flex: 1; height: 1px;
+      background: var(--ink-faint);
+    }
+
+    .section-count {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.1em; color: var(--ink-mid);
+    }
+
+    /* ARTICLES 3-COL */
+    .articles-grid {
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr 1px 1fr;
+    }
+
+    .article-col {
+      padding: 2.5rem 2.5rem;
+    }
+
+    .article-col:first-child { padding-left: 0; }
+    .article-col:last-child { padding-right: 0; }
+
+    .article-divider {
+      background: var(--ink-faint);
+      margin: 2rem 0;
+    }
+
+    .article-tag {
+      font-family: var(--mono); font-size: 0.55rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .article-headline {
+      font-family: var(--serif); font-weight: 700;
+      font-size: 1.35rem; line-height: 1.2;
+      color: var(--ink); margin-bottom: 0.75rem;
+    }
+
+    .article-subhead {
+      font-size: 0.88rem; font-style: italic;
+      color: var(--ink-mid); margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+
+    .article-text {
+      font-size: 0.85rem; line-height: 1.75;
+      color: var(--ink-mid);
+    }
+
+    .article-text p { margin-bottom: 0.85rem; }
+    .article-text strong { color: var(--ink); }
+
+    /* INLINE BLOCKQUOTE */
+    .pull-quote {
+      border-top: 2px solid var(--ink);
+      border-bottom: 2px solid var(--ink);
+      padding: 1rem 0; margin: 1.5rem 0;
+      font-family: var(--serif); font-style: italic;
+      font-size: 1.05rem; font-weight: 600;
+      line-height: 1.4; color: var(--ink);
+      text-align: center;
+    }
+
+    /* MANIFESTO CENTERPIECE */
+    .manifesto {
+      margin: 0 4rem;
+      border: 2px solid var(--ink);
+      position: relative; overflow: hidden;
+    }
+
+    .manifesto::before {
+      content: '';
+      position: absolute; inset: 6px;
+      border: 1px solid var(--ink-faint);
+      pointer-events: none; z-index: 0;
+    }
+
+    .manifesto-inner {
+      padding: 5rem 6rem;
+      position: relative; z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .manifesto-label {
+      font-family: var(--display);
+      font-size: 0.85rem; letter-spacing: 0.3em;
+      text-transform: uppercase; color: var(--red);
+      margin-bottom: 1.5rem; display: block;
+    }
+
+    .manifesto-title {
+      font-family: var(--display);
+      font-size: clamp(3rem, 6vw, 7rem);
+      line-height: 0.9; letter-spacing: 0.01em;
+      color: var(--ink); margin-bottom: 2rem;
+    }
+
+    .manifesto-title .accent { color: var(--red); }
+
+    .manifesto-body { }
+
+    .manifesto-paragraph {
+      font-size: 1rem; line-height: 1.85;
+      color: var(--ink); margin-bottom: 1.5rem;
+    }
+
+    .manifesto-paragraph.large {
+      font-size: 1.15rem; font-weight: 600;
+      font-style: italic;
+    }
+
+    .manifesto-paragraph strong { font-weight: 700; }
+
+    /* NUMBERED THESES */
+    .theses { margin-top: 2rem; }
+
+    .thesis {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 1rem; margin-bottom: 1.75rem;
+      padding-bottom: 1.75rem;
+      border-bottom: 1px dashed var(--ink-faint);
+    }
+    .thesis:last-child { border-bottom: none; }
+
+    .thesis-num {
+      font-family: var(--display); font-size: 2rem;
+      color: var(--red); line-height: 1;
+      padding-top: 0.1rem;
+    }
+
+    .thesis-text {
+      font-size: 0.9rem; line-height: 1.75;
+      color: var(--ink-mid);
+    }
+
+    .thesis-text strong { color: var(--ink); font-weight: 600; }
+
+    /* TAXONOMY — Categories visual list */
+    .taxonomy {
+      margin: 0 4rem;
+      border-top: 1px solid var(--ink-faint);
+      border-bottom: 3px double var(--ink);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+    }
+
+    .tax-item {
+      padding: 1.5rem 1.25rem;
+      border-right: 1px solid var(--ink-faint);
+      position: relative; cursor: default;
+      transition: background 0.2s;
+    }
+    .tax-item:last-child { border-right: none; }
+    .tax-item:hover { background: var(--red-muted); }
+
+    .tax-num {
+      font-family: var(--mono); font-size: 0.55rem;
+      letter-spacing: 0.15em; color: var(--ink-mid);
+      margin-bottom: 0.25rem;
+    }
+
+    .tax-name {
+      font-family: var(--serif); font-weight: 700;
+      font-size: 0.88rem; color: var(--ink);
+      margin-bottom: 0.2rem;
+    }
+
+    .tax-urgency {
+      font-family: var(--mono); font-size: 0.52rem;
+      letter-spacing: 0.1em;
+    }
+    .tax-urgency.critical { color: var(--red); }
+    .tax-urgency.high { color: var(--gold); }
+    .tax-urgency.medium { color: var(--ink-mid); }
+
+    /* OBITUARIES / IN MEMORIAM — "lost knowledge" section */
+    .in-memoriam {
+      margin: 0 4rem;
+      background: var(--ink);
+      color: var(--paper);
+      padding: 3rem 4rem;
+    }
+
+    .in-memoriam-header {
+      font-family: var(--display);
+      font-size: clamp(2rem, 4vw, 4rem);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(240,235,224,0.15);
+      padding-bottom: 1rem;
+    }
+
+    .in-memoriam-sub {
+      font-family: var(--mono); font-size: 0.62rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(240,235,224,0.3);
+      margin-bottom: 2rem;
+    }
+
+    .memoriam-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+    }
+
+    .memoriam-item {
+      padding: 1.5rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(240,235,224,0.05);
+      transition: all 0.3s;
+    }
+    .memoriam-item:hover {
+      background: rgba(155,27,27,0.15);
+      border-color: rgba(155,27,27,0.3);
+    }
+
+    .memoriam-name {
+      font-family: var(--serif); font-weight: 700;
+      font-size: 0.95rem; color: rgba(240,235,224,0.85);
+      margin-bottom: 0.35rem;
+    }
+
+    .memoriam-desc {
+      font-size: 0.78rem; line-height: 1.6;
+      color: rgba(240,235,224,0.35);
+    }
+
+    .memoriam-years {
+      font-family: var(--mono); font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      color: rgba(155,27,27,0.7); margin-top: 0.5rem;
+    }
+
+    /* SUBSCRIBE / CTA — classified ads style */
+    .classifieds {
+      margin: 0 4rem;
+      padding: 2rem 0;
+      border-bottom: 3px double var(--ink);
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr 1px 1fr;
+    }
+
+    .classified-col {
+      padding: 0 2rem;
+    }
+    .classified-col:first-child { padding-left: 0; }
+    .classified-col:last-child { padding-right: 0; }
+
+    .classified-divider {
+      background: var(--ink-faint);
+      margin: 0.5rem 0;
+    }
+
+    .classified-head {
+      font-family: var(--display); font-size: 1rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 0.75rem;
+      border-bottom: 1px solid var(--ink-faint);
+      padding-bottom: 0.4rem;
+    }
+
+    .classified-body {
+      font-size: 0.82rem; line-height: 1.65;
+      color: var(--ink-mid);
+    }
+
+    .classified-cta {
+      display: inline-block; margin-top: 1rem;
+      padding: 0.6rem 1.25rem;
+      background: var(--ink); color: var(--paper);
+      font-family: var(--mono); font-size: 0.62rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      text-decoration: none; transition: all 0.2s;
+    }
+    .classified-cta:hover { background: var(--red); }
+
+    /* FOOTER MASTHEAD */
+    .footer-masthead {
+      padding: 2rem 4rem;
+      display: flex; align-items: center;
+      justify-content: space-between;
+      border-top: 3px double var(--ink);
+    }
+
+    .footer-logo {
+      font-family: var(--display); font-size: 2rem;
+      letter-spacing: 0.04em; color: var(--ink);
+    }
+
+    .footer-motto {
+      font-family: var(--serif); font-style: italic;
+      font-size: 0.88rem; color: var(--ink-mid);
+      text-align: center;
+    }
+
+    .footer-copy {
+      font-family: var(--mono); font-size: 0.58rem;
+      letter-spacing: 0.1em; color: var(--ink-mid);
+      text-align: right;
+    }
+
+    /* REVEAL */
+    .reveal {
+      opacity: 0; transform: translateY(16px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* PAGE LOAD */
+    .masthead, .title-block, .hero-article {
+      animation: paperLoad 0.8s ease forwards;
+    }
+    @keyframes paperLoad {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1100px) {
+      .masthead, .articles-section, .manifesto,
+      .taxonomy, .in-memoriam, .classifieds, .footer-masthead {
+        padding-left: 1.5rem; padding-right: 1.5rem;
+      }
+      .manifesto-inner { padding: 3rem 2rem; grid-template-columns: 1fr; gap: 2.5rem; }
+      .articles-grid { grid-template-columns: 1fr; }
+      .article-divider { display: none; }
+      .article-col { padding: 2rem 0; border-bottom: 1px solid var(--ink-faint); }
+      .taxonomy { grid-template-columns: repeat(2,1fr); }
+      .memoriam-grid { grid-template-columns: repeat(2,1fr); }
+      .classifieds { grid-template-columns: 1fr; }
+      .classified-divider { display: none; }
+      .classified-col { padding: 1.5rem 0; border-bottom: 1px solid var(--ink-faint); }
+    }
+    @media (max-width: 768px) {
+      .masthead-nav { display: none; }
+      .masthead { padding: 1rem 1.5rem 0; }
+      .title-block { padding: 1rem 1.5rem; }
+      .hero-article { grid-template-columns: 1fr; }
+      .col-divider { display: none; }
+      .hero-col-1, .hero-col-2 { padding: 2rem 1.5rem; }
+      .manifesto { margin: 0 1.5rem; }
+      .taxonomy { margin: 0 1.5rem; grid-template-columns: 1fr 1fr; }
+      .in-memoriam { margin: 0 1.5rem; padding: 2rem 1.5rem; }
+      .memoriam-grid { grid-template-columns: 1fr; }
+      .footer-masthead { flex-direction: column; gap: 1rem; text-align: center; padding: 2rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="progress"></div>
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <div class="masthead-top">
+      <span class="masthead-date">Vol. I · Núm. 1 · Madrid, España · 2025</span>
+      <ul class="masthead-nav">
+        <li><a href="vaciolleno-home.html">Inicio</a></li>
+        <li><a href="vaciolleno-proyecto.html">El Proyecto</a></li>
+        <li><a href="vaciolleno-libros.html">Libros</a></li>
+        <li><a href="vaciolleno-impacto.html">Impacto</a></li>
+        <li><a href="#" class="active">Manifiesto</a></li>
+      </ul>
+      <a href="vaciolleno-donaciones.html" class="masthead-cta">Donar</a>
+    </div>
+    <div class="title-block">
+      <span class="publication-name">Vacío Lleno</span>
+      <span class="publication-sub">Insurgencia intelectual · Distribución libre de libros · Latinoamérica</span>
+    </div>
+  </header>
+
+  <!-- HERO ARTICLE -->
+  <section class="hero-article">
+    <div class="hero-col-1">
+      <div class="big-quote">
+        Un libro<br/>en una repisa<br/>impacta a <em>uno.</em><br/>Perforado,<br/>a <em>cuarenta.</em>
+      </div>
+      <div class="article-byline">Editorial · Vacío Lleno</div>
+    </div>
+
+    <div class="col-divider"></div>
+
+    <div class="hero-col-2">
+      <div>
+        <p class="article-deck">
+          Hay conocimiento que algunos prefieren que no circule. No por olvido —
+          por diseño. Vacío Lleno existe para romper ese diseño.
+        </p>
+        <div class="article-body">
+          <p>
+            En Latinoamérica, millones de personas terminan sus estudios sin haber leído
+            un solo libro sobre economía de libre mercado. Sin haber encontrado una
+            explicación honesta de por qué los países prosperan o fracasan. Sin haber
+            tenido acceso a las ideas que en otras partes del mundo se consideran
+            conocimiento básico de ciudadano.
+          </p>
+          <p>
+            Eso no es un accidente. Es una <strong>arquitectura deliberada de ignorancia</strong>
+            que beneficia a quienes mantienen el poder manteniéndola.
+          </p>
+          <p>
+            La respuesta no es política. No es una marcha, no es un partido,
+            no es un hashtag. La respuesta es la más antigua y poderosa que existe:
+            <strong>un libro en las manos correctas.</strong>
+          </p>
+        </div>
+      </div>
+
+      <div style="margin-top:2rem;">
+        <!-- BOOK VISUAL -->
+        <div style="display:flex;align-items:center;gap:2rem;">
+          <div class="book-stack">
+            <div class="book-layer"></div>
+            <div class="book-layer"></div>
+            <div class="book-layer">
+              <div class="book-hole"></div>
+              <div class="book-spine-line"></div>
+              <div class="book-title-text">
+                <span>Vacío Lleno · Perforado · Libre</span>
+              </div>
+            </div>
+          </div>
+          <p class="hero-caption" style="text-align:left;max-width:200px;">
+            El agujero no es daño.<br/>
+            Es la marca de lo que ya no puede<br/>
+            ser retenido. Solo dado.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARTICLES SECTION -->
+  <div class="articles-section">
+    <div class="section-header">
+      <span class="section-tag">Ideas</span>
+      <div class="section-rule"></div>
+      <span class="section-count">3 ensayos</span>
+    </div>
+
+    <div class="articles-grid">
+
+      <!-- ARTICLE 1 -->
+      <div class="article-col reveal">
+        <span class="article-tag">Economía política</span>
+        <h2 class="article-headline">El vacío no es ausencia — es una decisión</h2>
+        <p class="article-subhead">Por qué el conocimiento sobre economía libre está deliberadamente ausente en los currículos latinoamericanos.</p>
+        <div class="article-text">
+          <p>
+            Cuando un sistema educativo decide qué se enseña, también decide
+            qué no se enseña. Y esa omisión no es neutral.
+          </p>
+          <p>
+            En la mayoría de los países latinoamericanos, un estudiante puede
+            graduarse del bachillerato sin haber encontrado jamás el nombre
+            de Milton Friedman, sin haber leído una página de Hayek, sin saber
+            que existe una diferencia fundamental entre crecimiento económico
+            y redistribución forzada.
+          </p>
+          <div class="pull-quote">
+            "Mantener a alguien ignorante de economía es mantenerlo sin poder real sobre su vida."
+          </div>
+          <p>
+            No es que estos libros sean malos. Es que incomodan.
+            <strong>Un ciudadano que entiende cómo funciona el dinero
+            es mucho más difícil de gobernar.</strong>
+          </p>
+        </div>
+      </div>
+
+      <div class="article-divider"></div>
+
+      <!-- ARTICLE 2 -->
+      <div class="article-col reveal" style="transition-delay:0.15s">
+        <span class="article-tag">Filosofía del objeto</span>
+        <h2 class="article-headline">Por qué la perforación es el acto más político de este proyecto</h2>
+        <p class="article-subhead">El agujero en el libro no es vandalismo. Es la firma de una decisión filosófica sobre propiedad, circulación y libertad.</p>
+        <div class="article-text">
+          <p>
+            Un libro nuevo puede comprarse, guardarse, venderse, heredarse.
+            Puede quedarse en una repisa durante décadas. Puede morir sin
+            haber sido leído más de una vez.
+          </p>
+          <p>
+            Un libro perforado ya no puede venderse. Solo puede darse.
+            Con ese gesto — simple, irreversible — <strong>lo sacamos
+            del sistema de propiedad y lo convertimos en bien común permanente.</strong>
+          </p>
+          <div class="pull-quote">
+            "Perforar es liberar. El agujero es la puerta."
+          </div>
+          <p>
+            Hay algo profundamente subversivo en convertir un objeto de
+            consumo en un objeto de circulación perpetua. En decir que
+            este libro no es tuyo ni mío — es de todos los que vendrán.
+          </p>
+        </div>
+      </div>
+
+      <div class="article-divider"></div>
+
+      <!-- ARTICLE 3 -->
+      <div class="article-col reveal" style="transition-delay:0.3s">
+        <span class="article-tag">Generaciones</span>
+        <h2 class="article-headline">Los pensadores de hoy sembrando para quienes no han nacido</h2>
+        <p class="article-subhead">La urgencia de que los intelectuales contemporáneos actualicen el conocimiento para las generaciones que los transformarán en acción.</p>
+        <div class="article-text">
+          <p>
+            Hay algo que ninguna inteligencia artificial puede hacer por nosotros:
+            decidir qué ideas merecen sobrevivir y llegar a las manos de quienes
+            podrán convertirlas en mundo real.
+          </p>
+          <p>
+            Los pensadores que hoy existen tienen una responsabilidad que
+            sus predecesores no tuvieron: <strong>la capacidad de distribuir
+            conocimiento a escala sin intermediarios.</strong> Sin editoriales
+            que filtren. Sin ministerios que aprueben.
+          </p>
+          <div class="pull-quote">
+            "Cada libro que enviamos es una carta a alguien que aún no sabemos quién será."
+          </div>
+          <p>
+            El canal entre el intelectual contemporáneo y el ciudadano latinoamericano
+            que puede transformar esas ideas en acción es exactamente lo que
+            Vacío Lleno construye.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MANIFESTO CENTERPIECE -->
+  <div class="manifesto reveal" style="margin-top:0;">
+    <div class="manifesto-inner">
+      <div>
+        <span class="manifesto-label">Manifiesto</span>
+        <h2 class="manifesto-title">
+          Lo que<br/>
+          creemos.<br/>
+          <span class="accent">Sin matices.</span>
+        </h2>
+        <p class="manifesto-paragraph large">
+          Esto no es una ONG que distribuye libros.
+          Es una insurgencia intelectual organizada.
+        </p>
+        <p class="manifesto-paragraph">
+          Creemos que el acceso a ideas libres es un derecho,
+          no un privilegio. Que la ignorancia organizada es
+          una forma de violencia. Que un libro en las manos
+          correctas puede cambiar una vida, y una vida puede
+          cambiar un país.
+        </p>
+        <p class="manifesto-paragraph">
+          Creemos que la solución no es esperar a que los
+          sistemas cambien — es actuar mientras cambian.
+          Es poner el conocimiento en circulación ahora,
+          con los medios que tenemos, en la escala que podemos.
+        </p>
+        <p class="manifesto-paragraph">
+          <strong>Y creemos que empezar con diez libros
+          es exactamente cómo empieza todo lo que dura.</strong>
+        </p>
+      </div>
+
+      <!-- THESES -->
+      <div class="theses">
+        <div class="thesis">
+          <div class="thesis-num">I</div>
+          <div class="thesis-text">
+            <strong>El conocimiento restringido es poder robado.</strong>
+            Todo sistema que limita el acceso a ideas lo hace porque las
+            ideas amenazan su permanencia.
+          </div>
+        </div>
+        <div class="thesis">
+          <div class="thesis-num">II</div>
+          <div class="thesis-text">
+            <strong>La perforación es la firma de la libertad.</strong>
+            Un libro que no puede venderse solo puede darse. Eso lo convierte
+            en el objeto más radical que existe.
+          </div>
+        </div>
+        <div class="thesis">
+          <div class="thesis-num">III</div>
+          <div class="thesis-text">
+            <strong>La generosidad estructurada escala.</strong>
+            Un libro que pasa por 40 manos en 10 años vale más que
+            100 libros en 100 repisas.
+          </div>
+        </div>
+        <div class="thesis">
+          <div class="thesis-num">IV</div>
+          <div class="thesis-text">
+            <strong>Empezar pequeño no es pensar pequeño.</strong>
+            10 libros enviados hoy son la semilla de 10.000 mañana.
+            La escala es consecuencia de empezar.
+          </div>
+        </div>
+        <div class="thesis">
+          <div class="thesis-num">V</div>
+          <div class="thesis-text">
+            <strong>El tiempo donado vale más que el dinero.</strong>
+            Porque el dinero se agota. El tiempo convertido en acción
+            crea sistemas que sobreviven a quienes los crearon.
+          </div>
+        </div>
+        <div class="thesis">
+          <div class="thesis-num">VI</div>
+          <div class="thesis-text">
+            <strong>Esto es para siempre.</strong>
+            Los libros perforados seguirán circulando mucho después de
+            que todos nosotros hayamos dejado de hacerlo.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAXONOMY BAR -->
+  <div class="taxonomy reveal">
+    <div class="tax-item">
+      <div class="tax-num">01</div>
+      <div class="tax-name">Economía</div>
+      <div class="tax-urgency critical">● Urgente</div>
+    </div>
+    <div class="tax-item">
+      <div class="tax-num">02</div>
+      <div class="tax-name">Filosofía</div>
+      <div class="tax-urgency critical">● Urgente</div>
+    </div>
+    <div class="tax-item">
+      <div class="tax-num">03</div>
+      <div class="tax-name">Libertad</div>
+      <div class="tax-urgency critical">● Urgente</div>
+    </div>
+    <div class="tax-item">
+      <div class="tax-num">04</div>
+      <div class="tax-name">Finanzas</div>
+      <div class="tax-urgency high">◐ Alta</div>
+    </div>
+    <div class="tax-item">
+      <div class="tax-num">05</div>
+      <div class="tax-name">Historia</div>
+      <div class="tax-urgency high">◐ Alta</div>
+    </div>
+    <div class="tax-item">
+      <div class="tax-num">06</div>
+      <div class="tax-name">Psicología</div>
+      <div class="tax-urgency high">◐ Alta</div>
+    </div>
+    <div class="tax-item">
+      <div class="tax-num">07</div>
+      <div class="tax-name">Biografías</div>
+      <div class="tax-urgency medium">○ Media</div>
+    </div>
+    <div class="tax-item">
+      <div class="tax-num">08</div>
+      <div class="tax-name">Liderazgo</div>
+      <div class="tax-urgency medium">○ Media</div>
+    </div>
+    <div class="tax-item">
+      <div class="tax-num">09</div>
+      <div class="tax-name">Tecnología</div>
+      <div class="tax-urgency medium">○ Media</div>
+    </div>
+    <div class="tax-item">
+      <div class="tax-num">10</div>
+      <div class="tax-name">Ciencia</div>
+      <div class="tax-urgency medium">○ Media</div>
+    </div>
+  </div>
+
+  <!-- IN MEMORIAM — knowledge deliberately lost -->
+  <div class="in-memoriam reveal">
+    <div class="in-memoriam-header">En Memoriam</div>
+    <p class="in-memoriam-sub">Conocimiento que los sistemas educativos latinoamericanos han dejado morir deliberadamente</p>
+    <div class="memoriam-grid">
+      <div class="memoriam-item">
+        <div class="memoriam-name">La teoría del precio libre</div>
+        <div class="memoriam-desc">La comprensión de cómo los precios transmiten información y coordinan la economía sin planificación central.</div>
+        <div class="memoriam-years">Ausente en currículos desde 1970 aprox.</div>
+      </div>
+      <div class="memoriam-item">
+        <div class="memoriam-name">Historia del socialismo real</div>
+        <div class="memoriam-desc">Las consecuencias documentadas de los experimentos colectivistas del siglo XX en términos de hambre, represión y colapso.</div>
+        <div class="memoriam-years">Sistemáticamente omitida o reencuadrada.</div>
+      </div>
+      <div class="memoriam-item">
+        <div class="memoriam-name">Filosofía del individualismo</div>
+        <div class="memoriam-desc">La tradición intelectual que pone al individuo — no al colectivo ni al estado — como unidad moral fundamental de la sociedad.</div>
+        <div class="memoriam-years">Tratada como ideología, no como filosofía.</div>
+      </div>
+      <div class="memoriam-item">
+        <div class="memoriam-name">Educación financiera básica</div>
+        <div class="memoriam-desc">La diferencia entre activos y pasivos, cómo funciona el interés compuesto, por qué la inflación es un impuesto invisible.</div>
+        <div class="memoriam-years">Inexistente en la mayoría de sistemas públicos.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLASSIFIEDS — CTA section -->
+  <div class="classifieds reveal">
+    <div class="classified-col">
+      <div class="classified-head">Se busca</div>
+      <p class="classified-body">
+        Libros de las 10 categorías prioritarias en buen estado para perforar
+        y enviar a Latinoamérica. Se recogen en Madrid, Barcelona, Valencia
+        y otras ciudades. También se aceptan envíos.
+      </p>
+      <a href="vaciolleno-donaciones.html" class="classified-cta">Donar libros →</a>
+    </div>
+    <div class="classified-divider"></div>
+    <div class="classified-col">
+      <div class="classified-head">Se necesita</div>
+      <p class="classified-body">
+        Voluntarios para clasificar, etiquetar y preparar envíos. Especialmente
+        personas con tiempo libre y ganas de hacer algo concreto y visible.
+        Sin experiencia requerida. Sin compromisos rígidos.
+      </p>
+      <a href="vaciolleno-voluntarios.html" class="classified-cta">Ser voluntario →</a>
+    </div>
+    <div class="classified-divider"></div>
+    <div class="classified-col">
+      <div class="classified-head">Se ofrece</div>
+      <p class="classified-body">
+        Libros perforados con el símbolo Vacío Lleno para organizaciones,
+        bibliotecas comunitarias y centros educativos en Latinoamérica.
+        Sin coste. Sin condiciones. Solo con el compromiso de hacerlos circular.
+      </p>
+      <a href="vaciolleno-impacto.html" class="classified-cta">Ver impacto →</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer-masthead">
+    <div class="footer-logo">Vacío Lleno</div>
+    <div class="footer-motto">
+      "El agujero en el libro es la puerta al conocimiento que antes<br/>
+      cerraban por ti. Ahora la dejamos abierta para siempre."
+    </div>
+    <div class="footer-copy">
+      © 2025 vaciolleno.org<br/>
+      Todos los libros circulan libres.
+    </div>
+  </footer>
+
+  <script>
+    // READING PROGRESS BAR
+    window.addEventListener('scroll', () => {
+      const doc = document.documentElement;
+      const scrollTop = doc.scrollTop || document.body.scrollTop;
+      const scrollHeight = doc.scrollHeight - doc.clientHeight;
+      const pct = (scrollTop / scrollHeight) * 100;
+      document.getElementById('progress').style.width = pct + '%';
+    });
+
+    // SCROLL REVEAL
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.06 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
