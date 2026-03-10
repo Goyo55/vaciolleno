@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voluntarios — Vacío Lleno</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #0f1f3d;
+      --navy-mid: #1a3260;
+      --cream: #f2ede4;
+      --cream-dark: #e5dfd4;
+      --ink: #1c1c2e;
+      --gold: #c9a84c;
+      --gold-muted: #8a6f32;
+      --terracotta: #b85c38;
+      --sage: #4a6741;
+      --white: #faf8f4;
+      --mono: 'DM Mono', monospace;
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.5rem 4rem;
+      background: rgba(242,237,228,0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(28,28,46,0.07);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 0.75rem;
+      text-decoration: none;
+    }
+    .nav-logo-text {
+      font-family: var(--serif); font-size: 1.2rem;
+      font-weight: 700; color: var(--ink); letter-spacing: 0.04em;
+    }
+    .nav-logo svg { width: 32px; height: 32px; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-family: var(--mono); font-size: 0.68rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(28,28,46,0.4); text-decoration: none; transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--ink); }
+    .nav-cta {
+      font-family: var(--mono); font-size: 0.68rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.6rem 1.5rem; background: var(--navy);
+      color: var(--cream); text-decoration: none; transition: all 0.25s;
+    }
+    .nav-cta:hover { background: var(--gold); color: var(--navy); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: grid; grid-template-columns: 1fr 1fr;
+      padding-top: 5rem;
+      position: relative; overflow: hidden;
+    }
+
+    .hero-left {
+      background: var(--navy);
+      padding: 6rem 4rem 4rem;
+      display: flex; flex-direction: column;
+      justify-content: center; position: relative;
+      overflow: hidden;
+    }
+
+    /* Grain texture */
+    .hero-left::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0;
+    }
+
+    .hero-left > * { position: relative; z-index: 1; }
+
+    .hero-eyebrow {
+      font-family: var(--mono); font-size: 0.62rem;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 2rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .hero-eyebrow::before {
+      content: ''; width: 32px; height: 1px; background: var(--gold);
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(3rem, 5vw, 5.5rem);
+      font-weight: 700; line-height: 1.0;
+      color: var(--white); margin-bottom: 2rem;
+    }
+
+    .hero-title em {
+      font-style: italic; color: var(--gold);
+      display: block;
+    }
+
+    .hero-body {
+      font-size: 1rem; line-height: 1.8;
+      color: rgba(250,248,244,0.6); margin-bottom: 3rem;
+      max-width: 420px;
+    }
+
+    .hero-body strong { color: var(--white); font-weight: 500; }
+
+    .hero-scroll-hint {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(250,248,244,0.2);
+      display: flex; align-items: center; gap: 0.75rem;
+      margin-top: auto;
+    }
+
+    .hero-scroll-hint::after {
+      content: '↓'; font-size: 0.9rem;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(4px); }
+    }
+
+    /* HERO RIGHT */
+    .hero-right {
+      background: var(--cream-dark);
+      padding: 6rem 4rem 4rem;
+      display: flex; flex-direction: column;
+      justify-content: center; gap: 2rem;
+    }
+
+    .hero-right-label {
+      font-family: var(--mono); font-size: 0.62rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(28,28,46,0.35); margin-bottom: 0.5rem;
+    }
+
+    .hero-right-title {
+      font-family: var(--serif); font-size: 1.8rem;
+      font-weight: 600; line-height: 1.2;
+      color: var(--ink); margin-bottom: 1.5rem;
+    }
+
+    /* PROFILE CARDS */
+    .profiles {
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+
+    .profile-card {
+      display: flex; align-items: center; gap: 1.25rem;
+      padding: 1.25rem 1.5rem;
+      background: var(--white);
+      border-left: 3px solid transparent;
+      transition: all 0.3s; cursor: pointer;
+    }
+
+    .profile-card:hover, .profile-card.active {
+      border-left-color: var(--gold);
+      box-shadow: 0 4px 20px rgba(28,28,46,0.08);
+    }
+
+    .profile-avatar {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--navy-mid);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; flex-shrink: 0;
+    }
+
+    .profile-info { flex: 1; }
+
+    .profile-name {
+      font-family: var(--serif); font-size: 1rem;
+      font-weight: 600; color: var(--ink);
+      margin-bottom: 0.2rem;
+    }
+
+    .profile-role {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(28,28,46,0.35);
+    }
+
+    .profile-tag {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.3rem 0.7rem;
+      background: rgba(201,168,76,0.1);
+      color: var(--gold-muted);
+    }
+
+    /* WHY SECTION */
+    .why {
+      padding: 8rem 4rem;
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 7rem; align-items: center;
+    }
+
+    .why-text {}
+
+    .section-eyebrow {
+      font-family: var(--mono); font-size: 0.62rem;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .section-eyebrow::before {
+      content: ''; width: 30px; height: 1px; background: var(--gold);
+    }
+
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 3.5vw, 3.5rem);
+      font-weight: 700; line-height: 1.1;
+      color: var(--ink); margin-bottom: 2rem;
+    }
+
+    .section-body p {
+      font-size: 1rem; line-height: 1.85;
+      color: rgba(28,28,46,0.65); margin-bottom: 1.25rem;
+    }
+    .section-body strong { color: var(--ink); font-weight: 500; }
+
+    /* VALUES GRID */
+    .values-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 2px;
+    }
+
+    .value-item {
+      padding: 2rem 1.75rem;
+      background: var(--white);
+      transition: background 0.3s;
+    }
+    .value-item:hover { background: var(--navy); }
+    .value-item:hover .value-title,
+    .value-item:hover .value-desc { color: var(--white); }
+    .value-item:hover .value-icon { filter: none; }
+
+    .value-icon {
+      font-size: 1.8rem; margin-bottom: 1rem;
+      display: block; filter: grayscale(0.3);
+    }
+
+    .value-title {
+      font-family: var(--serif); font-size: 1.1rem;
+      font-weight: 700; color: var(--ink);
+      margin-bottom: 0.5rem; transition: color 0.3s;
+    }
+
+    .value-desc {
+      font-size: 0.82rem; line-height: 1.6;
+      color: rgba(28,28,46,0.45); transition: color 0.3s;
+    }
+
+    /* ROLES SECTION */
+    .roles {
+      background: var(--navy);
+      padding: 8rem 4rem;
+    }
+
+    .roles-inner { max-width: 1200px; margin: 0 auto; }
+
+    .roles-header {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; margin-bottom: 5rem; align-items: end;
+    }
+
+    .roles-header .section-eyebrow { color: var(--gold); }
+    .roles-header .section-eyebrow::before { background: var(--gold); }
+    .roles-header .section-title { color: var(--white); }
+
+    .roles-header-desc {
+      font-size: 0.95rem; line-height: 1.75;
+      color: rgba(250,248,244,0.45); padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(250,248,244,0.07);
+    }
+
+    /* ROLE CARDS */
+    .roles-grid {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 2px;
+    }
+
+    .role-card {
+      background: rgba(255,255,255,0.03);
+      padding: 2.5rem 2rem;
+      position: relative; overflow: hidden;
+      transition: background 0.3s;
+      cursor: pointer;
+    }
+
+    .role-card:hover { background: rgba(255,255,255,0.07); }
+
+    .role-card::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0;
+      width: 0; height: 2px; background: var(--gold);
+      transition: width 0.4s ease;
+    }
+    .role-card:hover::after { width: 100%; }
+
+    .role-number {
+      font-family: var(--serif); font-size: 4rem;
+      font-weight: 700; color: rgba(255,255,255,0.04);
+      line-height: 1; margin-bottom: 1.5rem;
+    }
+
+    .role-emoji { font-size: 2rem; margin-bottom: 1rem; display: block; }
+
+    .role-title {
+      font-family: var(--serif); font-size: 1.3rem;
+      font-weight: 700; color: var(--white);
+      margin-bottom: 0.75rem;
+    }
+
+    .role-desc {
+      font-size: 0.85rem; line-height: 1.7;
+      color: rgba(250,248,244,0.45); margin-bottom: 1.5rem;
+    }
+
+    .role-tasks {
+      list-style: none;
+      display: flex; flex-direction: column; gap: 0.4rem;
+    }
+
+    .role-tasks li {
+      font-family: var(--mono); font-size: 0.65rem;
+      letter-spacing: 0.06em;
+      color: rgba(250,248,244,0.3);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+
+    .role-tasks li::before {
+      content: '—'; color: var(--gold); flex-shrink: 0;
+    }
+
+    .role-time {
+      display: inline-block; margin-top: 1.5rem;
+      padding: 0.3rem 0.75rem;
+      border: 1px solid rgba(201,168,76,0.25);
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    /* SENIOR SPOTLIGHT */
+    .senior {
+      padding: 8rem 4rem;
+      background: var(--terracotta);
+      position: relative; overflow: hidden;
+    }
+
+    .senior::before {
+      content: '';
+      position: absolute; top: -50%; right: -10%;
+      width: 600px; height: 600px; border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+      pointer-events: none;
+    }
+
+    .senior-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 6rem; align-items: center;
+      position: relative; z-index: 1;
+    }
+
+    .senior .section-eyebrow { color: rgba(255,255,255,0.5); }
+    .senior .section-eyebrow::before { background: rgba(255,255,255,0.3); }
+
+    .senior-title {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 3.5vw, 3.5rem);
+      font-weight: 700; line-height: 1.1;
+      color: var(--white); margin-bottom: 1.5rem;
+    }
+
+    .senior-body p {
+      font-size: 1rem; line-height: 1.8;
+      color: rgba(255,255,255,0.7); margin-bottom: 1.25rem;
+    }
+    .senior-body strong { color: var(--white); }
+
+    /* SENIOR BENEFITS */
+    .senior-benefits {
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+
+    .senior-benefit {
+      display: flex; gap: 1.5rem; align-items: flex-start;
+      padding: 1.5rem;
+      background: rgba(255,255,255,0.08);
+      border-left: 2px solid rgba(255,255,255,0.2);
+      transition: all 0.3s;
+    }
+
+    .senior-benefit:hover {
+      background: rgba(255,255,255,0.13);
+      border-left-color: var(--white);
+    }
+
+    .senior-benefit-icon {
+      font-size: 1.5rem; flex-shrink: 0; margin-top: 0.1rem;
+    }
+
+    .senior-benefit-text {}
+
+    .senior-benefit-title {
+      font-family: var(--serif); font-size: 1.05rem;
+      font-weight: 600; color: var(--white);
+      margin-bottom: 0.3rem;
+    }
+
+    .senior-benefit-desc {
+      font-size: 0.82rem; line-height: 1.6;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* FORM */
+    .form-section {
+      padding: 8rem 4rem;
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1.4fr;
+      gap: 7rem; align-items: start;
+    }
+
+    .form-aside {}
+
+    .form-aside-title {
+      font-family: var(--serif); font-size: 2.5rem;
+      font-weight: 700; line-height: 1.1;
+      color: var(--ink); margin-bottom: 1.5rem;
+    }
+
+    .form-aside-body {
+      font-size: 0.95rem; line-height: 1.8;
+      color: rgba(28,28,46,0.55); margin-bottom: 2rem;
+    }
+
+    .form-commitment {
+      display: flex; flex-direction: column; gap: 0.75rem;
+    }
+
+    .commitment-item {
+      display: flex; gap: 1rem; align-items: flex-start;
+      padding: 1rem 1.25rem;
+      background: rgba(28,28,46,0.03);
+      border-left: 2px solid rgba(201,168,76,0.3);
+    }
+
+    .commitment-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+    .commitment-text {
+      font-size: 0.82rem; line-height: 1.6;
+      color: rgba(28,28,46,0.55);
+    }
+
+    .commitment-text strong {
+      display: block; font-size: 0.88rem;
+      color: var(--ink); font-weight: 500;
+      margin-bottom: 0.2rem;
+    }
+
+    /* FORM ITSELF */
+    .vol-form {}
+
+    .field-row {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1rem; margin-bottom: 1rem;
+    }
+
+    .field-group { margin-bottom: 1rem; }
+
+    .field-label {
+      display: block;
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(28,28,46,0.35); margin-bottom: 0.5rem;
+    }
+
+    .field-input {
+      width: 100%; padding: 0.85rem 1.1rem;
+      background: var(--white);
+      border: 1px solid rgba(28,28,46,0.1);
+      color: var(--ink); font-family: var(--sans);
+      font-size: 0.95rem; outline: none;
+      transition: border-color 0.2s;
+    }
+    .field-input:focus { border-color: var(--gold); }
+    .field-input::placeholder { color: rgba(28,28,46,0.2); }
+
+    select.field-input {
+      appearance: none; cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 7L11 1' stroke='rgba(28,28,46,0.3)' stroke-width='1.5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.5rem;
+    }
+
+    /* ROLE CHECKBOXES */
+    .role-checks {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0.5rem; margin-bottom: 1.5rem;
+    }
+
+    .role-check {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: var(--white);
+      border: 1px solid rgba(28,28,46,0.08);
+      cursor: pointer; transition: all 0.2s;
+      font-size: 0.85rem; color: rgba(28,28,46,0.6);
+    }
+
+    .role-check:has(input:checked) {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.06);
+      color: var(--ink);
+    }
+
+    .role-check input { accent-color: var(--gold); }
+
+    /* AVAILABILITY */
+    .avail-grid {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 0.5rem; margin-bottom: 1.5rem;
+    }
+
+    .avail-btn {
+      padding: 0.7rem;
+      background: var(--white);
+      border: 1px solid rgba(28,28,46,0.08);
+      font-family: var(--mono); font-size: 0.62rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(28,28,46,0.4); cursor: pointer;
+      text-align: center; transition: all 0.2s;
+    }
+
+    .avail-btn.selected {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.08);
+      color: var(--gold-muted);
+    }
+
+    /* MOTIVATION */
+    .motivation-options {
+      display: flex; flex-direction: column; gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .motivation-opt {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      padding: 1rem 1.1rem;
+      background: var(--white);
+      border: 1px solid rgba(28,28,46,0.08);
+      cursor: pointer; transition: all 0.2s;
+    }
+
+    .motivation-opt:has(input:checked) {
+      border-color: var(--navy);
+      background: rgba(15,31,61,0.04);
+    }
+
+    .motivation-opt input { accent-color: var(--navy); margin-top: 0.15rem; flex-shrink: 0; }
+    .motivation-opt-text { font-size: 0.88rem; line-height: 1.5; color: rgba(28,28,46,0.65); }
+    .motivation-opt-text strong { display: block; color: var(--ink); font-weight: 500; font-size: 0.9rem; margin-bottom: 0.1rem; }
+
+    /* SUBMIT */
+    .btn-submit {
+      width: 100%; padding: 1.2rem;
+      background: var(--navy); color: var(--cream);
+      font-family: var(--mono); font-size: 0.75rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      font-weight: 500; border: none; cursor: pointer;
+      transition: all 0.25s; position: relative; overflow: hidden;
+      margin-top: 0.5rem;
+    }
+
+    .btn-submit::after {
+      content: ''; position: absolute; inset: 0;
+      background: var(--gold); transform: translateX(-101%);
+      transition: transform 0.3s ease;
+    }
+    .btn-submit:hover::after { transform: translateX(0); }
+    .btn-submit span { position: relative; z-index: 1; }
+    .btn-submit:hover span { color: var(--navy); }
+
+    /* SUCCESS */
+    .success-overlay {
+      display: none; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 4rem 2rem;
+    }
+    .success-overlay.visible { display: flex; }
+
+    .success-icon {
+      width: 80px; height: 80px;
+      background: var(--navy);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; margin-bottom: 2rem;
+      animation: successPop 0.5s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    @keyframes successPop {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .success-title {
+      font-family: var(--serif); font-size: 2.5rem;
+      font-weight: 700; color: var(--ink); margin-bottom: 1rem;
+    }
+    .success-body {
+      font-size: 0.95rem; line-height: 1.7;
+      color: rgba(28,28,46,0.55); max-width: 400px; margin: 0 auto 2.5rem;
+    }
+
+    /* COUNTER */
+    .counter-strip {
+      background: var(--ink);
+      padding: 3rem 4rem;
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 2px;
+    }
+    .counter-item {
+      padding: 1.5rem 2rem; text-align: center;
+      border-right: 1px solid rgba(255,255,255,0.05);
+    }
+    .counter-item:last-child { border-right: none; }
+    .counter-num {
+      font-family: var(--serif); font-size: 2.5rem;
+      font-weight: 700; color: var(--gold); line-height: 1;
+      margin-bottom: 0.35rem;
+    }
+    .counter-label {
+      font-family: var(--mono); font-size: 0.58rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
+    }
+
+    /* FOOTER */
+    footer {
+      background: #080f1e; padding: 3rem 4rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-logo {
+      font-family: var(--serif); font-size: 1rem;
+      font-weight: 700; color: rgba(240,236,227,0.25);
+    }
+    .footer-copy {
+      font-family: var(--mono); font-size: 0.58rem;
+      letter-spacing: 0.1em; color: rgba(240,236,227,0.12);
+    }
+
+    /* REVEAL */
+    .reveal {
+      opacity: 0; transform: translateY(22px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .d1 { transition-delay: 0.1s; }
+    .d2 { transition-delay: 0.2s; }
+    .d3 { transition-delay: 0.3s; }
+
+    /* PAGE LOAD */
+    .hero-left > * {
+      opacity: 0; transform: translateY(18px);
+      animation: fadeUp 0.7s forwards;
+    }
+    .hero-left > *:nth-child(1) { animation-delay: 0.15s; }
+    .hero-left > *:nth-child(2) { animation-delay: 0.3s; }
+    .hero-left > *:nth-child(3) { animation-delay: 0.45s; }
+    .hero-left > *:nth-child(4) { animation-delay: 0.6s; }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+    .hero-right {
+      opacity: 0; animation: fadeIn 0.8s 0.5s forwards;
+    }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav { padding: 1.5rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; }
+      .hero-left, .hero-right { padding: 4rem 1.5rem; }
+      .hero-left { min-height: 60vh; }
+      .why { grid-template-columns: 1fr; gap: 3rem; padding: 5rem 1.5rem; }
+      .values-grid { grid-template-columns: 1fr; }
+      .roles { padding: 5rem 1.5rem; }
+      .roles-header { grid-template-columns: 1fr; gap: 1.5rem; }
+      .roles-grid { grid-template-columns: 1fr; }
+      .senior { padding: 5rem 1.5rem; }
+      .senior-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .form-section { grid-template-columns: 1fr; gap: 3rem; padding: 5rem 1.5rem; }
+      .field-row { grid-template-columns: 1fr; }
+      .avail-grid { grid-template-columns: repeat(2,1fr); }
+      .counter-strip { grid-template-columns: repeat(2,1fr); padding: 2rem 1.5rem; }
+      footer { padding: 2rem 1.5rem; flex-direction: column; gap: 1rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="vaciolleno-home.html" class="nav-logo">
+      <svg viewBox="0 0 60 60" fill="none">
+        <rect x="8" y="10" width="44" height="40" rx="2" fill="#1a3260"/>
+        <circle cx="30" cy="30" r="10" fill="#0f1f3d" stroke="rgba(201,168,76,0.6)" stroke-width="1.5"/>
+      </svg>
+      <span class="nav-logo-text">VACÍO LLENO</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="vaciolleno-home.html">Inicio</a></li>
+      <li><a href="vaciolleno-proyecto.html">El Proyecto</a></li>
+      <li><a href="#" class="active">Voluntarios</a></li>
+      <li><a href="#">Impacto</a></li>
+    </ul>
+    <a href="vaciolleno-donaciones.html" class="nav-cta">Donar</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-eyebrow">Voluntariado · Insurgencia en acción</div>
+      <h1 class="hero-title">
+        Tu tiempo<br/>
+        vale más que<br/>
+        <em>el dinero.</em>
+      </h1>
+      <p class="hero-body">
+        Los libros llegan solos no pueden viajar. Necesitan manos.
+        <strong>Tus manos.</strong> Clasificar, etiquetar, coordinar,
+        distribuir — cada hora que das convierte conocimiento
+        acumulado en conocimiento en movimiento.
+      </p>
+      <div class="hero-scroll-hint">Ver roles disponibles</div>
+    </div>
+
+    <div class="hero-right">
+      <div>
+        <div class="hero-right-label">Quiénes ya están</div>
+        <h2 class="hero-right-title">Personas de todas las edades.<br/>Una sola misión.</h2>
+      </div>
+      <div class="profiles">
+        <div class="profile-card active">
+          <div class="profile-avatar">👩‍🦳</div>
+          <div class="profile-info">
+            <div class="profile-name">Carmen, 67 años</div>
+            <div class="profile-role">Clasificadora · Madrid · 3 mañanas/semana</div>
+          </div>
+          <div class="profile-tag">Activa</div>
+        </div>
+        <div class="profile-card">
+          <div class="profile-avatar">👨‍💼</div>
+          <div class="profile-info">
+            <div class="profile-name">Miguel, 34 años</div>
+            <div class="profile-role">Coordinador de envíos · Barcelona · Remoto</div>
+          </div>
+          <div class="profile-tag">Activo</div>
+        </div>
+        <div class="profile-card">
+          <div class="profile-avatar">👩‍🎓</div>
+          <div class="profile-info">
+            <div class="profile-name">Lucía, 22 años</div>
+            <div class="profile-role">Redes sociales · Valencia · Digital</div>
+          </div>
+          <div class="profile-tag">Activa</div>
+        </div>
+        <div class="profile-card" style="border:2px dashed rgba(28,28,46,0.12);background:transparent;">
+          <div class="profile-avatar" style="background:rgba(28,28,46,0.05);">?</div>
+          <div class="profile-info">
+            <div class="profile-name" style="color:rgba(28,28,46,0.3);">Tú, aquí</div>
+            <div class="profile-role">Tu rol · Tu ciudad · Tu disponibilidad</div>
+          </div>
+          <div class="profile-tag" style="background:rgba(28,28,46,0.04);color:rgba(28,28,46,0.25);">Pronto</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COUNTER -->
+  <div class="counter-strip">
+    <div class="counter-item">
+      <div class="counter-num">23</div>
+      <div class="counter-label">Voluntarios activos</div>
+    </div>
+    <div class="counter-item">
+      <div class="counter-num">8</div>
+      <div class="counter-label">Ciudades en España</div>
+    </div>
+    <div class="counter-item">
+      <div class="counter-num">340h</div>
+      <div class="counter-label">Horas donadas este mes</div>
+    </div>
+    <div class="counter-item">
+      <div class="counter-num">847</div>
+      <div class="counter-label">Libros procesados</div>
+    </div>
+  </div>
+
+  <!-- WHY VOLUNTEER -->
+  <section class="why">
+    <div class="why-text">
+      <div class="section-eyebrow reveal">Por qué importa</div>
+      <h2 class="section-title reveal d1">Lo que mueve un voluntario no tiene precio</h2>
+      <div class="section-body reveal d2">
+        <p>
+          Donar dinero es poderoso. Donar libros es transformador.
+          Pero <strong>donar tiempo</strong> es lo que hace que todo
+          funcione. Sin voluntarios, los libros llegan y se quedan
+          en cajas. Con voluntarios, cruzan océanos.
+        </p>
+        <p>
+          No pedimos experiencia ni conocimientos especiales.
+          Pedimos <strong>ganas de hacer algo real</strong> con
+          el tiempo que tienes. Cada voluntario encuentra su lugar —
+          desde clasificar libros un par de mañanas por semana hasta
+          gestionar comunicaciones digitales desde casa.
+        </p>
+      </div>
+    </div>
+    <div class="values-grid reveal d2">
+      <div class="value-item">
+        <span class="value-icon">📖</span>
+        <div class="value-title">Impacto tangible</div>
+        <div class="value-desc">Ves los libros salir. Sabes a dónde van. El impacto no es abstracto.</div>
+      </div>
+      <div class="value-item">
+        <span class="value-icon">🤝</span>
+        <div class="value-title">Comunidad real</div>
+        <div class="value-desc">Personas de todas las edades unidas por una misma convicción.</div>
+      </div>
+      <div class="value-item">
+        <span class="value-icon">⏱</span>
+        <div class="value-title">Tu ritmo</div>
+        <div class="value-desc">Sin compromisos rígidos. Das lo que puedes cuando puedes.</div>
+      </div>
+      <div class="value-item">
+        <span class="value-icon">🌎</span>
+        <div class="value-title">Alcance global</div>
+        <div class="value-desc">Tu trabajo en España llega a manos en doce países.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROLES -->
+  <section class="roles">
+    <div class="roles-inner">
+      <div class="roles-header">
+        <div>
+          <div class="section-eyebrow reveal">Los roles</div>
+          <h2 class="section-title reveal d1">Encuentra tu lugar<br/>en la insurgencia</h2>
+        </div>
+        <p class="roles-header-desc reveal d2">
+          No todos los voluntarios hacen lo mismo. Cada perfil
+          tiene su función, y todas son igualmente necesarias.
+          Desde el trabajo físico con libros hasta la coordinación
+          digital — hay un espacio para ti.
+        </p>
+      </div>
+
+      <div class="roles-grid">
+        <div class="role-card reveal">
+          <div class="role-number">01</div>
+          <span class="role-emoji">📦</span>
+          <div class="role-title">Clasificador/a</div>
+          <p class="role-desc">El corazón operativo. Recibes libros donados, los clasificas en A/B/C, los etiquetas y preparas para envío.</p>
+          <ul class="role-tasks">
+            <li>Clasificación A/B/C</li>
+            <li>Etiquetado con símbolo Vacío Lleno</li>
+            <li>Registro en sistema</li>
+            <li>Preparación de cajas</li>
+          </ul>
+          <span class="role-time">Presencial · 2-4h/semana</span>
+        </div>
+
+        <div class="role-card reveal d1">
+          <div class="role-number">02</div>
+          <span class="role-emoji">✈️</span>
+          <div class="role-title">Coordinador/a de envíos</div>
+          <p class="role-desc">Gestionas la logística. Contactas con las organizaciones receptoras, coordinas envíos y haces seguimiento.</p>
+          <ul class="role-tasks">
+            <li>Contacto con ONGs receptoras</li>
+            <li>Gestión de envíos internacionales</li>
+            <li>Seguimiento de paquetes</li>
+            <li>Reportes de llegada</li>
+          </ul>
+          <span class="role-time">Remoto · 3-5h/semana</span>
+        </div>
+
+        <div class="role-card reveal d2">
+          <div class="role-number">03</div>
+          <span class="role-emoji">💬</span>
+          <div class="role-title">Comunicación digital</div>
+          <p class="role-desc">Llevas la voz del proyecto. Redes sociales, contenido, historias de impacto — haces visible la insurgencia.</p>
+          <ul class="role-tasks">
+            <li>Instagram y Twitter/X</li>
+            <li>Fotografía de libros y envíos</li>
+            <li>Historias de impacto</li>
+            <li>Respuesta a comunidad</li>
+          </ul>
+          <span class="role-time">Remoto · Flexible</span>
+        </div>
+
+        <div class="role-card reveal">
+          <div class="role-number">04</div>
+          <span class="role-emoji">🤝</span>
+          <div class="role-title">Embajador/a local</div>
+          <p class="role-desc">Eres la presencia de Vacío Lleno en tu ciudad. Reclutas donantes, recoge libros, hablas del proyecto.</p>
+          <ul class="role-tasks">
+            <li>Puntos de recogida locales</li>
+            <li>Presentaciones en comunidades</li>
+            <li>Captación de donantes</li>
+            <li>Representación del proyecto</li>
+          </ul>
+          <span class="role-time">Híbrido · 2-3h/semana</span>
+        </div>
+
+        <div class="role-card reveal d1">
+          <div class="role-number">05</div>
+          <span class="role-emoji">💻</span>
+          <div class="role-title">Soporte técnico</div>
+          <p class="role-desc">Desarrolladores, diseñadores, analistas — si tienes skills técnicas, las ponemos a trabajar para la causa.</p>
+          <ul class="role-tasks">
+            <li>Desarrollo web</li>
+            <li>Diseño gráfico</li>
+            <li>Análisis de datos</li>
+            <li>Automatizaciones</li>
+          </ul>
+          <span class="role-time">Remoto · Proyecto a proyecto</span>
+        </div>
+
+        <div class="role-card reveal d2">
+          <div class="role-number">06</div>
+          <span class="role-emoji">🌍</span>
+          <div class="role-title">Receptor/a en Latinoamérica</div>
+          <p class="role-desc">Si estás en Latinoamérica, eres la persona más importante. Recibes los libros y los distribuyes en tu comunidad.</p>
+          <ul class="role-tasks">
+            <li>Recepción de paquetes</li>
+            <li>Distribución local</li>
+            <li>Fotos y testimonios</li>
+            <li>Red de contactos locales</li>
+          </ul>
+          <span class="role-time">Presencial · Flexible</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SENIOR SPOTLIGHT -->
+  <section class="senior">
+    <div class="senior-inner">
+      <div>
+        <div class="section-eyebrow reveal">Especialmente para ti</div>
+        <h2 class="senior-title reveal d1">
+          Si tienes tiempo,<br/>
+          experiencia de vida<br/>
+          y ganas de usarlos —
+        </h2>
+        <div class="senior-body reveal d2">
+          <p>
+            <strong>Buscamos especialmente personas mayores.</strong>
+            No por condescendencia — por convicción. Alguien que ha
+            vivido 60, 70 años tiene algo que ningún joven tiene:
+            perspectiva, paciencia, y la sabiduría de saber qué
+            cosas realmente importan.
+          </p>
+          <p>
+            El voluntariado de Vacío Lleno es presencial, social,
+            con propósito claro y resultado visible. No es llenar
+            tiempo — es <strong>invertirlo en algo que va a durar
+            más que tú.</strong>
+          </p>
+        </div>
+      </div>
+
+      <div class="senior-benefits reveal d2">
+        <div class="senior-benefit">
+          <span class="senior-benefit-icon">🕐</span>
+          <div class="senior-benefit-text">
+            <div class="senior-benefit-title">Horarios completamente flexibles</div>
+            <div class="senior-benefit-desc">Tú decides cuándo y cuánto. No hay compromisos rígidos ni presiones.</div>
+          </div>
+        </div>
+        <div class="senior-benefit">
+          <span class="senior-benefit-icon">👥</span>
+          <div class="senior-benefit-text">
+            <div class="senior-benefit-title">Comunidad intergeneracional</div>
+            <div class="senior-benefit-desc">Trabajar junto a personas de 20, 30, 40 años con la misma misión.</div>
+          </div>
+        </div>
+        <div class="senior-benefit">
+          <span class="senior-benefit-icon">📍</span>
+          <div class="senior-benefit-text">
+            <div class="senior-benefit-title">Trabajo físico y significativo</div>
+            <div class="senior-benefit-desc">Clasificar libros, prepararlos, ver las cajas listas para viajar.</div>
+          </div>
+        </div>
+        <div class="senior-benefit">
+          <span class="senior-benefit-icon">🌱</span>
+          <div class="senior-benefit-text">
+            <div class="senior-benefit-title">Legado real</div>
+            <div class="senior-benefit-desc">Los libros que procesas seguirán circulando décadas después de ti.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORM -->
+  <section class="form-section" id="form">
+    <div class="form-aside">
+      <div class="section-eyebrow reveal">Únete ahora</div>
+      <h2 class="form-aside-title reveal d1">
+        Cuéntanos<br/>
+        quién eres
+      </h2>
+      <p class="form-aside-body reveal d2">
+        No hay requisitos. No hay prueba de nivel.
+        Solo queremos saber qué puedes dar y cuándo.
+        Nos ponemos en contacto en 48 horas.
+      </p>
+      <div class="form-commitment reveal d3">
+        <div class="commitment-item">
+          <span class="commitment-icon">✉️</span>
+          <div class="commitment-text">
+            <strong>Respuesta en 48h</strong>
+            Te contactamos para presentarte al equipo y a tu rol.
+          </div>
+        </div>
+        <div class="commitment-item">
+          <span class="commitment-icon">🔓</span>
+          <div class="commitment-text">
+            <strong>Sin compromisos previos</strong>
+            Primero conoces el proyecto, luego decides si te quedas.
+          </div>
+        </div>
+        <div class="commitment-item">
+          <span class="commitment-icon">🤲</span>
+          <div class="commitment-text">
+            <strong>Siempre a tu ritmo</strong>
+            Das lo que puedes cuando puedes. Sin presiones nunca.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <div>
+      <div class="vol-form" id="volForm">
+
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Nombre</label>
+            <input type="text" class="field-input" placeholder="Tu nombre" id="volName" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">Edad</label>
+            <input type="number" class="field-input" placeholder="Años" id="volAge" min="16" max="99" />
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Email</label>
+            <input type="email" class="field-input" placeholder="tu@email.com" id="volEmail" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">Ciudad</label>
+            <input type="text" class="field-input" placeholder="Ej: Madrid" id="volCity" />
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">País</label>
+          <select class="field-input" id="volCountry">
+            <option value="">Selecciona tu país</option>
+            <optgroup label="España">
+              <option>España</option>
+            </optgroup>
+            <optgroup label="Latinoamérica">
+              <option>México</option>
+              <option>Colombia</option>
+              <option>Venezuela</option>
+              <option>Argentina</option>
+              <option>Chile</option>
+              <option>Perú</option>
+              <option>Ecuador</option>
+              <option>Uruguay</option>
+              <option>Bolivia</option>
+              <option>Paraguay</option>
+              <option>Costa Rica</option>
+              <option>Cuba</option>
+              <option>Otro</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">¿Qué rol te interesa? (elige los que quieras)</label>
+          <div class="role-checks">
+            <label class="role-check"><input type="checkbox" value="clasificador"> 📦 Clasificador/a</label>
+            <label class="role-check"><input type="checkbox" value="envios"> ✈️ Coordinación envíos</label>
+            <label class="role-check"><input type="checkbox" value="comunicacion"> 💬 Comunicación digital</label>
+            <label class="role-check"><input type="checkbox" value="embajador"> 🤝 Embajador/a local</label>
+            <label class="role-check"><input type="checkbox" value="tecnico"> 💻 Soporte técnico</label>
+            <label class="role-check"><input type="checkbox" value="receptor"> 🌍 Receptor en Latam</label>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">¿Cuándo puedes?</label>
+          <div class="avail-grid" id="availGrid">
+            <div class="avail-btn" onclick="toggleAvail(this)">Mañanas</div>
+            <div class="avail-btn" onclick="toggleAvail(this)">Tardes</div>
+            <div class="avail-btn" onclick="toggleAvail(this)">Noches</div>
+            <div class="avail-btn" onclick="toggleAvail(this)">Fines de semana</div>
+            <div class="avail-btn" onclick="toggleAvail(this)">Solo remoto</div>
+            <div class="avail-btn" onclick="toggleAvail(this)">Flexible</div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">¿Por qué quieres unirte?</label>
+          <div class="motivation-options">
+            <label class="motivation-opt">
+              <input type="radio" name="motivation" value="creo">
+              <div class="motivation-opt-text">
+                <strong>Creo en el proyecto</strong>
+                La filosofía de Vacío Lleno me convence. Quiero ser parte de algo real.
+              </div>
+            </label>
+            <label class="motivation-opt">
+              <input type="radio" name="motivation" value="tiempo">
+              <div class="motivation-opt-text">
+                <strong>Tengo tiempo y quiero usarlo bien</strong>
+                Busco una forma de contribuir de manera significativa y constante.
+              </div>
+            </label>
+            <label class="motivation-opt">
+              <input type="radio" name="motivation" value="latam">
+              <div class="motivation-opt-text">
+                <strong>Tengo conexión con Latinoamérica</strong>
+                Conozco la realidad de allí y quiero ayudar desde aquí.
+              </div>
+            </label>
+            <label class="motivation-opt">
+              <input type="radio" name="motivation" value="otro">
+              <div class="motivation-opt-text">
+                <strong>Otro motivo</strong>
+                Cuéntamelo en las notas.
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Algo más que quieras contarnos (opcional)</label>
+          <textarea class="field-input" rows="3" placeholder="Habilidades especiales, situación particular, preguntas..." style="resize:vertical;font-family:var(--sans);"></textarea>
+        </div>
+
+        <div id="formError" style="display:none;background:rgba(184,92,56,0.1);border:1px solid rgba(184,92,56,0.3);padding:0.75rem 1rem;font-size:0.82rem;color:var(--terracotta);margin-bottom:1rem;"></div>
+
+        <button class="btn-submit" onclick="handleVolSubmit()">
+          <span id="submitBtnText">Quiero ser voluntario/a →</span>
+        </button>
+
+      </div>
+
+      <!-- SUCCESS -->
+      <div class="success-overlay" id="successOverlay">
+        <div class="success-icon">🎉</div>
+        <h3 class="success-title">¡Bienvenido/a!</h3>
+        <p class="success-body">
+          Hemos recibido tu solicitud. En las próximas 48 horas
+          te escribimos para presentarte al equipo y confirmar tu rol.
+          La insurgencia ya te está esperando.
+        </p>
+        <a href="vaciolleno-home.html" style="display:inline-block;padding:1rem 2.5rem;background:var(--navy);color:var(--cream);font-family:var(--mono);font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;">
+          Volver al inicio
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-logo">VACÍO LLENO</span>
+    <span class="footer-copy">© 2025 · Todos los libros circulan libres · vaciolleno.org</span>
+  </footer>
+
+  <script>
+    // SCROLL REVEAL
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // AVAILABILITY TOGGLE
+    function toggleAvail(el) { el.classList.toggle('selected'); }
+
+    // FORM SUBMIT
+    function handleVolSubmit() {
+      const name = document.getElementById('volName').value.trim();
+      const email = document.getElementById('volEmail').value.trim();
+      const city = document.getElementById('volCity').value.trim();
+      const country = document.getElementById('volCountry').value;
+      const errorEl = document.getElementById('formError');
+
+      errorEl.style.display = 'none';
+
+      if (!name) { showFormError('Por favor introduce tu nombre.'); return; }
+      if (!email || !email.includes('@')) { showFormError('Por favor introduce un email válido.'); return; }
+      if (!city) { showFormError('Por favor indica tu ciudad.'); return; }
+      if (!country) { showFormError('Por favor selecciona tu país.'); return; }
+
+      const btn = document.getElementById('submitBtnText');
+      btn.textContent = 'Enviando...';
+
+      setTimeout(() => {
+        document.getElementById('volForm').style.display = 'none';
+        document.getElementById('successOverlay').classList.add('visible');
+      }, 1200);
+    }
+
+    function showFormError(msg) {
+      const el = document.getElementById('formError');
+      el.textContent = msg;
+      el.style.display = 'block';
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // PROFILE CARD INTERACTION
+    document.querySelectorAll('.profile-card').forEach(card => {
+      card.addEventListener('click', function() {
+        document.querySelectorAll('.profile-card').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+
+</body>
+</html>
