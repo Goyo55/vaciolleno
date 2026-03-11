@@ -4,111 +4,86 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Política de Privacidad — Vacío Lleno</title>
+  <meta name="description" content="Cómo trata Vacío Lleno tus datos personales conforme al RGPD." />
+  <meta property="og:title" content="Política de Privacidad — Vacío Lleno" />
+  <meta property="og:description" content="Cómo trata Vacío Lleno tus datos personales conforme al RGPD." />
+  <meta property="og:image" content="https://vaciolleno.org/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" type="image/png" sizes="512x512" href="favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --paper: #f2ede4;
-      --paper-dark: #e5dfd4;
-      --ink: #1c1a14;
-      --ink-mid: rgba(28,26,20,0.55);
-      --ink-faint: rgba(28,26,20,0.1);
-      --red: #8b1a1a;
-      --gold: #8a6820;
-      --navy: #0f1f3d;
+      --paper: #f2ede4; --paper-dark: #e5dfd4; --ink: #1c1a14;
+      --ink-mid: rgba(28,26,20,0.55); --ink-faint: rgba(28,26,20,0.1);
+      --red: #8b1a1a; --gold: #8a6820; --navy: #0f1f3d;
       --serif: "Libre Baskerville", Georgia, serif;
-      --sans: "DM Sans", sans-serif;
-      --mono: "DM Mono", monospace;
+      --sans: "DM Sans", sans-serif; --mono: "DM Mono", monospace;
     }
     html { scroll-behavior: smooth; }
     body { background: var(--paper); color: var(--ink); font-family: var(--sans); font-weight: 300; }
-
-    /* NAV */
-    nav {
+    #siteNav {
       position: sticky; top: 0; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
       padding: 1.25rem 4rem;
       background: rgba(242,237,228,0.97);
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--ink-faint);
+      border-bottom: 1px solid rgba(28,26,20,0.08);
     }
     .nav-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
     .nav-logo-text { font-family: var(--serif); font-size: 1rem; font-weight: 700; color: var(--ink); }
-    .nav-logo svg { width: 28px; height: 28px; }
     .nav-links { display: flex; gap: 2rem; list-style: none; }
     .nav-links a { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-mid); text-decoration: none; transition: color 0.2s; }
     .nav-links a:hover { color: var(--ink); }
     .nav-cta { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.5rem 1.25rem; background: var(--navy); color: var(--paper); text-decoration: none; transition: all 0.25s; }
     .nav-cta:hover { background: var(--red); }
-
-    /* LEGAL DOC */
+    @media (max-width: 768px) { #siteNav { padding: 1.25rem 1.5rem; } .nav-links { display: none; } }
     .legal-wrap { max-width: 780px; margin: 0 auto; padding: 5rem 2rem 8rem; }
-
     .legal-eyebrow { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--red); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem; }
     .legal-eyebrow::before { content: ""; width: 24px; height: 1px; background: var(--red); }
-
     .legal-title { font-family: var(--serif); font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 700; line-height: 1.1; color: var(--ink); margin-bottom: 1rem; }
-
     .legal-meta { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; color: var(--ink-mid); margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 2px solid var(--ink); }
-
     .legal-intro { font-family: var(--serif); font-style: italic; font-size: 1.05rem; line-height: 1.75; color: var(--ink); margin-bottom: 3rem; padding: 1.5rem 1.75rem; border-left: 3px solid var(--red); background: rgba(139,26,26,0.04); }
-
     h2 { font-family: var(--serif); font-size: 1.3rem; font-weight: 700; color: var(--ink); margin: 2.5rem 0 0.85rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--ink-faint); }
     h3 { font-family: var(--serif); font-size: 1.05rem; font-weight: 700; color: var(--ink); margin: 1.75rem 0 0.6rem; }
-
     p { font-size: 0.92rem; line-height: 1.85; color: var(--ink-mid); margin-bottom: 1rem; }
-    p strong { color: var(--ink); font-weight: 600; }
-
+    p strong { color: var(--ink); }
     ul, ol { padding-left: 1.5rem; margin-bottom: 1rem; }
     li { font-size: 0.9rem; line-height: 1.8; color: var(--ink-mid); margin-bottom: 0.3rem; }
     li strong { color: var(--ink); }
-
     .info-box { background: var(--paper-dark); border: 1px solid var(--ink-faint); padding: 1.5rem 1.75rem; margin: 1.5rem 0; }
-    .info-box p { margin-bottom: 0; }
-
+    .info-box p { margin-bottom: 0.5rem; }
     .contact-block { background: var(--navy); color: var(--paper); padding: 2rem 2.5rem; margin: 2.5rem 0; }
-    .contact-block h3 { color: var(--paper); border: none; margin-top: 0; }
+    .contact-block h3 { color: var(--paper); border: none; margin-top: 0; font-family: var(--serif); }
     .contact-block p { color: rgba(242,237,228,0.65); }
     .contact-block a { color: rgba(201,168,76,0.9); }
-
     table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.85rem; }
     th { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; background: var(--ink); color: var(--paper); padding: 0.7rem 1rem; text-align: left; }
     td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--ink-faint); color: var(--ink-mid); vertical-align: top; }
     tr:last-child td { border-bottom: none; }
     td strong { color: var(--ink); }
-
-    /* SIBLING LEGAL LINKS */
-    .legal-siblings { margin-top: 4rem; padding-top: 2rem; border-top: 2px solid var(--ink-faint); display: flex; flex-wrap: wrap; gap: 0.75rem; }
+    .legal-siblings { margin-top: 4rem; padding-top: 2rem; border-top: 2px solid var(--ink-faint); display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
     .sibling-link { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.5rem 1rem; border: 1px solid var(--ink-faint); color: var(--ink-mid); text-decoration: none; transition: all 0.2s; }
     .sibling-link:hover { border-color: var(--ink); color: var(--ink); }
     .sibling-link.current { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-
-    /* FOOTER */
-    footer { background: var(--ink); padding: 2.5rem 4rem; display: flex; align-items: center; justify-content: space-between; }
-    .footer-logo { font-family: var(--serif); font-size: 1rem; font-weight: 700; color: rgba(242,237,228,0.25); }
-    .footer-copy { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.1em; color: rgba(242,237,228,0.12); }
-
-    @media (max-width: 768px) {
-      nav { padding: 1.25rem 1.5rem; }
-      .nav-links { display: none; }
-      .legal-wrap { padding: 3rem 1.5rem 5rem; }
-      footer { padding: 2rem 1.5rem; flex-direction: column; gap: 1rem; text-align: center; }
-    }
+    footer { background: var(--ink); padding: 2rem 4rem; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: var(--serif); font-size: 1rem; font-weight: 700; color: rgba(242,237,228,0.2); }
+    .footer-copy { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.1em; color: rgba(242,237,228,0.1); }
+    @media (max-width: 768px) { footer { padding: 2rem 1.5rem; flex-direction: column; gap: 1rem; } .legal-wrap { padding: 3rem 1.5rem 5rem; } }
   </style>
 </head>
 <body>
-  <nav>
+  <nav id="siteNav">
     <a href="vaciolleno-home.html" class="nav-logo">
-      <svg viewBox="0 0 60 60" fill="none" style="width:28px;height:28px;">
+      <svg viewBox="0 0 60 60" fill="none" style="width:28px;height:28px;flex-shrink:0;">
         <rect x="8" y="10" width="44" height="40" rx="2" fill="#1a3260"/>
         <circle cx="30" cy="30" r="10" fill="#0f1f3d" stroke="rgba(201,168,76,0.6)" stroke-width="1.5"/>
       </svg>
       <span class="nav-logo-text">VACÍO LLENO</span>
     </a>
     <ul class="nav-links">
-      <li><a href="vaciolleno-home.html">Inicio</a></li>
       <li><a href="vaciolleno-proyecto.html">El Proyecto</a></li>
       <li><a href="vaciolleno-voluntarios.html">Voluntarios</a></li>
       <li><a href="vaciolleno-libros.html">Libros</a></li>
@@ -117,29 +92,24 @@
     </ul>
     <a href="vaciolleno-donaciones.html" class="nav-cta">Donar</a>
   </nav>
-
   <div class="legal-wrap">
     <div class="legal-eyebrow">Documento legal</div>
     <h1 class="legal-title">Política de Privacidad</h1>
     <p class="legal-meta">Última actualización: 1 de enero de 2025 · Vacío Lleno · vaciolleno.org</p>
     <div class="legal-intro">En Vacío Lleno tratamos tus datos con el mismo cuidado con el que tratamos los libros: sin retenerlos más de lo necesario, sin venderlos, sin usarlos para nada que no hayas autorizado.</div>
-
     <h2>1. Responsable del Tratamiento</h2>
-    <p><strong>Denominación:</strong> Vacío Lleno &nbsp;·&nbsp; <strong>Web:</strong> vaciolleno.org &nbsp;·&nbsp; <strong>Contacto:</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1f6f6d76697e7c767b7e7b5f697e7c767073737a717031706d78">[email&#160;protected]</a> &nbsp;·&nbsp; <strong>País:</strong> España</p>
-
+    <p><strong>Denominación:</strong> Vacío Lleno &nbsp;·&nbsp; <strong>Web:</strong> vaciolleno.org &nbsp;·&nbsp; <strong>Contacto:</strong> privacidad@vaciolleno.org &nbsp;·&nbsp; <strong>País:</strong> España</p>
     <h2>2. Qué datos recopilamos y por qué</h2>
     <h3>2.1 Voluntariado</h3>
-    <p>Nombre, correo, ciudad, país, edad aproximada y disponibilidad. Base legal: <strong>consentimiento expreso</strong>.</p>
+    <p>Nombre, correo, ciudad, país, edad aproximada y disponibilidad. Base legal: <strong>consentimiento expreso</strong> al enviar el formulario.</p>
     <h3>2.2 Donaciones monetarias</h3>
     <p>El pago lo gestiona <strong>Stripe</strong>. No almacenamos datos de tarjeta. Las donaciones anónimas solo guardan el código único generado, sin vinculación a ninguna persona.</p>
     <h3>2.3 Donación de libros</h3>
-    <p>Nombre, correo y ciudad para coordinar la recogida. Se eliminan al completar la gestión.</p>
+    <p>Nombre, correo y ciudad para coordinar la recogida. Se eliminan al completar la gestión logística.</p>
     <h3>2.4 Navegación web</h3>
-    <p>IP anonimizada y navegador para estadísticas agregadas. No se identifican personas individuales.</p>
-
+    <p>IP anonimizada y tipo de navegador para estadísticas agregadas. No se identifican personas individuales.</p>
     <h2>3. Con quién compartimos tus datos</h2>
-    <p>No vendemos ni cedemos datos. Proveedores externos: <strong>Stripe Inc.</strong> (pagos) y <strong>Firebase / Google LLC</strong> (almacenamiento, servidores en el EEE).</p>
-
+    <p>No vendemos, alquilamos ni cedemos datos personales a terceros. Proveedores externos: <strong>Stripe Inc.</strong> (pagos) y <strong>Firebase / Google LLC</strong> (almacenamiento en el EEE).</p>
     <h2>4. Tiempos de conservación</h2>
     <table>
       <tr><th>Dato</th><th>Período</th></tr>
@@ -149,16 +119,34 @@
       <tr><td>Donación de libros</td><td>Hasta completar la logística</td></tr>
       <tr><td>Navegación anonimizada</td><td>13 meses máximo</td></tr>
     </table>
-
     <h2>5. Tus derechos (RGPD)</h2>
-    <p>Acceso · Rectificación · Supresión · Portabilidad · Oposición · Limitación · Retirada del consentimiento. Escríbenos a <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4b3b39223d2a28222f2a2f0b3d2a28222427272e25246524392c">[email&#160;protected]</a></strong>. Plazo de respuesta: 30 días. Puedes reclamar también ante la <strong>AEPD</strong> (aepd.es).</p>
-
+    <p>Acceso · Rectificación · Supresión · Portabilidad · Oposición · Limitación · Retirada del consentimiento. Escríbenos a <strong>privacidad@vaciolleno.org</strong>. Plazo de respuesta: 30 días. También puedes reclamar ante la <strong>AEPD</strong> en aepd.es.</p>
     <div class="contact-block">
       <h3>Contacto de privacidad</h3>
-      <p><a href="/cdn-cgi/l/email-protection#ec9c9e859a8d8f85888d88ac9a8d8f85838080898283c2839e8b"><span class="__cf_email__" data-cfemail="3a4a48534c5b59535e5b5e7a4c5b59535556565f54551455485d">[email&#160;protected]</span></a></p>
+      <p>Para cualquier consulta sobre el tratamiento de tus datos:</p>
+      <p><a href="mailto:privacidad@vaciolleno.org">privacidad@vaciolleno.org</a></p>
     </div>
-
     <div class="legal-siblings">
       <span style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-mid);align-self:center;">Documentos legales:</span>
       <a href="vaciolleno-legal-privacidad.html" class="sibling-link current">Privacidad</a>
-      <a href="vaciolleno-legal-cookies.html" cl
+      <a href="vaciolleno-legal-cookies.html" class="sibling-link">Cookies</a>
+      <a href="vaciolleno-legal-terminos.html" class="sibling-link">Términos</a>
+      <a href="vaciolleno-legal-aviso.html" class="sibling-link">Aviso Legal</a>
+    </div>
+  </div>
+  <footer>
+    <span class="footer-logo">VACÍO LLENO</span>
+    <span class="footer-copy">© 2025 · vaciolleno.org</span>
+  </footer>
+  <!-- Cookie banner legal links -->
+  <div style="background:#1c1a14;padding:1rem 4rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+    <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.08em;color:rgba(242,237,228,0.15);">© 2025 · vaciolleno.org · Todos los libros circulan libres</span>
+    <div style="display:flex;gap:1.5rem;">
+      <a href="vaciolleno-legal-privacidad.html" style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.08em;color:rgba(242,237,228,0.2);text-decoration:none;">Privacidad</a>
+      <a href="vaciolleno-legal-cookies.html" style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.08em;color:rgba(242,237,228,0.2);text-decoration:none;">Cookies</a>
+      <a href="vaciolleno-legal-terminos.html" style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.08em;color:rgba(242,237,228,0.2);text-decoration:none;">Términos</a>
+      <a href="vaciolleno-legal-aviso.html" style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.08em;color:rgba(242,237,228,0.2);text-decoration:none;">Aviso Legal</a>
+    </div>
+  </div>
+</body>
+</html>

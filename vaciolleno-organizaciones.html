@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Organizaciones — Vacío Lleno</title>
+  <meta name="description" content="Organizaciones colaboradoras de Vacío Lleno en Latinoamérica. Distribución local de libros perforados a través de redes de impacto." />
+  <meta property="og:title" content="Organizaciones — Vacío Lleno" />
+  <meta property="og:image" content="https://vaciolleno.org/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --paper: #f2ede4; --ink: #1c1a14; --ink-mid: rgba(28,26,20,0.55);
+      --ink-faint: rgba(28,26,20,0.08); --red: #8b1a1a; --navy: #0f1f3d;
+      --gold: #c9a84c; --serif: "Libre Baskerville", Georgia, serif;
+      --sans: "DM Sans", sans-serif; --mono: "DM Mono", monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--paper); color: var(--ink); font-family: var(--sans); }
+
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 4rem;
+      background: rgba(242,237,228,0.97); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--ink-faint);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+    .nav-logo-text { font-family: var(--serif); font-size: 1rem; font-weight: 700; color: var(--ink); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-mid); text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--ink); }
+    .nav-cta { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.5rem 1.25rem; background: var(--navy); color: var(--paper); text-decoration: none; }
+    .nav-cta:hover { background: var(--red); }
+
+    /* HERO */
+    .hero { background: var(--navy); padding: 6rem 4rem 5rem; }
+    .hero-eyebrow { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(201,168,76,0.7); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.75rem; }
+    .hero-eyebrow::before { content: ""; width: 32px; height: 1px; background: rgba(201,168,76,0.4); }
+    .hero-title { font-family: var(--serif); font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700; color: rgba(242,237,228,0.95); line-height: 1.1; margin-bottom: 1.5rem; max-width: 700px; }
+    .hero-sub { font-size: 1rem; line-height: 1.8; color: rgba(242,237,228,0.55); max-width: 580px; }
+
+    /* CONTENT */
+    .content-wrap { max-width: 900px; margin: 0 auto; padding: 5rem 2rem 8rem; }
+
+    /* COMING SOON */
+    .coming-soon {
+      background: var(--ink); color: var(--paper);
+      padding: 4rem; margin-bottom: 4rem;
+      display: flex; align-items: flex-start; gap: 3rem;
+    }
+    .cs-icon { font-size: 3rem; flex-shrink: 0; line-height: 1; }
+    .cs-title { font-family: var(--serif); font-size: 1.5rem; font-weight: 700; color: var(--paper); margin-bottom: 0.75rem; }
+    .cs-text { font-size: 0.9rem; line-height: 1.8; color: rgba(242,237,228,0.6); }
+    .cs-text strong { color: var(--paper); }
+
+    /* HOW IT WORKS */
+    h2 { font-family: var(--serif); font-size: 1.4rem; font-weight: 700; color: var(--ink); margin: 3rem 0 1.25rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--ink-faint); }
+    p { font-size: 0.92rem; line-height: 1.85; color: var(--ink-mid); margin-bottom: 1rem; }
+    p strong { color: var(--ink); }
+
+    .roles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+    .role-card { padding: 1.75rem; border: 1px solid var(--ink-faint); background: rgba(242,237,228,0.5); }
+    .role-tag { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; }
+    .role-title { font-family: var(--serif); font-size: 1rem; font-weight: 700; color: var(--ink); margin-bottom: 0.5rem; }
+    .role-desc { font-size: 0.85rem; line-height: 1.7; color: var(--ink-mid); }
+
+    /* CTA */
+    .cta-block { background: rgba(15,31,61,0.05); border-left: 3px solid var(--navy); padding: 2rem 2.5rem; margin-top: 3rem; }
+    .cta-block p { margin-bottom: 1rem; }
+    .cta-btn { display: inline-block; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.75rem 1.75rem; background: var(--navy); color: var(--paper); text-decoration: none; transition: background 0.2s; }
+    .cta-btn:hover { background: var(--red); }
+
+    footer { background: var(--ink); padding: 2rem 4rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .footer-copy { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.08em; color: rgba(242,237,228,0.15); }
+    .footer-legal { display: flex; gap: 1.5rem; }
+    .footer-legal a { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.08em; color: rgba(242,237,228,0.15); text-decoration: none; }
+
+    @media (max-width: 768px) {
+      nav { padding: 1.25rem 1.5rem; } .nav-links { display: none; }
+      .hero { padding: 4rem 1.5rem 3rem; }
+      .coming-soon { flex-direction: column; gap: 1.5rem; padding: 2rem; }
+      .content-wrap { padding: 3rem 1.5rem 5rem; }
+      footer { padding: 2rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="vaciolleno-home.html" class="nav-logo">
+      <svg viewBox="0 0 60 60" fill="none" style="width:28px;height:28px;">
+        <rect x="8" y="10" width="44" height="40" rx="2" fill="#1a3260"/>
+        <circle cx="30" cy="30" r="10" fill="#0f1f3d" stroke="rgba(201,168,76,0.6)" stroke-width="1.5"/>
+      </svg>
+      <span class="nav-logo-text">VACÍO LLENO</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="vaciolleno-proyecto.html">El Proyecto</a></li>
+      <li><a href="vaciolleno-voluntarios.html">Voluntarios</a></li>
+      <li><a href="vaciolleno-libros.html">Libros</a></li>
+      <li><a href="vaciolleno-impacto.html">Impacto</a></li>
+      <li><a href="vaciolleno-manifiesto.html">Manifiesto</a></li>
+    </ul>
+    <a href="vaciolleno-donaciones.html" class="nav-cta">Donar</a>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-eyebrow">Red de distribución</div>
+    <h1 class="hero-title">Organizaciones colaboradoras</h1>
+    <p class="hero-sub">Vacío Lleno no distribuye solo. La red de impacto real se construye con organizaciones locales en cada país: bibliotecas comunitarias, colectivos culturales, centros educativos y grupos de base que llevan los libros hasta donde más se necesitan.</p>
+  </div>
+
+  <div class="content-wrap">
+
+    <div class="coming-soon">
+      <div class="cs-icon">○</div>
+      <div>
+        <div class="cs-title">Esta página está en construcción</div>
+        <p class="cs-text">Estamos construyendo activamente la red de organizaciones colaboradoras. Cuando una organización se une, aparece aquí con su perfil, su país y el tipo de distribución que realiza.<br><br>Si representas una organización interesada en recibir o distribuir libros perforados, escríbenos: <strong>hola@vaciolleno.org</strong></p>
+      </div>
+    </div>
+
+    <h2>Cómo colaboran las organizaciones</h2>
+    <p>Las organizaciones colaboradoras actúan como <strong>puntos de distribución local</strong> para los libros perforados que Vacío Lleno envía desde España. No necesitan financiación ni infraestructura — solo compromiso con el acceso al conocimiento.</p>
+
+    <div class="roles-grid">
+      <div class="role-card">
+        <div class="role-tag">Rol A</div>
+        <div class="role-title">Punto de distribución</div>
+        <p class="role-desc">Reciben los libros y los distribuyen a través de sus redes locales. Pueden ser bibliotecas, centros comunitarios o colectivos culturales.</p>
+      </div>
+      <div class="role-card">
+        <div class="role-tag">Rol B</div>
+        <div class="role-title">Nodo territorial</div>
+        <p class="role-desc">Coordinan la distribución en una ciudad o región, recibiendo los libros y derivándolos a otros puntos más pequeños de su red.</p>
+      </div>
+      <div class="role-card">
+        <div class="role-tag">Rol C</div>
+        <div class="role-title">Alianza estratégica</div>
+        <p class="role-desc">Organizaciones de mayor escala que pueden financiar envíos, coordinar campañas de concienciación o integrar Vacío Lleno en sus programas.</p>
+      </div>
+    </div>
+
+    <h2>¿Tu organización quiere unirse?</h2>
+    <p>No hay requisito mínimo de tamaño. Lo único que necesitamos es que estés en Latinoamérica o trabajes con comunidades latinoamericanas, que tengas capacidad para recibir paquetes físicos, y que compartas el compromiso con el acceso libre al conocimiento.</p>
+
+    <div class="cta-block">
+      <p><strong>Escríbenos</strong> contando brevemente qué hace tu organización, dónde está y cuántas personas podría alcanzar a través de vuestra red.</p>
+      <a href="mailto:hola@vaciolleno.org" class="cta-btn">Contactar → hola@vaciolleno.org</a>
+    </div>
+
+  </div>
+
+  <footer>
+    <span class="footer-copy">© 2025 Vacío Lleno · Todos los libros circulan libres</span>
+    <div class="footer-legal">
+      <a href="vaciolleno-legal-privacidad.html">Privacidad</a>
+      <a href="vaciolleno-legal-cookies.html">Cookies</a>
+      <a href="vaciolleno-legal-terminos.html">Términos</a>
+      <a href="vaciolleno-legal-aviso.html">Aviso Legal</a>
+    </div>
+  </footer>
+
+</body>
+</html>

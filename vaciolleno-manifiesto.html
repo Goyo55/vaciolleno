@@ -66,8 +66,11 @@
 
     /* NAV — newspaper masthead style */
     .masthead {
+      position: sticky; top: 0; z-index: 200;
       border-bottom: 3px double var(--ink);
       padding: 1rem 4rem 0;
+      background: rgba(242,237,228,0.97);
+      backdrop-filter: blur(10px);
     }
 
     .masthead-top {
