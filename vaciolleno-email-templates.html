@@ -209,7 +209,7 @@
     <div class="email-meta">
       <div class="email-meta-row">
         <span class="email-meta-label">De</span>
-        <span class="email-meta-value">Vacío Lleno &lt;hola@vaciolleno.org&gt;</span>
+        <span class="email-meta-value">Vacío Lleno &lt;<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d0b8bfbcb190a6b1b3b9bfbcbcb5bebffebfa2b7">[email&#160;protected]</a>&gt;</span>
       </div>
       <div class="email-meta-row">
         <span class="email-meta-label">Para</span>
@@ -217,7 +217,7 @@
       </div>
       <div class="email-meta-row">
         <span class="email-meta-label">Reply-to</span>
-        <span class="email-meta-value">hola@vaciolleno.org</span>
+        <span class="email-meta-value"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dab2b5b6bb9aacbbb9b3b5b6b6bfb4b5f4b5a8bd">[email&#160;protected]</a></span>
       </div>
       <div class="email-meta-row email-subject-row">
         <span class="email-meta-label">Asunto</span>
@@ -382,7 +382,7 @@
               Hemos recibido tu mensaje. Gracias por escribirnos.
             </p>
             <p class="email-p">
-              Te respondemos en un plazo máximo de <strong>48-72 horas</strong>. Si tu consulta es urgente o tiene que ver con una donación ya realizada, puedes escribir directamente a <a href="mailto:hola@vaciolleno.org" style="color:#8a6820;">hola@vaciolleno.org</a> indicando el motivo en el asunto.
+              Te respondemos en un plazo máximo de <strong>48-72 horas</strong>. Si tu consulta es urgente o tiene que ver con una donación ya realizada, puedes escribir directamente a <a href="/cdn-cgi/l/email-protection#274f484b46675146444e484b4b42494809485540" style="color:#8a6820;"><span class="__cf_email__" data-cfemail="5b3334373a1b2d3a38323437373e35347534293c">[email&#160;protected]</span></a> indicando el motivo en el asunto.
             </p>
             <div class="email-highlight">
               <p>
@@ -416,7 +416,7 @@
     </div>
   </div><!-- /email-outer -->
 
-  <script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     const meta = {
       'voluntario': {
         title: 'Respuesta automática — Registro de voluntario/a',
@@ -453,19 +453,4 @@
       document.getElementById('clientTitle').textContent = m.title;
       document.getElementById('metaPara').textContent = m.para;
       document.getElementById('metaAsunto').textContent = m.asunto;
-      document.querySelector('.email-meta-row:nth-child(3) .email-meta-value').textContent = m.replyto;
-    }
-
-    function copyEmailHTML() {
-      const activeTpl = document.querySelector('.tpl.active .email-inner');
-      const html = activeTpl ? activeTpl.outerHTML : '';
-      navigator.clipboard.writeText(html).then(() => {
-        const btn = document.querySelector('.copy-btn');
-        btn.textContent = '✓ Copiado';
-        setTimeout(() => { btn.textContent = 'Copiar HTML →'; }, 2000);
-      });
-    }
-  </script>
-
-</body>
-</html>
+      document.querySelector('.email-meta-row:nth-child(3) .
