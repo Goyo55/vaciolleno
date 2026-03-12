@@ -66,20 +66,21 @@
 
     /* NAV — newspaper masthead style */
     .masthead {
-      position:sticky; top:0; z-index:200; background:rgba(242,237,228,0.97); backdrop-filter:blur(10px);
-      position: sticky; top: 0; z-index: 200;
       border-bottom: 3px double var(--ink);
-      padding: 1rem 4rem 0;
-      background: rgba(242,237,228,0.97);
-      backdrop-filter: blur(10px);
+      padding: 0 4rem;
     }
 
     .masthead-top {
       display: flex; align-items: center;
       justify-content: space-between;
-      padding-bottom: 0.75rem;
+      padding: 0.85rem 0;
       border-bottom: 1px solid var(--ink-faint);
-      margin-bottom: 0.75rem;
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(242,237,228,0.97);
+      backdrop-filter: blur(10px);
+      margin: 0 -4rem;
+      padding-left: 4rem;
+      padding-right: 4rem;
     }
 
     .masthead-date {
