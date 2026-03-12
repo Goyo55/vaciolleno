@@ -65,22 +65,15 @@
     }
 
     /* NAV — newspaper masthead style */
-    .masthead {
-      border-bottom: 3px double var(--ink);
-      padding: 0 4rem;
-    }
+
 
     .masthead-top {
       display: flex; align-items: center;
       justify-content: space-between;
-      padding: 0.85rem 0;
-      border-bottom: 1px solid var(--ink-faint);
-      position: sticky; top: 0; z-index: 200;
-      background: rgba(242,237,228,0.97);
-      backdrop-filter: blur(10px);
-      margin: 0 -4rem;
-      padding-left: 4rem;
-      padding-right: 4rem;
+      padding: 0.85rem 4rem;
+      border-bottom: 2px solid var(--ink);
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: #f2ede4;
     }
 
     .masthead-date {
@@ -112,7 +105,9 @@
     /* TITLE BLOCK */
     .title-block {
       text-align: center;
-      padding: 1.5rem 0 1rem;
+      padding: 1.75rem 4rem 1.25rem;
+      border-bottom: 3px double var(--ink);
+      margin-top: 3.5rem; /* clear the fixed bar */
     }
 
     .publication-name {
@@ -574,11 +569,29 @@
 
     /* FOOTER MASTHEAD */
     .footer-masthead {
-      padding: 2rem 4rem;
-      display: flex; align-items: center;
-      justify-content: space-between;
       border-top: 3px double var(--ink);
+      padding: 2rem 0;
+      background: var(--paper);
     }
+    .footer-masthead-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+    .footer-legal-links {
+      display: flex; gap: 1.25rem; flex-wrap: wrap;
+    }
+    .footer-legal-links a {
+      font-family: var(--mono); font-size: 0.55rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--ink-mid); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-legal-links a:hover { color: var(--ink); }
 
     .footer-logo {
       font-family: var(--display); font-size: 2rem;
@@ -631,7 +644,7 @@
     @media (max-width: 768px) {
       .masthead-nav { display: none; }
       .masthead {
-      position:sticky; top:0; z-index:200; background:rgba(242,237,228,0.97); backdrop-filter:blur(10px); padding: 1rem 1.5rem 0; }
+      padding: 0; }
       .title-block { padding: 1rem 1.5rem; }
       .hero-article { grid-template-columns: 1fr; }
       .col-divider { display: none; }
@@ -656,33 +669,33 @@
     .drawer-cta { font-family:var(--mono,monospace); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; padding:0.9rem 2.5rem; background:#0f1f3d; color:#f2ede4; text-decoration:none; }
     .drawer-close { position:absolute; top:1.5rem; right:2rem; font-size:1.75rem; cursor:pointer; background:none; border:none; color:#1c1a14; line-height:1; }
     .nav-hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:4px; background:none; border:none; }
-    .nav-hamburger span { display:block; width:22px; height:2px; }
+    .nav-hamburger span { display:block; width:22px; height:2px; background: var(--ink); }
   </style>
 </head>
 <body>
 
   <div id="progress"></div>
 
-  <!-- MASTHEAD -->
-  <header class="masthead">
-    <div class="masthead-top">
-      <span class="masthead-date">Vol. I · Núm. 1 · Madrid, España · 2025</span>
-      <ul class="masthead-nav">
-        <li><a href="vaciolleno-home.html">Inicio</a></li>
-        <li><a href="vaciolleno-proyecto.html">El Proyecto</a></li>
-        <li><a href="vaciolleno-voluntarios.html">Voluntarios</a></li>
-        <li><a href="vaciolleno-libros.html">Libros</a></li>
-        <li><a href="vaciolleno-impacto.html">Impacto</a></li>
-        <li><a href="vaciolleno-manifiesto.html" class="active">Manifiesto</a></li>
-      </ul>
-      <a href="vaciolleno-donaciones.html" class="masthead-cta">Donar</a>
-      <button class="nav-hamburger" id="navHamburger" aria-label="Abrir menú" style="display:none;"><span style="background:#1c1a14;"></span><span style="background:#1c1a14;"></span><span style="background:#1c1a14;"></span></button>
-    </div>
-    <div class="title-block">
-      <span class="publication-name">Vacío Lleno</span>
-      <span class="publication-sub">Insurgencia intelectual · Distribución libre de libros · Latinoamérica</span>
-    </div>
-  </header>
+  <!-- MASTHEAD NAV — fixed bar, direct child of body -->
+  <div class="masthead-top">
+    <span class="masthead-date">Vol. I · Núm. 1 · Madrid, España · 2025</span>
+    <ul class="masthead-nav">
+      <li><a href="vaciolleno-home.html">Inicio</a></li>
+      <li><a href="vaciolleno-proyecto.html">El Proyecto</a></li>
+      <li><a href="vaciolleno-voluntarios.html">Voluntarios</a></li>
+      <li><a href="vaciolleno-libros.html">Libros</a></li>
+      <li><a href="vaciolleno-impacto.html">Impacto</a></li>
+      <li><a href="vaciolleno-manifiesto.html" class="active">Manifiesto</a></li>
+    </ul>
+    <a href="vaciolleno-donaciones.html" class="masthead-cta">Donar</a>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Abrir menú"><span></span><span></span><span></span></button>
+  </div>
+
+  <!-- TITLE BLOCK — scrolls away normally -->
+  <div class="title-block">
+    <span class="publication-name">Vacío Lleno</span>
+    <span class="publication-sub">Insurgencia intelectual · Distribución libre de libros · Latinoamérica</span>
+  </div>
 
   <!-- HERO ARTICLE -->
   <section class="hero-article">
@@ -1049,21 +1062,15 @@
 
   <!-- FOOTER -->
   <footer class="footer-masthead">
-    <div class="footer-logo">Vacío Lleno</div>
-    <div class="footer-motto">
-      "El agujero en el libro es la puerta al conocimiento que antes<br/>
-      cerraban por ti. Ahora la dejamos abierta para siempre."
-    </div>
-    <div class="footer-copy">
-      © 2025 vaciolleno.org<br/>
-      Todos los libros circulan libres.
-    </div>
-  
-    <div style="font-family:var(--mono,monospace);font-size:0.55rem;letter-spacing:0.08em;display:flex;gap:1.5rem;flex-wrap:wrap;">
-      <a href="vaciolleno-legal-privacidad.html" style="color:rgba(240,236,227,0.2);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='rgba(240,236,227,0.55)'" onmouseout="this.style.color='rgba(240,236,227,0.2)'">Privacidad</a>
-      <a href="vaciolleno-legal-cookies.html" style="color:rgba(240,236,227,0.2);text-decoration:none;" onmouseover="this.style.color='rgba(240,236,227,0.55)'" onmouseout="this.style.color='rgba(240,236,227,0.2)'">Cookies</a>
-      <a href="vaciolleno-legal-terminos.html" style="color:rgba(240,236,227,0.2);text-decoration:none;" onmouseover="this.style.color='rgba(240,236,227,0.55)'" onmouseout="this.style.color='rgba(240,236,227,0.2)'">Términos</a>
-      <a href="vaciolleno-legal-aviso.html" style="color:rgba(240,236,227,0.2);text-decoration:none;" onmouseover="this.style.color='rgba(240,236,227,0.55)'" onmouseout="this.style.color='rgba(240,236,227,0.2)'">Aviso Legal</a>
+    <div class="footer-masthead-inner">
+      <div class="footer-logo">Vacío Lleno</div>
+      <div class="footer-motto">
+        "El agujero en el libro es la puerta al conocimiento que antes
+        cerraban por ti. Ahora la dejamos abierta para siempre."
+      </div>
+      <div class="footer-copy">
+        © 2025 vaciolleno.org · Todos los libros circulan libres.
+      </div>
     </div>
   </footer>
 
