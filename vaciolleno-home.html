@@ -962,6 +962,32 @@
       footer { padding: 3rem 2rem 2rem; }
       .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
     }
+  
+    /* ── NAV (light bg) ── */
+    nav { position:sticky; top:0; z-index:200; display:flex; align-items:center; justify-content:space-between; padding:1.1rem 4rem; background:rgba(242,237,228,0.97); backdrop-filter:blur(10px); border-bottom:1px solid rgba(28,26,20,0.08); }
+    .nav-logo { display:flex; align-items:center; gap:0.75rem; text-decoration:none; flex-shrink:0; }
+    .nav-logo-text { font-family:var(--serif,"Libre Baskerville",serif); font-size:0.95rem; font-weight:700; color:var(--ink,#1c1a14); }
+    .nav-links { display:flex; gap:2rem; list-style:none; margin:0; padding:0; }
+    .nav-links a { font-family:var(--mono,"DM Mono",monospace); font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-mid,rgba(28,26,20,0.55)); text-decoration:none; transition:color 0.2s; }
+    .nav-links a:hover,.nav-links a.active { color:var(--ink,#1c1a14); }
+    .nav-cta { font-family:var(--mono,"DM Mono",monospace); font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; padding:0.5rem 1.25rem; background:var(--navy,#0f1f3d); color:#f2ede4; text-decoration:none; transition:background 0.2s; white-space:nowrap; }
+    .nav-cta:hover { background:var(--red,#8b1a1a); }
+    .nav-hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:4px; background:none; border:none; }
+    .nav-hamburger span { display:block; width:22px; height:2px; background:var(--ink,#1c1a14); }
+    .nav-drawer { display:none; position:fixed; inset:0; z-index:300; background:rgba(242,237,228,0.98); backdrop-filter:blur(12px); flex-direction:column; align-items:center; justify-content:center; gap:2.5rem; }
+    .nav-drawer.open { display:flex; }
+    .nav-drawer ul { list-style:none; text-align:center; padding:0; margin:0; display:flex; flex-direction:column; gap:1.75rem; }
+    .nav-drawer ul a { font-family:var(--serif,serif); font-size:1.5rem; font-weight:700; color:var(--ink,#1c1a14); text-decoration:none; }
+    .drawer-cta { font-family:var(--mono,monospace); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; padding:0.9rem 2.5rem; background:var(--navy,#0f1f3d); color:#f2ede4; text-decoration:none; }
+    .drawer-close { position:absolute; top:1.5rem; right:2rem; font-size:1.75rem; cursor:pointer; background:none; border:none; color:var(--ink,#1c1a14); line-height:1; }
+    @media (max-width:768px) { nav { padding:1rem 1.5rem; } .nav-links,.nav-cta { display:none; } .nav-hamburger { display:flex; } }
+  
+    @media (max-width:768px) {
+      .footer-top { grid-template-columns: 1fr !important; }
+      .footer-brand { margin-bottom: 1.5rem; }
+      .footer-bottom { flex-direction: column !important; align-items: flex-start !important; }
+      .footer-inner { padding: 3rem 1.5rem; }
+    }
   </style>
 </head>
 <body>
@@ -973,7 +999,7 @@
   <!-- NAV -->
   <nav>
     <a href="vaciolleno-home.html" class="nav-logo">
-      <svg viewBox="0 0 60 60" fill="none" style="width:28px;height:28px;">
+      <svg viewBox="0 0 60 60" fill="none" style="width:28px;height:28px;flex-shrink:0;">
         <rect x="8" y="10" width="44" height="40" rx="2" fill="#1a3260"/>
         <circle cx="30" cy="30" r="10" fill="#0f1f3d" stroke="rgba(201,168,76,0.6)" stroke-width="1.5"/>
       </svg>
@@ -987,6 +1013,7 @@
       <li><a href="vaciolleno-manifiesto.html">Manifiesto</a></li>
     </ul>
     <a href="vaciolleno-donaciones.html" class="nav-cta">Donar</a>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Abrir menú"><span></span><span></span><span></span></button>
   </nav>
 
   <!-- HERO -->
@@ -1354,7 +1381,6 @@
           <div class="footer-col-title">Contacto</div>
           <ul class="footer-links">
             <li><a href="mailto:hola@vaciolleno.org">hola@vaciolleno.org</a></li>
-            <li><a href="mailto:privacidad@vaciolleno.org">privacidad@vaciolleno.org</a></li>
           </ul>
         </div>
       </div>
@@ -1558,5 +1584,18 @@
     }
   </style>
 
+  <!-- mobile drawer -->
+  <div class="nav-drawer" id="navDrawer">
+    <button class="drawer-close" onclick="document.getElementById('navDrawer').classList.remove('open')" aria-label="Cerrar">&#x00D7;</button>
+    <ul>
+      <li><a href="vaciolleno-proyecto.html">El Proyecto</a></li>
+      <li><a href="vaciolleno-voluntarios.html">Voluntarios</a></li>
+      <li><a href="vaciolleno-libros.html">Libros</a></li>
+      <li><a href="vaciolleno-impacto.html">Impacto</a></li>
+      <li><a href="vaciolleno-manifiesto.html">Manifiesto</a></li>
+    </ul>
+    <a href="vaciolleno-donaciones.html" class="drawer-cta">Donar</a>
+  </div>
+  <script>document.getElementById('navHamburger').addEventListener('click',function(){document.getElementById('navDrawer').classList.add('open');});</script>
 </body>
 </html>

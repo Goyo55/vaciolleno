@@ -66,6 +66,7 @@
 
     /* NAV — newspaper masthead style */
     .masthead {
+      position:sticky; top:0; z-index:200; background:rgba(242,237,228,0.97); backdrop-filter:blur(10px);
       position: sticky; top: 0; z-index: 200;
       border-bottom: 3px double var(--ink);
       padding: 1rem 4rem 0;
@@ -628,7 +629,8 @@
     }
     @media (max-width: 768px) {
       .masthead-nav { display: none; }
-      .masthead { padding: 1rem 1.5rem 0; }
+      .masthead {
+      position:sticky; top:0; z-index:200; background:rgba(242,237,228,0.97); backdrop-filter:blur(10px); padding: 1rem 1.5rem 0; }
       .title-block { padding: 1rem 1.5rem; }
       .hero-article { grid-template-columns: 1fr; }
       .col-divider { display: none; }
@@ -639,6 +641,21 @@
       .memoriam-grid { grid-template-columns: 1fr; }
       .footer-masthead { flex-direction: column; gap: 1rem; text-align: center; padding: 2rem 1.5rem; }
     }
+  
+    @media (max-width:768px) {
+      .masthead { padding: 0.75rem 1.5rem 0; }
+      .masthead-nav, .masthead-cta { display: none !important; }
+      .nav-hamburger { display: flex !important; }
+    }
+  
+    .nav-drawer { display:none; position:fixed; inset:0; z-index:300; background:rgba(242,237,228,0.98); backdrop-filter:blur(12px); flex-direction:column; align-items:center; justify-content:center; gap:2.5rem; }
+    .nav-drawer.open { display:flex; }
+    .nav-drawer ul { list-style:none; text-align:center; padding:0; margin:0; display:flex; flex-direction:column; gap:1.75rem; }
+    .nav-drawer ul a { font-family:var(--serif,serif); font-size:1.5rem; font-weight:700; color:var(--ink,#1c1a14); text-decoration:none; }
+    .drawer-cta { font-family:var(--mono,monospace); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; padding:0.9rem 2.5rem; background:#0f1f3d; color:#f2ede4; text-decoration:none; }
+    .drawer-close { position:absolute; top:1.5rem; right:2rem; font-size:1.75rem; cursor:pointer; background:none; border:none; color:#1c1a14; line-height:1; }
+    .nav-hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:4px; background:none; border:none; }
+    .nav-hamburger span { display:block; width:22px; height:2px; }
   </style>
 </head>
 <body>
@@ -658,6 +675,7 @@
         <li><a href="vaciolleno-manifiesto.html" class="active">Manifiesto</a></li>
       </ul>
       <a href="vaciolleno-donaciones.html" class="masthead-cta">Donar</a>
+      <button class="nav-hamburger" id="navHamburger" aria-label="Abrir menú" style="display:none;"><span style="background:#1c1a14;"></span><span style="background:#1c1a14;"></span><span style="background:#1c1a14;"></span></button>
     </div>
     <div class="title-block">
       <span class="publication-name">Vacío Lleno</span>
@@ -1170,5 +1188,18 @@
     }
   </style>
 
+  <!-- mobile drawer -->
+  <div class="nav-drawer" id="navDrawer">
+    <button class="drawer-close" onclick="document.getElementById('navDrawer').classList.remove('open')" aria-label="Cerrar">&#x00D7;</button>
+    <ul>
+      <li><a href="vaciolleno-proyecto.html">El Proyecto</a></li>
+      <li><a href="vaciolleno-voluntarios.html">Voluntarios</a></li>
+      <li><a href="vaciolleno-libros.html">Libros</a></li>
+      <li><a href="vaciolleno-impacto.html">Impacto</a></li>
+      <li><a href="vaciolleno-manifiesto.html">Manifiesto</a></li>
+    </ul>
+    <a href="vaciolleno-donaciones.html" class="drawer-cta">Donar</a>
+  </div>
+  <script>document.getElementById('navHamburger').addEventListener('click',function(){document.getElementById('navDrawer').classList.add('open');});</script>
 </body>
 </html>
