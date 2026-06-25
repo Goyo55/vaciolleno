@@ -939,11 +939,84 @@
     @keyframes fadeIn {
       to { opacity: 1; }
     }
+    /* HAMBURGER (oculto en escritorio) */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 42px; height: 42px;
+      padding: 9px;
+      background: none; border: none;
+      cursor: pointer;
+      z-index: 101;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 100%; height: 2px;
+      background: var(--white);
+      border-radius: 2px;
+    }
 
+    /* DRAWER MÓVIL */
+    .nav-drawer {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: var(--navy);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-12px);
+      transition: opacity .3s ease, transform .3s ease, visibility .3s;
+    }
+    .nav-drawer.open { opacity: 1; visibility: visible; transform: translateY(0); }
+    .nav-drawer ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.75rem;
+      margin: 0; padding: 0;
+    }
+    .nav-drawer ul a {
+      font-family: var(--serif);
+      font-size: 1.85rem;
+      font-weight: 700;
+      color: var(--white);
+      text-decoration: none;
+    }
+    .nav-drawer ul a:hover { color: var(--gold); }
+    .nav-drawer .drawer-cta {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.9rem 2.5rem;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      text-decoration: none;
+      margin-top: 1rem;
+    }
+    .nav-drawer .drawer-close {
+      position: absolute;
+      top: 1.5rem; right: 2rem;
+      font-size: 2rem;
+      line-height: 1;
+      background: none; border: none;
+      color: var(--white);
+      cursor: pointer;
+    }
     /* RESPONSIVE */
     @media (max-width: 900px) {
       nav { padding: 1.5rem 2rem; }
       .nav-links { display: none; }
+      .nav-cta { display: none; }
+      .nav-hamburger { display: flex; }
       .hero { grid-template-columns: 1fr; }
       .hero-right { display: none; }
       .hero-left { padding: 7rem 2rem 4rem; }
