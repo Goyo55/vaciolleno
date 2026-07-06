@@ -969,6 +969,58 @@
       .footer-bottom { flex-direction: column !important; align-items: flex-start !important; }
       .footer-inner { padding: 3rem 1.5rem; }
     }
+
+    /* ── HAMBURGER + DRAWER MÓVIL ── */
+    .nav-hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; padding: 4px;
+      background: none; border: none;
+    }
+    .nav-hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--white); border-radius: 2px;
+    }
+    .nav-drawer {
+      display: none; position: fixed; inset: 0; z-index: 300;
+      background: rgba(15,31,61,0.98); backdrop-filter: blur(12px);
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 2.5rem;
+    }
+    .nav-drawer.open { display: flex; }
+    .nav-drawer ul {
+      list-style: none; text-align: center;
+      padding: 0; margin: 0;
+      display: flex; flex-direction: column; gap: 1.75rem;
+    }
+    .nav-drawer ul a {
+      font-family: var(--serif); font-size: 1.5rem; font-weight: 700;
+      color: var(--white); text-decoration: none;
+    }
+    .drawer-cta {
+      font-family: var(--mono); font-size: 0.75rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 0.9rem 2.5rem;
+      background: var(--gold); color: var(--navy);
+      text-decoration: none;
+    }
+    .drawer-close {
+      position: absolute; top: 1.5rem; right: 2rem;
+      font-size: 2rem; cursor: pointer;
+      background: none; border: none;
+      color: var(--white); line-height: 1;
+    }
+
+    /* Mostrar hamburger, ocultar botón donar en móvil */
+    @media (max-width: 900px) {
+      .nav-hamburger { display: flex; }
+      .nav-cta { display: none; }
+    }
+
+    /* Desactivar cursor personalizado en pantallas táctiles */
+    @media (pointer: coarse) {
+      body { cursor: auto; }
+      .cursor, .cursor-ring { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -979,7 +1031,7 @@
 
   <!-- NAV -->
   <nav>
-    <a href="vaciolleno-home.html" class="nav-logo">
+    <a href="/" class="nav-logo">
       <svg viewBox="0 0 60 60" fill="none" style="width:28px;height:28px;flex-shrink:0;">
         <rect x="8" y="10" width="44" height="40" rx="2" fill="#1a3260"/>
         <circle cx="30" cy="30" r="10" fill="#0f1f3d" stroke="rgba(201,168,76,0.6)" stroke-width="1.5"/>
