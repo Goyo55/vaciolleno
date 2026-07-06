@@ -244,24 +244,21 @@
       width: 2px; background: rgba(255,255,255,0.07);
     }
 
-    .book-title-text {
+   .book-title-text {
       position: absolute;
-      bottom: 1.25rem; left: 0.5rem; right: 0.5rem;
+      bottom: 1.5rem; left: 0; right: 0;
       text-align: center;
-      padding: 0 0.5rem;
+      padding: 0 0.75rem;
     }
 
     .book-title-text span {
-      font-family: var(--mono); font-size: 0.5rem;
-      letter-spacing: 0.05em; text-transform: uppercase;
-      color: rgba(240,235,224,0.55);
+      font-family: var(--mono);
+      font-size: 0.48rem;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: rgba(240,235,224,0.65);
       white-space: nowrap;
       display: inline-block;
-    }
-
-    /* En móvil, ocultar el texto del libro (queda más limpio, y la caption al lado ya explica) */
-    @media (max-width: 768px) {
-      .book-title-text { display: none; }
     }
 
     /* ANNO CAPTION */
@@ -753,7 +750,7 @@
               <div class="book-hole"></div>
               <div class="book-spine-line"></div>
               <div class="book-title-text">
-                <span>Vacío Lleno · Perforado · Libre</span>
+                <span>Perforado · Libre</span>
               </div>
             </div>
           </div>
