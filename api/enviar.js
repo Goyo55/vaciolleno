@@ -1,10 +1,10 @@
 // ═══════════════════════════════════════════════════════════════════
 // VACÍO LLENO — Función serverless universal para formularios
 // ═══════════════════════════════════════════════════════════════════
-// Recibe los envíos de los 3 formularios del sitio, los guarda en
-// Google Sheets vía webhook de Apps Script, y envía dos emails con
-// Resend: uno de notificación a hola@vaciolleno.org y otro de
-// respuesta automática al usuario.
+// Recibe los envíos de los formularios del sitio, los guarda en
+// Supabase (tabla `formularios`) y envía dos emails con Resend:
+// uno de notificación al equipo y otro de respuesta automática
+// al usuario.
 // ═══════════════════════════════════════════════════════════════════
 
 import { Resend } from 'resend';
@@ -40,11 +40,15 @@ const CONFIG = {
 const REMITENTE = 'Vacío Lleno <hola@vaciolleno.org>';
 const NOTIFICATION_EMAIL = process.env.NOTIFICATION_EMAIL || 'hola@vaciolleno.org';
 
+// Columnas conocidas en la tabla `formularios`. Todo lo demás va a datos_extra.
+const COLUMNAS_TABLA = new Set([
+  'tipo', 'nombre', 'email', 'ciudad', 'pais', 'cantidad', 'mensaje',
+]);
+
 // ─────────────────────────────────────────────────────────────
 // HANDLER PRINCIPAL
 // ─────────────────────────────────────────────────────────────
 export default async function handler(req, res) {
-  // Solo aceptamos POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Método no permitido' });
   }
@@ -66,32 +70,57 @@ export default async function handler(req, res) {
     const config = CONFIG[tipo];
 
     // ─────────────────────────────────────────────────────────
-    // 1. Guardar en Google Sheets (si está configurado)
+    // 1. Guardar en Supabase
     // ─────────────────────────────────────────────────────────
-    if (process.env.SHEETS_WEBHOOK_URL) {
+    if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
       try {
-        await fetch(process.env.SHEETS_WEBHOOK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            tipo,
-            timestamp: new Date().toISOString(),
-            ...datos,
-          }),
-        });
-      } catch (sheetsErr) {
-        // Si Sheets falla, seguimos con los emails; no bloqueamos al usuario
-        console.error('Error guardando en Sheets:', sheetsErr);
+        // Separar campos fijos de campos extra
+        const fila = { tipo };
+        const extra = {};
+
+        for (const [k, v] of Object.entries(datos)) {
+          if (COLUMNAS_TABLA.has(k)) {
+            fila[k] = Array.isArray(v) ? v.join(', ') : v;
+          } else if (v !== undefined && v !== null && v !== '') {
+            extra[k] = v;
+          }
+        }
+
+        if (Object.keys(extra).length > 0) {
+          fila.datos_extra = extra;
+        }
+
+        const supabaseRes = await fetch(
+          `${process.env.SUPABASE_URL}/rest/v1/formularios`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              apikey: process.env.SUPABASE_SERVICE_KEY,
+              Authorization: `Bearer ${process.env.SUPABASE_SERVICE_KEY}`,
+              Prefer: 'return=minimal',
+            },
+            body: JSON.stringify(fila),
+          }
+        );
+
+        if (!supabaseRes.ok) {
+          const errText = await supabaseRes.text();
+          console.error('Supabase respondió con error:', supabaseRes.status, errText);
+        }
+      } catch (dbErr) {
+        // Si Supabase falla, seguimos con los emails. No bloqueamos al usuario.
+        console.error('Error guardando en Supabase:', dbErr);
       }
     }
 
     // ─────────────────────────────────────────────────────────
-    // 2. Email de notificación a Goyo/equipo
+    // 2. Email de notificación al equipo
     // ─────────────────────────────────────────────────────────
     await resend.emails.send({
       from: REMITENTE,
       to: NOTIFICATION_EMAIL,
-      replyTo: datos.email, // Para que puedas responder directamente al usuario
+      replyTo: datos.email,
       subject: `${config.notificationSubject} — ${datos.nombre}`,
       html: renderNotificacion(tipo, datos),
     });
@@ -146,7 +175,7 @@ function renderNotificacion(tipo, datos) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// AUTORESPONDERS AL USUARIO (basados en las plantillas del sitio)
+// AUTORESPONDERS AL USUARIO
 // ─────────────────────────────────────────────────────────────
 function renderAutoresponder(tipo, datos) {
   const nombre = escapeHtml(datos.nombre || '');
