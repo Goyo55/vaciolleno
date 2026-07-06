@@ -732,30 +732,35 @@
     <!-- KPI ROW -->
     <div class="kpi-row">
       <div class="kpi" style="--kpi-color:var(--gold);">
-        <div class="kpi-label">📚 Libros distribuidos</div>
-        <div class="kpi-value" id="kpi1">847</div>
-        <div class="kpi-delta">↑ +12 esta semana</div>
-      </div>
-      <div class="kpi" style="--kpi-color:var(--green);">
-        <div class="kpi-label">🌍 Países alcanzados</div>
-        <div class="kpi-value" id="kpi2">12</div>
-        <div class="kpi-delta">↑ +1 este mes</div>
-      </div>
-      <div class="kpi" style="--kpi-color:var(--blue);">
-        <div class="kpi-label">👐 Lectores estimados</div>
-        <div class="kpi-value" id="kpi3">33.8K</div>
-        <div class="kpi-delta">↑ 40 lectores/libro</div>
-      </div>
-      <div class="kpi" style="--kpi-color:#ff9f43;">
-        <div class="kpi-label">○ Libros perforados</div>
-        <div class="kpi-value" id="kpi4">254</div>
-        <div class="kpi-delta">↑ +4 esta semana</div>
-      </div>
-      <div class="kpi" style="--kpi-color:#a29bfe;">
-        <div class="kpi-label">✋ Voluntarios activos</div>
-        <div class="kpi-value" id="kpi5">23</div>
-        <div class="kpi-delta">↑ +3 este mes</div>
-      </div>
+  <div class="kpi-label">📚 Libros distribuidos</div>
+  <div class="kpi-value" id="kpi1" data-metrica="total_libros">0</div>
+  <div class="kpi-delta">↑ +0 esta semana</div>
+</div>
+<div class="kpi" style="--kpi-color:var(--green);">
+  <div class="kpi-label">🌍 Países alcanzados</div>
+  <div class="kpi-value" id="kpi2" data-metrica="paises_alcanzados">0</div>
+  <div class="kpi-delta">↑ +0 este mes</div>
+</div>
+<div class="kpi" style="--kpi-color:var(--blue);">
+  <div class="kpi-label">👐 Lectores estimados</div>
+  <div class="kpi-value" id="kpi3" data-metrica="manos_totales" data-formato="compacto">0</div>
+  <div class="kpi-delta">↑ 40 lectores/libro</div>
+</div>
+<div class="kpi" style="--kpi-color:#ff9f43;">
+  <div class="kpi-label">○ Libros perforados</div>
+  <div class="kpi-value" id="kpi4" data-metrica="libros_perforados">0</div>
+  <div class="kpi-delta">↑ +0 esta semana</div>
+</div>
+<div class="kpi" style="--kpi-color:#a29bfe;">
+  <div class="kpi-label">✋ Voluntarios activos</div>
+  <div class="kpi-value" id="kpi5" data-metrica="total_voluntarios">0</div>
+  <div class="kpi-delta">↑ +0 este mes</div>
+</div>
+<div class="kpi" style="--kpi-color:var(--green);">
+  <div class="kpi-label">💶 Fondos recaudados</div>
+  <div class="kpi-value" id="kpi6" data-metrica="total_donado_eur" data-formato="euros-compacto">€0</div>
+  <div class="kpi-delta">↑ +€0 esta semana</div>
+</div>
       <div class="kpi" style="--kpi-color:var(--green);">
         <div class="kpi-label">💶 Fondos recaudados</div>
         <div class="kpi-value" id="kpi6">€4.2K</div>
@@ -1463,5 +1468,6 @@
     <a href="vaciolleno-donaciones.html" class="drawer-cta">Donar</a>
   </div>
   <script>document.getElementById('navHamburger').addEventListener('click',function(){document.getElementById('navDrawer').classList.add('open');});</script>
+<script src="/js/metricas.js"></script>
 </body>
 </html>
