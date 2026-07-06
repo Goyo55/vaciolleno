@@ -1165,7 +1165,22 @@
     }, { threshold: 0.08 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    // SEARCH
+    // SCROLL AL TOP DEL CATÁLOGO (solo si el usuario está por debajo)
+    function scrollToCatalog() {
+      const catalog = document.querySelector('.catalog');
+      const searchSection = document.querySelector('.search-section');
+      if (!catalog || !searchSection) return;
+
+      const catalogTop = catalog.getBoundingClientRect().top + window.scrollY;
+      const targetY = catalogTop - searchSection.offsetHeight - 20;
+
+      if (window.scrollY > targetY + 80) {
+        window.scrollTo({ top: targetY, behavior: 'smooth' });
+      }
+    }
+
+    // SEARCH (con pequeño debounce para no scrollear en cada tecla)
+    let searchTimer;
     function filterCatalog() {
       const q = document.getElementById('searchInput').value.toLowerCase();
       const cards = document.querySelectorAll('.cat-card[data-tags]');
@@ -1181,6 +1196,9 @@
       document.getElementById('resultsCount').textContent =
         visible + ' categoría' + (visible !== 1 ? 's' : '');
       document.getElementById('noResults').classList.toggle('visible', visible === 0);
+
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(scrollToCatalog, 250);
     }
 
     // FILTER BY TAG
@@ -1207,6 +1225,8 @@
 
       // Clear search
       document.getElementById('searchInput').value = '';
+
+      scrollToCatalog();
     }
   </script>
 
