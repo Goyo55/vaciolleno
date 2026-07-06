@@ -657,12 +657,13 @@
     }
   
     @media (max-width:768px) {
-      .masthead { padding: 0.75rem 1.5rem 0; }
+      .masthead-top { padding: 0.75rem 1.5rem; }
       .masthead-nav, .masthead-cta { display: none !important; }
       .nav-hamburger { display: flex !important; }
+      .masthead-date { font-size: 0.55rem; }
     }
   
-    .nav-drawer { display:none; position:fixed; inset:0; z-index:300; background:rgba(242,237,228,0.98); backdrop-filter:blur(12px); flex-direction:column; align-items:center; justify-content:center; gap:2.5rem; }
+    .nav-drawer { display:none; position:fixed; inset:0; z-index:9999; background:rgba(242,237,228,0.98); backdrop-filter:blur(12px); flex-direction:column; align-items:center; justify-content:center; gap:2.5rem; }
     .nav-drawer.open { display:flex; }
     .nav-drawer ul { list-style:none; text-align:center; padding:0; margin:0; display:flex; flex-direction:column; gap:1.75rem; }
     .nav-drawer ul a { font-family:var(--serif,serif); font-size:1.5rem; font-weight:700; color:var(--ink,#1c1a14); text-decoration:none; }
@@ -693,9 +694,9 @@
 
   <!-- TITLE BLOCK — scrolls away normally -->
   <div class="title-block">
-    <span class="publication-name">Vacío Lleno</span>
+    <a href="/" class="publication-name" style="text-decoration:none;color:var(--ink);">Vacío Lleno</a>
     <span class="publication-sub">Insurgencia intelectual · Distribución libre de libros · Latinoamérica</span>
-  </div>
+</div>
 
   <!-- HERO ARTICLE -->
   <section class="hero-article">
