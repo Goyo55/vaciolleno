@@ -1,0 +1,10 @@
+{
+  "name": "vaciolleno",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sitio web de Vacío Lleno con función serverless para formularios",
+  "type": "module",
+  "dependencies": {
+    "resend": "^4.0.0"
+  }
+}

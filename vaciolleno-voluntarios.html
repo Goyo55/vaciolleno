@@ -1277,8 +1277,9 @@
     function toggleAvail(el) { el.classList.toggle('selected'); }
 
     // FORM SUBMIT
-    function handleVolSubmit() {
+    async function handleVolSubmit() {
       const name = document.getElementById('volName').value.trim();
+      const age = document.getElementById('volAge').value.trim();
       const email = document.getElementById('volEmail').value.trim();
       const city = document.getElementById('volCity').value.trim();
       const country = document.getElementById('volCountry').value;
@@ -1291,13 +1292,51 @@
       if (!city) { showFormError('Por favor indica tu ciudad.'); return; }
       if (!country) { showFormError('Por favor selecciona tu país.'); return; }
 
+      // Recoger checkboxes de rol
+      const roles = Array.from(document.querySelectorAll('.role-check input[type="checkbox"]:checked'))
+        .map(cb => cb.value);
+
+      // Recoger disponibilidad seleccionada
+      const disponibilidad = Array.from(document.querySelectorAll('.avail-btn.selected'))
+        .map(el => el.textContent.trim());
+
+      // Motivación (radio)
+      const motivRadio = document.querySelector('input[name="motivation"]:checked');
+      const motivacion = motivRadio ? motivRadio.value : '';
+
+      // Notas
+      const notasEl = document.querySelector('#volForm textarea');
+      const notas = notasEl ? notasEl.value.trim() : '';
+
       const btn = document.getElementById('submitBtnText');
       btn.textContent = 'Enviando...';
 
-      setTimeout(() => {
+      try {
+        const res = await fetch('/api/enviar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tipo: 'voluntario',
+            nombre: name,
+            edad: age,
+            email: email,
+            ciudad: city,
+            pais: country,
+            roles: roles,
+            disponibilidad: disponibilidad,
+            motivacion: motivacion,
+            mensaje: notas,
+          }),
+        });
+
+        if (!res.ok) throw new Error('Error del servidor');
+
         document.getElementById('volForm').style.display = 'none';
         document.getElementById('successOverlay').classList.add('visible');
-      }, 1200);
+      } catch (err) {
+        btn.textContent = 'Quiero ser voluntario/a →';
+        showFormError('No se pudo enviar. Por favor intenta de nuevo en unos segundos.');
+      }
     }
 
     function showFormError(msg) {

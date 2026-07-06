@@ -869,17 +869,22 @@
 
         <div class="field-group">
           <label class="field-label">Cuéntanos sobre los libros (opcional)</label>
-          <textarea class="field-input" rows="3" placeholder="Títulos, autores, estado de los libros..." style="resize:vertical;font-family:var(--sans);"></textarea>
+          <textarea class="field-input" rows="3" placeholder="Títulos, autores, estado de los libros..." style="resize:vertical;font-family:var(--sans);" id="bookNotes"></textarea>
         </div>
 
         <div class="field-group">
           <label class="field-label">Tu nombre</label>
-          <input type="text" class="field-input" placeholder="Para coordinar la recogida" />
+          <input type="text" class="field-input" placeholder="Para coordinar la recogida" id="bookName" />
         </div>
 
         <div class="field-group">
-          <label class="field-label">Email o teléfono</label>
-          <input type="text" class="field-input" placeholder="Para ponernos en contacto contigo" />
+          <label class="field-label">Ciudad</label>
+          <input type="text" class="field-input" placeholder="Para coordinar la recogida" id="bookCity" />
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Email</label>
+          <input type="email" class="field-input" placeholder="Para ponernos en contacto contigo" id="bookEmail" />
         </div>
 
         <div class="field-group">
@@ -1127,7 +1132,8 @@
     // ============================================
     async function handleDonate() {
       const amount = parseFloat(document.getElementById('amountInput').value);
-      const email = document.getElementById('donorEmail').value;
+      const email = document.getElementById('donorEmail').value.trim();
+      const name = document.getElementById('donorName').value.trim();
       const errorEl = document.getElementById('errorMsg');
       const btn = document.getElementById('donateBtn');
       const btnText = document.getElementById('donateBtnText');
@@ -1150,22 +1156,25 @@
       btnText.innerHTML = '<span class="spinner"></span>Procesando...';
 
       try {
-        // In production: call your backend to create a PaymentIntent
-        // const response = await fetch('/api/create-payment-intent', {
-        //   method: 'POST',
-        //   headers: { 'Content-Type': 'application/json' },
-        //   body: JSON.stringify({ amount: Math.round(amount * 100), currency: 'eur', isAnon })
-        // });
-        // const { clientSecret } = await response.json();
+        // NOTA: Stripe todavía no está conectado. Por ahora capturamos
+        // los datos + intención de donación y disparamos ambos emails.
+        // Cuando activemos Stripe en fase 2, aquí llamaremos a
+        // /api/create-payment-intent antes del envío final.
 
-        // For demo — simulate success
-        await new Promise(resolve => setTimeout(resolve, 1800));
+        const res = await fetch('/api/enviar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tipo: 'donacion-dinero',
+            nombre: isAnon ? 'Donante anónimo' : (name || 'Sin nombre'),
+            email: email,
+            cantidad: amount,
+            frecuencia: currentFreq === 'monthly' ? 'Mensual' : 'Una vez',
+            anonimo: isAnon ? 'Sí' : 'No',
+          }),
+        });
 
-        // If Stripe is configured:
-        // const { error } = await stripe.confirmCardPayment(clientSecret, {
-        //   payment_method: { card: cardElement }
-        // });
-        // if (error) throw new Error(error.message);
+        if (!res.ok) throw new Error('Error del servidor');
 
         showSuccess(amount);
 
@@ -1176,13 +1185,56 @@
       }
     }
 
-    function handleBookDonate() {
+    async function handleBookDonate() {
       const count = document.getElementById('bookCount').value;
+      const name = document.getElementById('bookName').value.trim();
+      const email = document.getElementById('bookEmail').value.trim();
+      const city = document.getElementById('bookCity').value.trim();
+      const notes = document.getElementById('bookNotes').value.trim();
+
       if (!count || count < 1) {
         alert('Por favor indica cuántos libros tienes');
         return;
       }
-      showBookSuccess();
+      if (!name) {
+        alert('Por favor indica tu nombre para coordinar la recogida');
+        return;
+      }
+      if (!email || !email.includes('@')) {
+        alert('Por favor introduce un email válido');
+        return;
+      }
+
+      // Categorías seleccionadas
+      const categorias = Array.from(document.querySelectorAll('#bookForm .book-cats input[type="checkbox"]:checked'))
+        .map(cb => cb.value);
+
+      // Método de entrega
+      const deliveryRadio = document.querySelector('input[name="delivery"]:checked');
+      const metodoEntrega = deliveryRadio ? deliveryRadio.value : '';
+
+      try {
+        const res = await fetch('/api/enviar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tipo: 'donacion-libros',
+            nombre: name,
+            email: email,
+            ciudad: city,
+            cantidad: count,
+            categorias: categorias,
+            metodoEntrega: metodoEntrega,
+            mensaje: notes,
+          }),
+        });
+
+        if (!res.ok) throw new Error('Error del servidor');
+
+        showBookSuccess();
+      } catch (err) {
+        alert('No se pudo enviar. Por favor intenta de nuevo en unos segundos.');
+      }
     }
 
     function showError(msg) {
