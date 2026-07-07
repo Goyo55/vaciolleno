@@ -96,6 +96,38 @@
 
   // ═══ RENDERIZADORES ═══
 
+  function renderDeltas(m) {
+    const deltas = m.deltas_semana || {};
+    const hayReferencia = deltas.hay_referencia;
+
+    document.querySelectorAll('[data-delta]').forEach((el) => {
+      const clave = el.dataset.delta;
+      const formato = el.dataset.deltaFormato || 'numero';
+      const valor = deltas[clave];
+
+      // Si no hay snapshot de referencia (proyecto muy nuevo), mostrar señal viva
+      if (!hayReferencia) {
+        el.innerHTML = '<span style="opacity:0.5;">· nuevo esta semana</span>';
+        return;
+      }
+
+      if (valor === 0 || valor === undefined || valor === null) {
+        el.innerHTML = '&nbsp;';
+        return;
+      }
+
+      const signo = valor > 0 ? '↑' : '↓';
+      const abs = Math.abs(valor);
+      const fmt = formato === 'euros'
+        ? '€' + abs.toLocaleString('es-ES')
+        : abs.toLocaleString('es-ES');
+      const sufijo = ' esta semana';
+
+      el.innerHTML = `${signo} +${fmt}${sufijo}`;
+      el.style.color = valor > 0 ? 'var(--green)' : 'var(--red)';
+    });
+  }
+  
   function renderNumeros(m) {
     document.querySelectorAll('[data-metrica]').forEach((el) => {
       const clave = el.dataset.metrica;
