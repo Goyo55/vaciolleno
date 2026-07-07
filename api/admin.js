@@ -232,45 +232,131 @@ export default async function handler(req, res) {
         if (!email || !email.includes('@')) return res.status(400).json({ error: 'Email no válido' });
         if (!Array.isArray(permisos) || permisos.length === 0) return res.status(400).json({ error: 'Selecciona al menos un permiso' });
 
-        // 1. Invitar en Supabase Auth (envía email con enlace de setup)
-        const inviteRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/invite`, {
+        // 1. Crear usuario en Auth (o recuperarlo si ya existe)
+        let newUserId = null;
+        const createRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users`, {
           method: 'POST',
           headers: {
             apikey: SERVICE_KEY,
             Authorization: `Bearer ${SERVICE_KEY}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ email, data: { nombre: nombre || '' } }),
+          body: JSON.stringify({
+            email,
+            email_confirm: true,
+            user_metadata: { nombre: nombre || '' },
+          }),
         });
-        if (!inviteRes.ok) {
-          const errText = await inviteRes.text();
-          return res.status(500).json({ error: `Error invitando: ${errText}` });
+        if (createRes.ok) {
+          const created = await createRes.json();
+          newUserId = created.id || created.user?.id;
+        } else {
+          // Si ya existe, buscarlo
+          const searchRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users?filter=email.eq.${encodeURIComponent(email)}`, {
+            headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` },
+          });
+          if (searchRes.ok) {
+            const list = await searchRes.json();
+            const users = list.users || list;
+            const found = Array.isArray(users) ? users.find(u => u.email === email) : null;
+            if (found) newUserId = found.id;
+          }
+          if (!newUserId) {
+            const errText = await createRes.text();
+            return res.status(500).json({ error: `Auth users: ${errText}` });
+          }
         }
-        const inviteData = await inviteRes.json();
-        const newUserId = inviteData.user?.id || inviteData.id;
-        if (!newUserId) return res.status(500).json({ error: 'Auth no devolvió user_id' });
 
-        // 2. Crear perfil con permisos
+        // 2. Generar magic link para setear contraseña (tipo recovery)
+        const linkRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/generate_link`, {
+          method: 'POST',
+          headers: {
+            apikey: SERVICE_KEY,
+            Authorization: `Bearer ${SERVICE_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            type: 'recovery',
+            email,
+            options: { redirectTo: 'https://vaciolleno.org/admin.html' },
+          }),
+        });
+        if (!linkRes.ok) {
+          const errText = await linkRes.text();
+          return res.status(500).json({ error: `Generate link: ${errText}` });
+        }
+        const linkData = await linkRes.json();
+        const inviteUrl = linkData.action_link || linkData.properties?.action_link;
+        if (!inviteUrl) return res.status(500).json({ error: 'No se pudo obtener el enlace de invitación' });
+
+        // 3. Crear/actualizar perfil en admin_perfiles
         try {
           await supa(`admin_perfiles`, {
             method: 'POST',
             body: JSON.stringify({
               user_id: newUserId,
-              email: email,
+              email,
               nombre: nombre || null,
-              permisos: permisos,
+              permisos,
               activo: true,
               invitado_por: perfil.user_id,
             }),
             prefer: 'return=minimal',
           });
-        } catch (perfilErr) {
-          // Si el perfil ya existía, actualizar en lugar de fallar
+        } catch (_) {
           await supa(`admin_perfiles?user_id=eq.${newUserId}`, {
             method: 'PATCH',
             body: JSON.stringify({ nombre: nombre || null, permisos, activo: true }),
             prefer: 'return=minimal',
           });
+        }
+
+        // 4. Enviar email de invitación con Resend
+        const RESEND_API_KEY = process.env.RESEND_API_KEY;
+        if (RESEND_API_KEY) {
+          const nombreMostrar = nombre || email.split('@')[0];
+          const permisosLista = permisos.map(p => `<li style="margin:0.3rem 0;">${p}</li>`).join('');
+          const html = `<!DOCTYPE html><html lang="es"><body style="margin:0;padding:0;background:#e8e2d6;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#e8e2d6;padding:32px 16px;">
+<tr><td align="center">
+  <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#f2ede4;font-family:Georgia,serif;color:#1c1a14;">
+    <tr><td style="background:#0f1f3d;padding:20px 32px;color:#f2ede4;font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.2em;">● VACÍO LLENO</td></tr>
+    <tr><td style="padding:36px 32px;line-height:1.7;font-size:15px;">
+      <p style="font-size:18px;font-weight:bold;margin:0 0 20px 0;">Hola, ${nombreMostrar}.</p>
+      <p>Te han invitado a formar parte del equipo de <strong>Vacío Lleno</strong> como colaborador/a del panel de gestión.</p>
+      <p>Podrás gestionar las siguientes áreas del proyecto:</p>
+      <ul style="background:rgba(15,31,61,0.06);border-left:3px solid #c9a84c;padding:16px 20px 16px 40px;margin:24px 0;font-family:Arial,sans-serif;font-size:14px;">${permisosLista}</ul>
+      <p>Para activar tu cuenta y establecer tu contraseña, pulsa el botón:</p>
+      <p style="text-align:center;margin:32px 0;">
+        <a href="${inviteUrl}" style="display:inline-block;background:#0f1f3d;color:#f2ede4;padding:16px 32px;text-decoration:none;font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;">Activar mi cuenta →</a>
+      </p>
+      <p style="font-size:12px;color:#888;">Si el botón no funciona, copia y pega este enlace en tu navegador:<br><span style="font-family:monospace;word-break:break-all;color:#555;">${inviteUrl}</span></p>
+      <hr style="border:none;border-top:1px solid rgba(28,26,20,0.15);margin:32px 0 20px;">
+      <p style="margin:0 0 4px 0;font-style:italic;color:#555;">Nos vemos dentro,</p>
+      <p style="margin:0;font-weight:bold;">El equipo de Vacío Lleno</p>
+      <p style="margin:4px 0 0 0;font-family:'Courier New',monospace;font-size:11px;color:#888;letter-spacing:0.1em;text-transform:uppercase;">Insurgencia intelectual · vaciolleno.org</p>
+    </td></tr>
+    <tr><td style="padding:20px 32px;background:rgba(15,31,61,0.04);font-family:Arial,sans-serif;font-size:11px;color:#888;line-height:1.6;">
+      Si no esperabas esta invitación, puedes ignorar este mensaje.<br>El enlace expira en 24 horas.
+    </td></tr>
+  </table>
+</td></tr></table></body></html>`;
+          const emailRes = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              from: 'Vacío Lleno <hola@vaciolleno.org>',
+              to: email,
+              subject: 'Te han invitado al panel de Vacío Lleno',
+              html,
+            }),
+          });
+          if (!emailRes.ok) {
+            const errText = await emailRes.text();
+            console.error('Resend error:', errText);
+            // No devolvemos error — el perfil ya existe y podemos dar el link como fallback
+            return res.status(200).json({ ok: true, mensaje: `Perfil creado, pero email falló. Enlace directo: ${inviteUrl}` });
+          }
         }
 
         return res.status(200).json({ ok: true, mensaje: `Invitación enviada a ${email}` });
