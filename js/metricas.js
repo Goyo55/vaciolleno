@@ -1,28 +1,13 @@
 // ═══════════════════════════════════════════════════════════════════
 // VACÍO LLENO — Carga automática de métricas y contenido desde Supabase
 // ═══════════════════════════════════════════════════════════════════
-// Rellena todo el contenido dinámico del sitio desde la base de datos:
-//   - Números simples (data-metrica en cualquier página)
-//   - Ticker de reseñas
-//   - Mapa de distribución
-//   - Feed de actividad reciente
-//   - Chart de barras (últimas 8 semanas)
-//   - Libro destacado en seguimiento
-//   - Barras horizontales por país
-//   - Donut por categoría
-//   - Tarjetas del equipo (voluntarios publicados)
-// ═══════════════════════════════════════════════════════════════════
 
 (function() {
   const SUPABASE_URL = 'https://tuagkbjixoolmtmwwsus.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_VFoLqoJsalIKNJ2GFpSbzA_QS5RH4-U';
 
-  // ─── FORMATEADORES ───
   const formateadores = {
-    numero: (n) => {
-      if (n === null || n === undefined) return '0';
-      return Number(n).toLocaleString('es-ES');
-    },
+    numero: (n) => n === null || n === undefined ? '0' : Number(n).toLocaleString('es-ES'),
     compacto: (n) => {
       if (!n || n < 1000) return String(Math.round(n || 0));
       if (n < 1000000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
@@ -51,25 +36,26 @@
   }
 
   const ESTADO_LABELS = {
-    recibido:       { texto: 'Recibido',        icono: '📥', clase: 'new' },
-    clasificado:    { texto: 'Clasificado',     icono: '📚', clase: 'new' },
-    perforado:      { texto: 'Perforado',       icono: '○',  clase: 'new' },
-    en_transito:    { texto: 'En tránsito →',   icono: '📦', clase: 'transit' },
-    entregado:      { texto: 'Entregado',       icono: '📗', clase: 'delivered' },
-    en_circulacion: { texto: 'En circulación',  icono: '🔄', clase: 'delivered' },
+    recibido: { texto: 'Recibido', icono: '📥', clase: 'new' },
+    clasificado: { texto: 'Clasificado', icono: '📚', clase: 'new' },
+    perforado: { texto: 'Perforado', icono: '○', clase: 'new' },
+    en_transito: { texto: 'En tránsito →', icono: '📦', clase: 'transit' },
+    entregado: { texto: 'Entregado', icono: '📗', clase: 'delivered' },
+    en_circulacion: { texto: 'En circulación', icono: '🔄', clase: 'delivered' },
   };
 
+  // ═══ 10 categorías temáticas (deben coincidir con la BD) ═══
   const CATEGORIA_LABELS = {
-    economia_emprendimiento: 'Economía y emprendimiento',
-    pensamiento_critico_filosofia: 'Filosofía y pensamiento crítico',
-    libertad_derechos: 'Libertad y derechos',
-    historia_politica: 'Historia y política',
-    ciencia_tecnologia: 'Ciencia y tecnología',
-    literatura_ficcion: 'Literatura y ficción',
-    psicologia_desarrollo: 'Psicología y desarrollo',
-    educacion: 'Educación',
-    biografias: 'Biografías',
-    otros: 'Otros',
+    economia_finanzas: 'Economía & Finanzas',
+    filosofia_pensamiento: 'Filosofía & Pensamiento Crítico',
+    libertad_derechos: 'Libertad & Derechos',
+    historia_politica: 'Historia & Política',
+    ciencia_tecnologia: 'Ciencia & Tecnología',
+    psicologia_desarrollo: 'Psicología & Desarrollo',
+    liderazgo_emprendimiento: 'Liderazgo & Emprendimiento',
+    biografias_memorias: 'Biografías & Memorias',
+    literatura_ficcion: 'Literatura & Ficción',
+    educacion_pedagogia: 'Educación & Pedagogía',
   };
 
   const CATEGORIA_COLORES = [
@@ -80,8 +66,7 @@
 
   function tiempoRelativo(fechaStr) {
     if (!fechaStr) return '';
-    const fecha = new Date(fechaStr);
-    const diff = (Date.now() - fecha.getTime()) / 1000;
+    const diff = (Date.now() - new Date(fechaStr).getTime()) / 1000;
     if (diff < 60) return Math.round(diff) + 's';
     if (diff < 3600) return Math.round(diff / 60) + 'm';
     if (diff < 86400) return Math.round(diff / 3600) + 'h';
@@ -91,20 +76,17 @@
 
   function esc(s) {
     if (s === null || s === undefined) return '';
-    return String(s)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   }
 
-  // Iniciales para el placeholder de foto
   function iniciales(nombre) {
     if (!nombre) return '?';
-    const partes = nombre.trim().split(/\s+/);
-    if (partes.length === 1) return partes[0].charAt(0).toUpperCase();
-    return (partes[0].charAt(0) + partes[partes.length - 1].charAt(0)).toUpperCase();
+    const p = nombre.trim().split(/\s+/);
+    if (p.length === 1) return p[0].charAt(0).toUpperCase();
+    return (p[0].charAt(0) + p[p.length - 1].charAt(0)).toUpperCase();
   }
 
-  // ─── RENDERIZADORES ───
+  // ═══ RENDERIZADORES ═══
 
   function renderNumeros(m) {
     document.querySelectorAll('[data-metrica]').forEach((el) => {
@@ -131,10 +113,7 @@
       const sep = i < resenas.length * 2 - 1 ? '<span class="ticker-sep">·</span>' : '';
       const lugar = [r.ciudad, r.pais].filter(Boolean).join(', ');
       const source = [r.autor_nombre, lugar].filter(Boolean).join(' · ');
-      return `<div class="ticker-item">
-        <span class="ticker-quote">"${esc(r.cita)}"</span>
-        <span class="ticker-source">— ${esc(source || 'Anónimo')}</span>
-      </div>${sep}`;
+      return `<div class="ticker-item"><span class="ticker-quote">"${esc(r.cita)}"</span><span class="ticker-source">— ${esc(source || 'Anónimo')}</span></div>${sep}`;
     }).join('');
     cont.innerHTML = items;
   }
@@ -142,10 +121,7 @@
   function renderMapa(paises) {
     const cont = document.getElementById('mapNodes');
     if (!cont) return;
-    if (!paises || paises.length === 0) {
-      cont.innerHTML = '';
-      return;
-    }
+    if (!paises || paises.length === 0) { cont.innerHTML = ''; return; }
     const nodos = paises.filter(p => p.x_mapa && p.y_mapa).map((p, i) => {
       const c = p.color_rgb;
       const r = Math.max(8, Math.min(24, p.radio || 12));
@@ -211,32 +187,23 @@
     const panel = document.getElementById('journeyContent');
     if (!panel) return;
     if (!libro) {
-      panel.innerHTML = `<div style="opacity:0.5;font-style:italic;padding:2rem 0;text-align:center;">
-        Aún no hay libros en seguimiento. Cuando marques uno como destacado desde el panel de administración, aparecerá su journey completo aquí.
-      </div>`;
+      panel.innerHTML = '<div style="opacity:0.5;font-style:italic;padding:2rem 0;text-align:center;">Aún no hay libros en seguimiento. Cuando marques uno como destacado desde el panel de administración, aparecerá su journey completo aquí.</div>';
       return;
     }
     const codigo = libro.codigo_seguimiento || '—';
     const pasos = [
-      { label: 'Recibido',       fecha: libro.fecha_clasificacion, detalle: libro.voluntario_clasificador ? 'Voluntario/a: ' + libro.voluntario_clasificador : '', done: !!libro.fecha_clasificacion, esActivo: libro.estado_actual === 'recibido' },
-      { label: 'Clasificado',    fecha: libro.fecha_clasificacion, detalle: '',                                            done: !!libro.fecha_clasificacion, esActivo: libro.estado_actual === 'clasificado' },
-      { label: 'Perforado',      fecha: libro.fecha_perforacion,   detalle: 'Símbolo Vacío Lleno',                          done: !!libro.fecha_perforacion,   esActivo: libro.estado_actual === 'perforado' },
-      { label: 'Enviado',        fecha: libro.fecha_envio,         detalle: libro.pais_destino ? '→ ' + libro.pais_destino : '', done: !!libro.fecha_envio,       esActivo: libro.estado_actual === 'en_transito' },
-      { label: 'En circulación', fecha: libro.fecha_entrega,       detalle: libro.ubicacion_actual_ciudad ? libro.ubicacion_actual_ciudad + (libro.lector_numero ? ' · ' + libro.lector_numero + 'º lector' : '') : '', done: libro.estado_actual === 'en_circulacion', esActivo: libro.estado_actual === 'en_circulacion' || libro.estado_actual === 'entregado' },
+      { label: 'Recibido', fecha: libro.fecha_clasificacion, detalle: libro.voluntario_clasificador ? 'Voluntario/a: ' + libro.voluntario_clasificador : '', done: !!libro.fecha_clasificacion, esActivo: libro.estado_actual === 'recibido' },
+      { label: 'Clasificado', fecha: libro.fecha_clasificacion, detalle: '', done: !!libro.fecha_clasificacion, esActivo: libro.estado_actual === 'clasificado' },
+      { label: 'Perforado', fecha: libro.fecha_perforacion, detalle: 'Símbolo Vacío Lleno', done: !!libro.fecha_perforacion, esActivo: libro.estado_actual === 'perforado' },
+      { label: 'Enviado', fecha: libro.fecha_envio, detalle: libro.pais_destino ? '→ ' + libro.pais_destino : '', done: !!libro.fecha_envio, esActivo: libro.estado_actual === 'en_transito' },
+      { label: 'En circulación', fecha: libro.fecha_entrega, detalle: libro.ubicacion_actual_ciudad ? libro.ubicacion_actual_ciudad + (libro.lector_numero ? ' · ' + libro.lector_numero + 'º lector' : '') : '', done: libro.estado_actual === 'en_circulacion', esActivo: libro.estado_actual === 'en_circulacion' || libro.estado_actual === 'entregado' },
     ];
     const pasosHTML = pasos.map(p => {
       const cls = p.esActivo ? 'active' : (p.done ? 'done' : '');
-      const valor = p.fecha ? new Date(p.fecha).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : '—';
-      return `<div class="journey-step ${cls}">
-        <div class="journey-step-label">${esc(p.label)}</div>
-        <div class="journey-step-value">${esc(p.detalle || valor)}</div>
-      </div>`;
+      const valor = p.fecha ? new Date(p.fecha).toLocaleDateString('es-ES', { day:'numeric', month:'short' }) : '—';
+      return `<div class="journey-step ${cls}"><div class="journey-step-label">${esc(p.label)}</div><div class="journey-step-value">${esc(p.detalle || valor)}</div></div>`;
     }).join('');
-    panel.innerHTML = `
-      <div class="journey-title">${esc(libro.titulo)}</div>
-      <div class="journey-author">${esc(libro.autor)} · ${esc(codigo)}</div>
-      <div class="journey-steps">${pasosHTML}</div>
-    `;
+    panel.innerHTML = `<div class="journey-title">${esc(libro.titulo)}</div><div class="journey-author">${esc(libro.autor)} · ${esc(codigo)}</div><div class="journey-steps">${pasosHTML}</div>`;
   }
 
   function renderLibrosPorPais(paises) {
@@ -271,13 +238,10 @@
     const segmentos = cats.map((c, i) => {
       const pct = c.total / total;
       const dash = pct * perimetro;
-      const seg = `<circle cx="55" cy="55" r="40" fill="none" stroke="${CATEGORIA_COLORES[i % CATEGORIA_COLORES.length]}" stroke-width="16"
-        stroke-dasharray="${dash.toFixed(2)} ${(perimetro - dash).toFixed(2)}"
-        stroke-dashoffset="${-offset.toFixed(2)}" transform="rotate(-90 55 55)"/>`;
+      const seg = `<circle cx="55" cy="55" r="40" fill="none" stroke="${CATEGORIA_COLORES[i % CATEGORIA_COLORES.length]}" stroke-width="16" stroke-dasharray="${dash.toFixed(2)} ${(perimetro - dash).toFixed(2)}" stroke-dashoffset="${-offset.toFixed(2)}" transform="rotate(-90 55 55)"/>`;
       offset += dash;
       return seg;
     }).join('');
-
     const leyenda = cats.map((c, i) => {
       const pct = Math.round((c.total / total) * 100);
       return `<div class="donut-legend-item" style="display:flex;align-items:center;gap:0.5rem;font-size:0.75rem;margin-bottom:0.35rem;">
@@ -286,59 +250,74 @@
         <span style="font-family:DM Mono,monospace;color:rgba(232,240,255,0.5);">${pct}%</span>
       </div>`;
     }).join('');
-
-    donutWrap.innerHTML = `
-      <div class="donut-svg">
-        <svg width="110" height="110" viewBox="0 0 110 110">
-          <circle cx="55" cy="55" r="40" fill="none" stroke="rgba(232,240,255,0.05)" stroke-width="16"/>
-          ${segmentos}
-        </svg>
-      </div>
-      <div class="donut-legend" style="flex:1;padding-left:1rem;">${leyenda}</div>
-    `;
+    donutWrap.innerHTML = `<div class="donut-svg"><svg width="110" height="110" viewBox="0 0 110 110"><circle cx="55" cy="55" r="40" fill="none" stroke="rgba(232,240,255,0.05)" stroke-width="16"/>${segmentos}</svg></div><div class="donut-legend" style="flex:1;padding-left:1rem;">${leyenda}</div>`;
     donutWrap.style.display = 'flex';
     donutWrap.style.alignItems = 'center';
   }
 
-  // ─── NUEVO: RENDERIZAR TARJETAS DEL EQUIPO ───
   function renderVoluntarios(voluntarios) {
     const cont = document.getElementById('voluntariosGrid');
     if (!cont) return;
-
-    // Estado vacío — mensaje elegante que invita a unirse
     if (!voluntarios || voluntarios.length === 0) {
-      cont.innerHTML = `
-        <div class="team-empty">
-          <div class="team-empty-icon">○</div>
-          <div class="team-empty-text">
-            Pronto tendrás caras aquí.<br>
-            <strong>Sé una de ellas.</strong>
-          </div>
-          <a href="#form" class="team-empty-cta">Quiero ser voluntario/a →</a>
-        </div>
-      `;
+      cont.innerHTML = `<div class="team-empty"><div class="team-empty-icon">○</div><div class="team-empty-text">Pronto tendrás caras aquí.<br><strong>Sé una de ellas.</strong></div><a href="#form" class="team-empty-cta">Quiero ser voluntario/a →</a></div>`;
       return;
     }
-
-    // Tarjetas normales
     cont.innerHTML = voluntarios.map(v => {
       const lugar = [v.ciudad, v.pais].filter(Boolean).join(' · ');
       const foto = v.foto_url
         ? `<img src="${esc(v.foto_url)}" alt="${esc(v.nombre)}" onerror="this.style.display='none';this.parentElement.textContent='${esc(iniciales(v.nombre))}';">`
         : esc(iniciales(v.nombre));
-      return `
-        <article class="team-card">
-          <div class="team-photo">${foto}</div>
-          <div class="team-role">${esc(v.rol)}</div>
-          <h3 class="team-name">${esc(v.nombre)}</h3>
-          ${lugar ? `<div class="team-loc">${esc(lugar)}</div>` : ''}
-          ${v.bio_corta ? `<p class="team-bio">${esc(v.bio_corta)}</p>` : ''}
-        </article>
-      `;
+      return `<article class="team-card">
+        <div class="team-photo">${foto}</div>
+        <div class="team-role">${esc(v.rol)}</div>
+        <h3 class="team-name">${esc(v.nombre)}</h3>
+        ${lugar ? `<div class="team-loc">${esc(lugar)}</div>` : ''}
+        ${v.bio_corta ? `<p class="team-bio">${esc(v.bio_corta)}</p>` : ''}
+      </article>`;
     }).join('');
   }
 
-  // ─── ORQUESTADOR ───
+  // ═══ NUEVO: RENDERIZAR LIBROS DENTRO DE CADA CAT-CARD ═══
+  function renderCategoriasCards(detalle) {
+    // detalle = {"economia_finanzas": {total:X, libros:[...]}, ...}
+    detalle = detalle || {};
+
+    // Rellenar los 3 libros de ejemplo por card
+    document.querySelectorAll('[data-cat-books]').forEach((cont) => {
+      const cat = cont.dataset.catBooks;
+      const info = detalle[cat];
+      if (!info || !info.libros || info.libros.length === 0) {
+        cont.innerHTML = `<div class="cat-book" style="opacity:0.5;font-style:italic;">
+          <div class="cat-book-dot" style="background:currentColor;opacity:0.4;"></div>
+          <span class="cat-book-title" style="font-style:italic;">Pronto — sé el primero en donar</span>
+          <span class="cat-book-author">de esta categoría</span>
+        </div>`;
+        return;
+      }
+      cont.innerHTML = info.libros.slice(0, 3).map(l => `
+        <div class="cat-book">
+          <div class="cat-book-dot"></div>
+          <span class="cat-book-title">${esc(l.titulo)}</span>
+          <span class="cat-book-author">${esc(l.autor)}</span>
+        </div>
+      `).join('');
+    });
+
+    // Rellenar los contadores "N en circulación"
+    document.querySelectorAll('[data-cat-stat]').forEach((el) => {
+      const cat = el.dataset.catStat;
+      const info = detalle[cat];
+      if (!info || !info.total) {
+        el.textContent = 'Sin libros aún';
+        el.style.opacity = '0.5';
+      } else {
+        el.textContent = `${info.total} en circulación`;
+        el.style.opacity = '1';
+      }
+    });
+  }
+
+  // ═══ ORQUESTADOR ═══
   async function cargarTodo() {
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_metricas_publicas`, {
@@ -350,10 +329,7 @@
         },
         body: '{}',
       });
-      if (!res.ok) {
-        console.warn('No se pudieron cargar las métricas:', res.status);
-        return;
-      }
+      if (!res.ok) { console.warn('Métricas:', res.status); return; }
       const m = await res.json();
       renderNumeros(m);
       renderTicker(m.resenas);
@@ -364,6 +340,7 @@
       renderLibrosPorPais(m.libros_por_pais);
       renderLibrosPorCategoria(m.libros_por_categoria);
       renderVoluntarios(m.voluntarios_publicados);
+      renderCategoriasCards(m.libros_por_categoria_detalle);
     } catch (err) {
       console.warn('Error cargando métricas:', err);
     }
