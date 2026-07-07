@@ -405,6 +405,7 @@
       if (!res.ok) { console.warn('Métricas:', res.status); return; }
       const m = await res.json();
       renderNumeros(m);
+      renderDeltas(m);
       renderTicker(m.resenas);
       renderMapa(m.libros_por_pais);
       renderFeed(m.actividad_reciente);
