@@ -1117,17 +1117,89 @@ function cargarSeccion(nombre) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
+// PANTALLA DE ESTABLECER CONTRASEÑA (invitación / recovery)
+// ═══════════════════════════════════════════════════════════════════
+function mostrarSetupPassword(accessToken) {
+  const login = document.getElementById('loginScreen');
+  const app = document.getElementById('app');
+  app.style.display = 'none';
+  login.style.display = 'flex';
+  login.querySelector('.login-box').innerHTML = `
+    <h1>Vacío Lleno</h1>
+    <div class="subt">Establece tu contraseña</div>
+    <p style="color:rgba(255,255,255,0.6);font-size:0.8rem;line-height:1.6;margin-bottom:1rem;">
+      Bienvenido/a al equipo. Elige una contraseña para acceder al panel de administración.
+    </p>
+    <label>Contraseña nueva</label>
+    <input type="password" id="newPwd1" autocomplete="new-password" autofocus>
+    <label>Repite la contraseña</label>
+    <input type="password" id="newPwd2" autocomplete="new-password">
+    <button id="setupBtn" onclick="establecerPassword('${accessToken}')">Establecer y entrar</button>
+    <div id="setupError" class="login-error" style="display:none;"></div>
+  `;
+  history.replaceState(null, '', window.location.pathname);  // limpiar el hash
+}
+
+async function establecerPassword(accessToken) {
+  const p1 = document.getElementById('newPwd1').value;
+  const p2 = document.getElementById('newPwd2').value;
+  const btn = document.getElementById('setupBtn');
+  const err = document.getElementById('setupError');
+  err.style.display = 'none';
+  if (p1.length < 8) { err.textContent = 'La contraseña debe tener al menos 8 caracteres.'; err.style.display = 'block'; return; }
+  if (p1 !== p2) { err.textContent = 'Las contraseñas no coinciden.'; err.style.display = 'block'; return; }
+  btn.disabled = true; btn.textContent = 'Guardando...';
+  try {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      method: 'PUT',
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ password: p1 }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.msg || data.error_description || 'No se pudo establecer la contraseña.');
+
+    // Entrar con el token que ya tenemos
+    TOKEN = accessToken;
+    sessionStorage.setItem('vl_admin_token', TOKEN);
+    const { data: perfil } = await api('mi_perfil');
+    PERFIL = perfil;
+    location.reload();  // Recargar para restaurar la pantalla de login normal
+  } catch (e) {
+    err.textContent = e.message;
+    err.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Establecer y entrar';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
 // ARRANQUE
 // ═══════════════════════════════════════════════════════════════════
-if (TOKEN) {
-  api('mi_perfil').then(({ data }) => { PERFIL = data; mostrarApp(); }).catch(() => {
-    sessionStorage.removeItem('vl_admin_token');
-    TOKEN = '';
+(function arrancar() {
+  // Detectar si venimos desde un link de invitación/recovery
+  const hash = new URLSearchParams(window.location.hash.slice(1));
+  const hashToken = hash.get('access_token');
+  const hashType = hash.get('type');
+  if (hashToken && (hashType === 'recovery' || hashType === 'invite' || hashType === 'signup')) {
+    mostrarSetupPassword(hashToken);
+    return;
+  }
+
+  // Arranque normal
+  if (TOKEN) {
+    api('mi_perfil').then(({ data }) => { PERFIL = data; mostrarApp(); }).catch(() => {
+      sessionStorage.removeItem('vl_admin_token');
+      TOKEN = '';
+      mostrarLogin();
+    });
+  } else {
     mostrarLogin();
-  });
-} else {
-  mostrarLogin();
-}
+  }
+})();
 </script>
 </body>
 </html>
