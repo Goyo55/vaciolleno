@@ -29,7 +29,7 @@
     min-height: 100vh;
   }
 
-  /* ─── LOGIN ─── */
+  /* ═══ LOGIN ═══ */
   .login-screen {
     min-height: 100vh; display: flex; align-items: center; justify-content: center;
     background: radial-gradient(circle at 50% 30%, var(--navy-mid), var(--navy));
@@ -37,30 +37,32 @@
   }
   .login-box {
     background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
-    padding: 3rem; max-width: 400px; width: 100%; text-align: center;
+    padding: 3rem; max-width: 400px; width: 100%;
   }
-  .login-box h1 { font-family: var(--serif); font-size: 1.8rem; margin-bottom: 0.5rem; }
-  .login-box p { color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-bottom: 2rem; font-family: var(--mono); letter-spacing: 0.05em; }
+  .login-box h1 { font-family: var(--serif); font-size: 1.8rem; margin-bottom: 0.5rem; text-align: center; }
+  .login-box .subt { color: rgba(255,255,255,0.5); font-size: 0.75rem; margin-bottom: 2rem; font-family: var(--mono); letter-spacing: 0.05em; text-align: center; }
+  .login-box label { display: block; font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 0.4rem; margin-top: 1rem; }
   .login-box input {
-    width: 100%; padding: 0.9rem 1rem; background: rgba(255,255,255,0.05);
+    width: 100%; padding: 0.85rem 1rem; background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.1); color: var(--white); font-family: var(--mono);
-    font-size: 0.95rem; margin-bottom: 1rem;
+    font-size: 0.9rem;
   }
   .login-box input:focus { outline: none; border-color: var(--gold); }
   .login-box button {
-    width: 100%; padding: 0.9rem; background: var(--gold); color: var(--navy);
-    border: none; font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.15em;
+    width: 100%; padding: 0.9rem; margin-top: 1.5rem; background: var(--gold); color: var(--navy);
+    border: none; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.15em;
     text-transform: uppercase; font-weight: bold; cursor: pointer; transition: opacity 0.2s;
   }
   .login-box button:hover { opacity: 0.85; }
   .login-box button:disabled { opacity: 0.5; cursor: wait; }
-  .login-error { color: var(--red); font-size: 0.8rem; margin-top: 1rem; font-family: var(--mono); }
+  .login-error { color: #ff6b7a; font-size: 0.8rem; margin-top: 1rem; font-family: var(--mono); text-align: center; }
 
-  /* ─── LAYOUT PRINCIPAL ─── */
-  .app { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+  /* ═══ APP ═══ */
+  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
   .sidebar {
     background: rgba(0,0,0,0.25); border-right: 1px solid rgba(255,255,255,0.06);
     padding: 1.5rem 0; position: sticky; top: 0; height: 100vh;
+    display: flex; flex-direction: column;
   }
   .brand {
     padding: 0 1.5rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.06);
@@ -68,7 +70,7 @@
     text-transform: uppercase;
   }
   .brand small { display: block; color: rgba(255,255,255,0.4); font-size: 0.6rem; margin-top: 0.3rem; }
-  .nav { list-style: none; padding: 1rem 0; }
+  .nav { list-style: none; padding: 1rem 0; flex: 1; overflow-y: auto; }
   .nav li {
     padding: 0.75rem 1.5rem; font-family: var(--mono); font-size: 0.75rem;
     text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer;
@@ -78,15 +80,20 @@
   }
   .nav li:hover { background: rgba(255,255,255,0.03); color: var(--white); }
   .nav li.active { background: rgba(201,168,76,0.1); color: var(--gold); border-left-color: var(--gold); }
-  .nav-badge {
-    background: var(--red); color: white; font-size: 0.6rem;
-    padding: 0.15rem 0.5rem; border-radius: 10px; font-family: var(--mono);
+  .nav li.hidden { display: none; }
+  .nav-badge { background: var(--red); color: white; font-size: 0.6rem; padding: 0.15rem 0.5rem; border-radius: 10px; font-family: var(--mono); }
+  .user-info {
+    padding: 1rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.06);
+    font-family: var(--mono); font-size: 0.7rem;
   }
+  .user-name { color: var(--white); font-weight: bold; margin-bottom: 0.15rem; }
+  .user-email { color: rgba(255,255,255,0.4); font-size: 0.65rem; word-break: break-all; }
   .logout {
-    position: absolute; bottom: 1.5rem; left: 1.5rem; right: 1.5rem;
-    padding: 0.6rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
-    color: rgba(255,255,255,0.6); font-family: var(--mono); font-size: 0.7rem;
+    margin: 0.75rem 1.5rem 0; padding: 0.5rem;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.6); font-family: var(--mono); font-size: 0.65rem;
     letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;
+    width: calc(100% - 3rem);
   }
   .logout:hover { background: rgba(255,71,87,0.1); color: var(--red); border-color: var(--red); }
 
@@ -94,18 +101,15 @@
   .page-title { font-family: var(--serif); font-size: 2rem; margin-bottom: 0.3rem; }
   .page-subtitle { font-family: var(--mono); font-size: 0.75rem; color: rgba(255,255,255,0.5); letter-spacing: 0.05em; margin-bottom: 2rem; }
 
-  /* ─── RESUMEN DASHBOARD ─── */
+  /* Resumen */
   .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-  .summary-card {
-    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
-    padding: 1.5rem; position: relative;
-  }
+  .summary-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 1.5rem; }
   .summary-card .label { font-family: var(--mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); margin-bottom: 0.5rem; }
   .summary-card .value { font-family: var(--serif); font-size: 2.2rem; font-weight: 700; }
   .summary-card.alert { border-color: var(--gold); }
   .summary-card.alert .value { color: var(--gold); }
 
-  /* ─── TABLA ─── */
+  /* Toolbar & Tabla */
   .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
   .filters { display: flex; gap: 0.5rem; flex-wrap: wrap; }
   .btn {
@@ -119,61 +123,40 @@
   .btn.sm { padding: 0.4rem 0.8rem; font-size: 0.65rem; }
   .btn.active { background: var(--gold); color: var(--navy); }
 
-  .table {
-    width: 100%; border-collapse: collapse; background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.06); font-size: 0.85rem;
-  }
-  .table th {
-    background: rgba(0,0,0,0.3); padding: 0.75rem 1rem; text-align: left;
-    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em;
-    text-transform: uppercase; color: rgba(255,255,255,0.6); font-weight: normal;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-  }
+  .table { width: 100%; border-collapse: collapse; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); font-size: 0.85rem; }
+  .table th { background: rgba(0,0,0,0.3); padding: 0.75rem 1rem; text-align: left; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.6); font-weight: normal; border-bottom: 1px solid rgba(255,255,255,0.08); }
   .table td { padding: 0.9rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: middle; }
   .table tr:hover td { background: rgba(255,255,255,0.02); }
   .table td small { display: block; font-family: var(--mono); font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-top: 0.2rem; }
   .empty { padding: 3rem; text-align: center; color: rgba(255,255,255,0.4); font-style: italic; }
 
-  .badge {
-    display: inline-block; padding: 0.2rem 0.6rem; font-family: var(--mono);
-    font-size: 0.65rem; letter-spacing: 0.05em; text-transform: uppercase; border-radius: 3px;
-  }
+  .badge { display: inline-block; padding: 0.2rem 0.6rem; font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.05em; text-transform: uppercase; border-radius: 3px; }
   .badge.nuevo { background: rgba(74,158,255,0.15); color: #4a9eff; }
   .badge.en_contacto { background: rgba(201,168,76,0.15); color: var(--gold); }
   .badge.entrevistado { background: rgba(162,155,254,0.15); color: #a29bfe; }
   .badge.aprobado { background: rgba(0,212,161,0.15); color: var(--green); }
   .badge.rechazado { background: rgba(255,71,87,0.15); color: #ff4757; }
+  .badge.recibido, .badge.clasificado, .badge.perforado, .badge.en_transito, .badge.entregado, .badge.en_circulacion { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.7); }
 
-  /* ─── MODAL ─── */
-  .modal-backdrop {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-    display: none; align-items: center; justify-content: center; z-index: 100; padding: 2rem;
-  }
+  /* Modal */
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 100; padding: 2rem; }
   .modal-backdrop.open { display: flex; }
-  .modal {
-    background: var(--navy-mid); border: 1px solid rgba(255,255,255,0.1);
-    max-width: 640px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 2rem;
-  }
+  .modal { background: var(--navy-mid); border: 1px solid rgba(255,255,255,0.1); max-width: 640px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 2rem; }
   .modal h2 { font-family: var(--serif); font-size: 1.4rem; margin-bottom: 1.5rem; }
   .form-group { margin-bottom: 1.2rem; }
-  .form-group label {
-    display: block; font-family: var(--mono); font-size: 0.7rem;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: rgba(255,255,255,0.6); margin-bottom: 0.4rem;
-  }
-  .form-group input, .form-group select, .form-group textarea {
-    width: 100%; padding: 0.7rem 0.9rem; background: rgba(0,0,0,0.25);
-    border: 1px solid rgba(255,255,255,0.1); color: var(--white); font-family: var(--sans);
-    font-size: 0.9rem;
-  }
+  .form-group label { display: block; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 0.4rem; }
+  .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.7rem 0.9rem; background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.1); color: var(--white); font-family: var(--sans); font-size: 0.9rem; }
   .form-group textarea { resize: vertical; min-height: 80px; font-family: var(--sans); }
-  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-    outline: none; border-color: var(--gold);
-  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--gold); }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   .form-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.5rem; }
   .checkbox-wrap { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0; }
   .checkbox-wrap input { width: auto; }
+
+  .perm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; background: rgba(0,0,0,0.2); padding: 1rem; border: 1px solid rgba(255,255,255,0.06); }
+  .perm-grid .checkbox-wrap { padding: 0.3rem 0.6rem; margin: 0; }
+  .perm-grid .checkbox-wrap label { margin: 0; text-transform: none; letter-spacing: 0; font-family: var(--sans); font-size: 0.85rem; color: rgba(255,255,255,0.85); }
+  .perm-grid .checkbox-wrap.admin-perm label { color: var(--gold); font-weight: bold; }
 
   .msg { padding: 0.75rem 1rem; margin-bottom: 1rem; font-family: var(--mono); font-size: 0.75rem; }
   .msg.error { background: rgba(255,71,87,0.1); color: #ff6b7a; border-left: 3px solid #ff4757; }
@@ -181,28 +164,36 @@
 
   .loading { padding: 3rem; text-align: center; opacity: 0.5; font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.1em; }
 
+  .perm-badges { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+  .perm-badge { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.7); padding: 0.15rem 0.5rem; font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.05em; text-transform: uppercase; }
+  .perm-badge.admin { background: rgba(201,168,76,0.2); color: var(--gold); }
+
   @media (max-width: 900px) {
     .app { grid-template-columns: 1fr; }
     .sidebar { position: static; height: auto; }
-    .logout { position: static; margin: 1rem 1.5rem; }
     .main { padding: 1.5rem; }
+    .form-row { grid-template-columns: 1fr; }
+    .perm-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════ LOGIN ═══════════════════════ -->
+<!-- LOGIN -->
 <div id="loginScreen" class="login-screen">
   <div class="login-box">
     <h1>Vacío Lleno</h1>
-    <p>Panel de administración</p>
-    <input type="password" id="pwdInput" placeholder="Contraseña" autofocus>
+    <div class="subt">Panel de administración</div>
+    <label>Email</label>
+    <input type="email" id="emailInput" autocomplete="email" autofocus>
+    <label>Contraseña</label>
+    <input type="password" id="pwdInput" autocomplete="current-password">
     <button id="loginBtn" onclick="hacerLogin()">Entrar</button>
     <div id="loginError" class="login-error" style="display:none;"></div>
   </div>
 </div>
 
-<!-- ═══════════════════════ APP ═══════════════════════ -->
+<!-- APP -->
 <div id="app" class="app" style="display:none;">
   <aside class="sidebar">
     <div class="brand">
@@ -210,32 +201,42 @@
       <small>Panel admin</small>
     </div>
     <ul class="nav" id="nav">
-      <li data-seccion="resumen" class="active">Resumen</li>
-      <li data-seccion="formularios">Formularios <span class="nav-badge" id="badgeFormularios" style="display:none;"></span></li>
-      <li data-seccion="voluntarios">Voluntarios</li>
-      <li data-seccion="libros">Libros</li>
-      <li data-seccion="resenas">Reseñas</li>
-      <li data-seccion="organizaciones">Organizaciones</li>
+      <li data-seccion="resumen" data-permiso="" class="active">Resumen</li>
+      <li data-seccion="formularios" data-permiso="formularios">Formularios <span class="nav-badge" id="badgeFormularios" style="display:none;"></span></li>
+      <li data-seccion="voluntarios" data-permiso="voluntarios">Voluntarios</li>
+      <li data-seccion="libros" data-permiso="libros">Libros</li>
+      <li data-seccion="resenas" data-permiso="resenas">Reseñas</li>
+      <li data-seccion="organizaciones" data-permiso="organizaciones">Organizaciones</li>
+      <li data-seccion="usuarios" data-permiso="admin">Usuarios</li>
     </ul>
+    <div class="user-info">
+      <div class="user-name" id="userName">—</div>
+      <div class="user-email" id="userEmail">—</div>
+    </div>
     <button class="logout" onclick="cerrarSesion()">Cerrar sesión</button>
   </aside>
-
   <main class="main" id="main">
     <div class="loading">Cargando...</div>
   </main>
 </div>
 
-<!-- ═══════════════════════ MODAL ═══════════════════════ -->
+<!-- MODAL -->
 <div id="modal" class="modal-backdrop" onclick="cerrarModalSiFuera(event)">
   <div class="modal" id="modalContent"></div>
 </div>
 
 <script>
 // ═══════════════════════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════════════════════
+const SUPABASE_URL = 'https://tuagkbjixoolmtmwwsus.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_VFoLqoJsalIKNJ2GFpSbzA_QS5RH4-U';
+
+// ═══════════════════════════════════════════════════════════════════
 // ESTADO GLOBAL
 // ═══════════════════════════════════════════════════════════════════
-let PWD = sessionStorage.getItem('vl_admin_pwd') || '';
-let seccionActual = 'resumen';
+let TOKEN = sessionStorage.getItem('vl_admin_token') || '';
+let PERFIL = null;  // { email, nombre, permisos: [...] }
 let filtroFormularios = '';
 
 // ═══════════════════════════════════════════════════════════════════
@@ -245,15 +246,15 @@ async function api(accion, datos = {}) {
   const res = await fetch('/api/admin', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ password: PWD, accion, datos }),
+    body: JSON.stringify({ access_token: TOKEN, accion, datos }),
   });
   const json = await res.json();
   if (!res.ok) {
     if (res.status === 401) {
-      sessionStorage.removeItem('vl_admin_pwd');
-      PWD = '';
+      sessionStorage.removeItem('vl_admin_token');
+      TOKEN = ''; PERFIL = null;
       mostrarLogin();
-      throw new Error('Sesión expirada');
+      throw new Error('Sesión expirada — inicia sesión de nuevo');
     }
     throw new Error(json.error || 'Error del servidor');
   }
@@ -261,32 +262,47 @@ async function api(accion, datos = {}) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// LOGIN / LOGOUT
+// LOGIN / LOGOUT (Supabase Auth)
 // ═══════════════════════════════════════════════════════════════════
 async function hacerLogin() {
-  const input = document.getElementById('pwdInput');
+  const email = document.getElementById('emailInput').value.trim();
+  const pwd = document.getElementById('pwdInput').value;
   const btn = document.getElementById('loginBtn');
   const err = document.getElementById('loginError');
-  const pwd = input.value.trim();
-  if (!pwd) return;
+  if (!email || !pwd) return;
   btn.disabled = true; btn.textContent = 'Verificando...';
   err.style.display = 'none';
+
   try {
-    PWD = pwd;
-    await api('login');
-    sessionStorage.setItem('vl_admin_pwd', PWD);
+    // Login contra Supabase Auth
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', apikey: SUPABASE_ANON_KEY },
+      body: JSON.stringify({ email, password: pwd }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data.access_token) {
+      throw new Error(data.error_description || data.msg || 'Email o contraseña incorrectos');
+    }
+    TOKEN = data.access_token;
+
+    // Verificar que tiene perfil de admin activo
+    const { data: perfil } = await api('mi_perfil');
+    PERFIL = perfil;
+
+    sessionStorage.setItem('vl_admin_token', TOKEN);
     mostrarApp();
   } catch (e) {
     err.textContent = e.message;
     err.style.display = 'block';
-    PWD = '';
+    TOKEN = ''; PERFIL = null;
     btn.disabled = false; btn.textContent = 'Entrar';
   }
 }
 
 function cerrarSesion() {
-  sessionStorage.removeItem('vl_admin_pwd');
-  PWD = '';
+  sessionStorage.removeItem('vl_admin_token');
+  TOKEN = ''; PERFIL = null;
   location.reload();
 }
 
@@ -298,18 +314,31 @@ function mostrarLogin() {
 function mostrarApp() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('app').style.display = 'grid';
+
+  // Mostrar info del usuario
+  document.getElementById('userName').textContent = PERFIL.nombre || 'Sin nombre';
+  document.getElementById('userEmail').textContent = PERFIL.email;
+
+  // Ocultar pestañas sin permiso
+  document.querySelectorAll('.nav li').forEach(li => {
+    const permiso = li.dataset.permiso;
+    if (!permiso) { li.classList.remove('hidden'); return; }
+    if (PERFIL.permisos.includes('admin') || PERFIL.permisos.includes(permiso)) {
+      li.classList.remove('hidden');
+    } else {
+      li.classList.add('hidden');
+    }
+  });
+
   cargarSeccion('resumen');
 }
 
-// Login con Enter
-document.getElementById('pwdInput').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') hacerLogin();
-});
+document.getElementById('pwdInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') hacerLogin(); });
+document.getElementById('emailInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') document.getElementById('pwdInput').focus(); });
 
-// Nav clicks
 document.getElementById('nav').addEventListener('click', (e) => {
   const li = e.target.closest('li');
-  if (!li) return;
+  if (!li || li.classList.contains('hidden')) return;
   document.querySelectorAll('.nav li').forEach(x => x.classList.remove('active'));
   li.classList.add('active');
   cargarSeccion(li.dataset.seccion);
@@ -322,27 +351,22 @@ function esc(s) {
   if (s === null || s === undefined) return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
-function fecha(iso) {
-  if (!iso) return '—';
-  return new Date(iso).toLocaleDateString('es-ES', { day:'numeric', month:'short', year:'numeric' });
-}
+function fecha(iso) { if (!iso) return '—'; return new Date(iso).toLocaleDateString('es-ES', { day:'numeric', month:'short', year:'numeric' }); }
 function mostrarMsg(html, tipo = 'ok') {
   const main = document.getElementById('main');
   const msg = document.createElement('div');
   msg.className = 'msg ' + tipo;
   msg.textContent = html;
   main.insertBefore(msg, main.firstChild);
-  setTimeout(() => msg.remove(), 4000);
+  setTimeout(() => msg.remove(), 5000);
 }
-function abrirModal(html) {
-  document.getElementById('modalContent').innerHTML = html;
-  document.getElementById('modal').classList.add('open');
-}
-function cerrarModal() {
-  document.getElementById('modal').classList.remove('open');
-}
-function cerrarModalSiFuera(e) {
-  if (e.target.id === 'modal') cerrarModal();
+function abrirModal(html) { document.getElementById('modalContent').innerHTML = html; document.getElementById('modal').classList.add('open'); }
+function cerrarModal() { document.getElementById('modal').classList.remove('open'); }
+function cerrarModalSiFuera(e) { if (e.target.id === 'modal') cerrarModal(); }
+
+function puedo(permiso) {
+  if (!PERFIL) return false;
+  return PERFIL.permisos.includes('admin') || PERFIL.permisos.includes(permiso);
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -352,40 +376,24 @@ async function cargarResumen() {
   document.getElementById('main').innerHTML = '<div class="loading">Cargando resumen...</div>';
   try {
     const { data } = await api('resumen');
-    // Badge del nav
     const badge = document.getElementById('badgeFormularios');
-    if (data.formularios_nuevos > 0) {
-      badge.textContent = data.formularios_nuevos;
-      badge.style.display = 'inline-block';
-    } else {
-      badge.style.display = 'none';
-    }
+    if (data.formularios_nuevos > 0) { badge.textContent = data.formularios_nuevos; badge.style.display = 'inline-block'; }
+    else badge.style.display = 'none';
+
     document.getElementById('main').innerHTML = `
-      <h1 class="page-title">Resumen</h1>
+      <h1 class="page-title">Bienvenido/a, ${esc(PERFIL.nombre || PERFIL.email.split('@')[0])}</h1>
       <div class="page-subtitle">Vista general del proyecto</div>
       <div class="summary-grid">
         <div class="summary-card ${data.formularios_nuevos > 0 ? 'alert' : ''}">
           <div class="label">Formularios nuevos</div>
           <div class="value">${data.formularios_nuevos}</div>
         </div>
-        <div class="summary-card">
-          <div class="label">Voluntarios publicados</div>
-          <div class="value">${data.voluntarios_publicados}</div>
-        </div>
-        <div class="summary-card">
-          <div class="label">Libros total</div>
-          <div class="value">${data.libros_total}</div>
-        </div>
-        <div class="summary-card">
-          <div class="label">Reseñas</div>
-          <div class="value">${data.resenas_total}</div>
-        </div>
-        <div class="summary-card">
-          <div class="label">Donaciones confirmadas</div>
-          <div class="value">${data.donaciones_confirmadas}</div>
-        </div>
+        <div class="summary-card"><div class="label">Voluntarios publicados</div><div class="value">${data.voluntarios_publicados}</div></div>
+        <div class="summary-card"><div class="label">Libros total</div><div class="value">${data.libros_total}</div></div>
+        <div class="summary-card"><div class="label">Reseñas</div><div class="value">${data.resenas_total}</div></div>
+        <div class="summary-card"><div class="label">Donaciones confirmadas</div><div class="value">${data.donaciones_confirmadas}</div></div>
       </div>
-      ${data.formularios_nuevos > 0 ? `
+      ${(data.formularios_nuevos > 0 && puedo('formularios')) ? `
         <div style="margin-top:2rem;padding:1.5rem;background:rgba(201,168,76,0.06);border-left:3px solid var(--gold);">
           Tienes <strong>${data.formularios_nuevos}</strong> ${data.formularios_nuevos === 1 ? 'formulario nuevo' : 'formularios nuevos'} sin revisar.
           <button class="btn sm" style="margin-left:1rem;" onclick="document.querySelector('[data-seccion=formularios]').click()">Ir a formularios →</button>
@@ -398,13 +406,10 @@ async function cargarResumen() {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// SECCIÓN: FORMULARIOS (pipeline voluntarios)
+// SECCIÓN: FORMULARIOS
 // ═══════════════════════════════════════════════════════════════════
 const ESTADOS = ['nuevo', 'en_contacto', 'entrevistado', 'aprobado', 'rechazado'];
-const ESTADO_LABEL = {
-  nuevo: 'Nuevo', en_contacto: 'En contacto', entrevistado: 'Entrevistado',
-  aprobado: 'Aprobado', rechazado: 'Rechazado'
-};
+const ESTADO_LABEL = { nuevo:'Nuevo', en_contacto:'En contacto', entrevistado:'Entrevistado', aprobado:'Aprobado', rechazado:'Rechazado' };
 
 async function cargarFormularios() {
   document.getElementById('main').innerHTML = '<div class="loading">Cargando formularios...</div>';
@@ -415,26 +420,13 @@ async function cargarFormularios() {
       const active = e === filtroFormularios ? 'active' : '';
       return `<button class="btn ghost sm ${active}" onclick="filtrarFormularios('${e}')">${label}</button>`;
     }).join('');
-
     document.getElementById('main').innerHTML = `
       <h1 class="page-title">Formularios recibidos</h1>
       <div class="page-subtitle">Pipeline de gestión de voluntarios y contactos</div>
-      <div class="toolbar">
-        <div class="filters">${filtros}</div>
-      </div>
+      <div class="toolbar"><div class="filters">${filtros}</div></div>
       ${data.length === 0 ? '<div class="empty">No hay formularios que mostrar.</div>' : `
       <table class="table">
-        <thead>
-          <tr>
-            <th>Tipo</th>
-            <th>Nombre</th>
-            <th>Contacto</th>
-            <th>Ciudad</th>
-            <th>Estado</th>
-            <th>Recibido</th>
-            <th></th>
-          </tr>
-        </thead>
+        <thead><tr><th>Tipo</th><th>Nombre</th><th>Contacto</th><th>Ciudad</th><th>Estado</th><th>Recibido</th><th></th></tr></thead>
         <tbody>
           ${data.map(f => `
             <tr>
@@ -450,15 +442,10 @@ async function cargarFormularios() {
         </tbody>
       </table>`}
     `;
-  } catch (e) {
-    document.getElementById('main').innerHTML = `<div class="msg error">${e.message}</div>`;
-  }
+  } catch (e) { document.getElementById('main').innerHTML = `<div class="msg error">${e.message}</div>`; }
 }
 
-function filtrarFormularios(estado) {
-  filtroFormularios = estado;
-  cargarFormularios();
-}
+function filtrarFormularios(estado) { filtroFormularios = estado; cargarFormularios(); }
 
 let formActual = null;
 async function verFormulario(id) {
@@ -469,12 +456,8 @@ async function verFormulario(id) {
   const extras = f.datos_extra || {};
   abrirModal(`
     <h2>${esc(f.nombre)}</h2>
-    <div style="font-family:var(--mono);font-size:0.75rem;color:rgba(255,255,255,0.5);margin-bottom:1.5rem;">
-      ${esc(f.tipo)} · ${fecha(f.creado_en)}
-    </div>
-
-    <div class="form-group">
-      <label>Datos del envío</label>
+    <div style="font-family:var(--mono);font-size:0.75rem;color:rgba(255,255,255,0.5);margin-bottom:1.5rem;">${esc(f.tipo)} · ${fecha(f.creado_en)}</div>
+    <div class="form-group"><label>Datos del envío</label>
       <div style="background:rgba(0,0,0,0.25);padding:1rem;font-family:var(--mono);font-size:0.75rem;line-height:1.6;">
         <div>Email: ${esc(f.email)}</div>
         ${f.ciudad ? `<div>Ciudad: ${esc(f.ciudad)}</div>` : ''}
@@ -484,27 +467,18 @@ async function verFormulario(id) {
         ${Object.keys(extras).length > 0 ? '<hr style="border-color:rgba(255,255,255,0.1);margin:0.5rem 0;"><div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.3rem;">Extras</div>' + Object.entries(extras).map(([k,v]) => `<div>${esc(k)}: ${esc(Array.isArray(v) ? v.join(', ') : v)}</div>`).join('') : ''}
       </div>
     </div>
-
-    <div class="form-group">
-      <label>Estado del pipeline</label>
-      <select id="fEstado">
-        ${ESTADOS.map(e => `<option value="${e}" ${e === f.estado ? 'selected' : ''}>${ESTADO_LABEL[e]}</option>`).join('')}
-      </select>
+    <div class="form-group"><label>Estado del pipeline</label>
+      <select id="fEstado">${ESTADOS.map(e => `<option value="${e}" ${e === f.estado ? 'selected' : ''}>${ESTADO_LABEL[e]}</option>`).join('')}</select>
     </div>
-
-    <div class="form-group">
-      <label>Notas internas (privadas)</label>
+    <div class="form-group"><label>Notas internas (privadas)</label>
       <textarea id="fNotas" placeholder="Impresiones de la entrevista, próximos pasos, aspectos a validar...">${esc(f.notas_internas || '')}</textarea>
     </div>
-
-    <div class="form-group">
-      <label>Fecha de entrevista</label>
+    <div class="form-group"><label>Fecha de entrevista</label>
       <input type="datetime-local" id="fFecha" value="${f.fecha_entrevista ? f.fecha_entrevista.slice(0, 16) : ''}">
     </div>
-
     <div class="form-actions">
       <button class="btn ghost" onclick="cerrarModal()">Cancelar</button>
-      ${f.tipo === 'voluntario' ? `<button class="btn" style="background:var(--green);color:white;" onclick="aprobarYCrearVoluntario()">Aprobar y crear ficha →</button>` : ''}
+      ${(f.tipo === 'voluntario' && puedo('voluntarios')) ? `<button class="btn" style="background:var(--green);color:white;" onclick="aprobarYCrearVoluntario()">Aprobar y crear ficha →</button>` : ''}
       <button class="btn" onclick="guardarFormulario()">Guardar cambios</button>
     </div>
   `);
@@ -518,49 +492,24 @@ async function guardarFormulario() {
   };
   try {
     await api('formularios_actualizar', { id: formActual.id, cambios });
-    cerrarModal();
-    cargarFormularios();
-    mostrarMsg('Formulario actualizado', 'ok');
-  } catch (e) {
-    mostrarMsg(e.message, 'error');
-  }
+    cerrarModal(); cargarFormularios(); mostrarMsg('Formulario actualizado', 'ok');
+  } catch (e) { mostrarMsg(e.message, 'error'); }
 }
 
 async function aprobarYCrearVoluntario() {
-  const f = formActual;
-  const extras = f.datos_extra || {};
+  const f = formActual; const extras = f.datos_extra || {};
   const rolSugerido = Array.isArray(extras.roles) ? extras.roles[0] : (extras.roles || '');
   abrirModal(`
     <h2>Crear ficha pública de voluntario</h2>
-    <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;margin-bottom:1.5rem;">
-      Estos datos aparecerán en la web pública. Revísalos con cuidado.
-    </p>
-    <div class="form-group">
-      <label>Nombre a mostrar</label>
-      <input type="text" id="vNombre" value="${esc(f.nombre)}">
-    </div>
-    <div class="form-group">
-      <label>Rol</label>
-      <input type="text" id="vRol" value="${esc(rolSugerido)}" placeholder="ej. Coordinadora de clasificación">
-    </div>
+    <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;margin-bottom:1.5rem;">Estos datos aparecerán en la web pública. Revísalos con cuidado.</p>
+    <div class="form-group"><label>Nombre a mostrar</label><input type="text" id="vNombre" value="${esc(f.nombre)}"></div>
+    <div class="form-group"><label>Rol</label><input type="text" id="vRol" value="${esc(rolSugerido)}" placeholder="ej. Coordinadora de clasificación"></div>
     <div class="form-row">
-      <div class="form-group">
-        <label>Ciudad</label>
-        <input type="text" id="vCiudad" value="${esc(f.ciudad || '')}">
-      </div>
-      <div class="form-group">
-        <label>País</label>
-        <input type="text" id="vPais" value="${esc(f.pais || '')}">
-      </div>
+      <div class="form-group"><label>Ciudad</label><input type="text" id="vCiudad" value="${esc(f.ciudad || '')}"></div>
+      <div class="form-group"><label>País</label><input type="text" id="vPais" value="${esc(f.pais || '')}"></div>
     </div>
-    <div class="form-group">
-      <label>Bio corta (1-2 frases)</label>
-      <textarea id="vBio" placeholder="Un breve resumen que aparecerá en su tarjeta pública."></textarea>
-    </div>
-    <div class="form-group">
-      <label>URL de foto (opcional)</label>
-      <input type="url" id="vFoto" placeholder="https://...">
-    </div>
+    <div class="form-group"><label>Bio corta (1-2 frases)</label><textarea id="vBio" placeholder="Un breve resumen que aparecerá en su tarjeta pública."></textarea></div>
+    <div class="form-group"><label>URL de foto (opcional)</label><input type="url" id="vFoto" placeholder="https://..."></div>
     <div class="checkbox-wrap">
       <input type="checkbox" id="vPublicado" checked>
       <label for="vPublicado" style="margin:0;text-transform:none;letter-spacing:0;font-family:var(--sans);font-size:0.9rem;color:rgba(255,255,255,0.8);">Publicar inmediatamente</label>
@@ -583,22 +532,12 @@ async function confirmarCrearVoluntario() {
     foto_url: document.getElementById('vFoto').value.trim() || null,
     publicado: document.getElementById('vPublicado').checked,
   };
-  if (!nuevo.nombre || !nuevo.rol) {
-    mostrarMsg('Nombre y rol son obligatorios', 'error');
-    return;
-  }
+  if (!nuevo.nombre || !nuevo.rol) { mostrarMsg('Nombre y rol son obligatorios', 'error'); return; }
   try {
     await api('voluntarios_crear', nuevo);
-    await api('formularios_actualizar', {
-      id: formActual.id,
-      cambios: { estado: 'aprobado' },
-    });
-    cerrarModal();
-    cargarFormularios();
-    mostrarMsg('Voluntario creado y publicado', 'ok');
-  } catch (e) {
-    mostrarMsg(e.message, 'error');
-  }
+    await api('formularios_actualizar', { id: formActual.id, cambios: { estado: 'aprobado' } });
+    cerrarModal(); cargarFormularios(); mostrarMsg('Voluntario creado y publicado', 'ok');
+  } catch (e) { mostrarMsg(e.message, 'error'); }
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -611,43 +550,30 @@ async function cargarVoluntarios() {
     document.getElementById('main').innerHTML = `
       <h1 class="page-title">Voluntarios publicados</h1>
       <div class="page-subtitle">Fichas visibles en la web pública</div>
-      <div class="toolbar">
-        <div></div>
-        <button class="btn" onclick="editarVoluntario(null)">+ Añadir voluntario</button>
-      </div>
+      <div class="toolbar"><div></div><button class="btn" onclick="editarVoluntario(null)">+ Añadir voluntario</button></div>
       ${data.length === 0 ? '<div class="empty">No hay voluntarios publicados aún.</div>' : `
-      <table class="table">
-        <thead><tr><th>Nombre</th><th>Rol</th><th>Ciudad</th><th>Publicado</th><th>Orden</th><th></th></tr></thead>
-        <tbody>
-          ${data.map(v => `
-            <tr>
-              <td><strong>${esc(v.nombre)}</strong>${v.bio_corta ? '<small>' + esc(v.bio_corta.slice(0, 80)) + (v.bio_corta.length > 80 ? '...' : '') + '</small>' : ''}</td>
-              <td>${esc(v.rol)}</td>
-              <td>${esc(v.ciudad || '—')}${v.pais ? '<small>' + esc(v.pais) + '</small>' : ''}</td>
-              <td>${v.publicado ? '<span class="badge aprobado">Sí</span>' : '<span class="badge rechazado">No</span>'}</td>
-              <td style="font-family:var(--mono);">${v.orden_visual || 0}</td>
-              <td>
-                <button class="btn sm ghost" onclick='editarVoluntario(${JSON.stringify(v.id)})'>Editar</button>
-                <button class="btn sm danger" onclick='eliminarVoluntario(${JSON.stringify(v.id)})'>×</button>
-              </td>
-            </tr>
-          `).join('')}
+      <table class="table"><thead><tr><th>Nombre</th><th>Rol</th><th>Ciudad</th><th>Publicado</th><th>Orden</th><th></th></tr></thead>
+        <tbody>${data.map(v => `
+          <tr>
+            <td><strong>${esc(v.nombre)}</strong>${v.bio_corta ? '<small>' + esc(v.bio_corta.slice(0, 80)) + (v.bio_corta.length > 80 ? '...' : '') + '</small>' : ''}</td>
+            <td>${esc(v.rol)}</td>
+            <td>${esc(v.ciudad || '—')}${v.pais ? '<small>' + esc(v.pais) + '</small>' : ''}</td>
+            <td>${v.publicado ? '<span class="badge aprobado">Sí</span>' : '<span class="badge rechazado">No</span>'}</td>
+            <td style="font-family:var(--mono);">${v.orden_visual || 0}</td>
+            <td>
+              <button class="btn sm ghost" onclick='editarVoluntario(${JSON.stringify(v.id)})'>Editar</button>
+              <button class="btn sm danger" onclick='eliminarVoluntario(${JSON.stringify(v.id)})'>×</button>
+            </td>
+          </tr>`).join('')}
         </tbody>
       </table>`}
     `;
-  } catch (e) {
-    document.getElementById('main').innerHTML = `<div class="msg error">${e.message}</div>`;
-  }
+  } catch (e) { document.getElementById('main').innerHTML = `<div class="msg error">${e.message}</div>`; }
 }
 
-let voluntariosCache = [];
 async function editarVoluntario(id) {
   let v = { nombre:'', rol:'', ciudad:'', pais:'', bio_corta:'', foto_url:'', publicado:true, orden_visual:0 };
-  if (id) {
-    const { data } = await api('voluntarios_listar');
-    voluntariosCache = data;
-    v = data.find(x => x.id === id) || v;
-  }
+  if (id) { const { data } = await api('voluntarios_listar'); v = data.find(x => x.id === id) || v; }
   abrirModal(`
     <h2>${id ? 'Editar' : 'Añadir'} voluntario</h2>
     <div class="form-group"><label>Nombre</label><input type="text" id="vNombre" value="${esc(v.nombre)}"></div>
@@ -689,19 +615,14 @@ async function guardarVoluntario(id) {
   try {
     if (id) await api('voluntarios_actualizar', { id, cambios: datos });
     else await api('voluntarios_crear', datos);
-    cerrarModal();
-    cargarVoluntarios();
-    mostrarMsg('Guardado', 'ok');
+    cerrarModal(); cargarVoluntarios(); mostrarMsg('Guardado', 'ok');
   } catch (e) { mostrarMsg(e.message, 'error'); }
 }
 
 async function eliminarVoluntario(id) {
   if (!confirm('¿Eliminar este voluntario permanentemente?')) return;
-  try {
-    await api('voluntarios_eliminar', { id });
-    cargarVoluntarios();
-    mostrarMsg('Voluntario eliminado', 'ok');
-  } catch (e) { mostrarMsg(e.message, 'error'); }
+  try { await api('voluntarios_eliminar', { id }); cargarVoluntarios(); mostrarMsg('Voluntario eliminado', 'ok'); }
+  catch (e) { mostrarMsg(e.message, 'error'); }
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -730,42 +651,31 @@ async function cargarLibros() {
     document.getElementById('main').innerHTML = `
       <h1 class="page-title">Inventario de libros</h1>
       <div class="page-subtitle">${data.length} libros registrados</div>
-      <div class="toolbar">
-        <div></div>
-        <button class="btn" onclick="editarLibro(null)">+ Añadir libro</button>
-      </div>
+      <div class="toolbar"><div></div><button class="btn" onclick="editarLibro(null)">+ Añadir libro</button></div>
       ${data.length === 0 ? '<div class="empty">Aún no has añadido ningún libro.</div>' : `
-      <table class="table">
-        <thead><tr><th>Título</th><th>Autor</th><th>A/B/C</th><th>Estado</th><th>País</th><th>Destacado</th><th></th></tr></thead>
-        <tbody>
-          ${data.map(l => `
-            <tr>
-              <td><strong>${esc(l.titulo)}</strong>${l.codigo_seguimiento ? '<small>' + esc(l.codigo_seguimiento) + '</small>' : ''}</td>
-              <td>${esc(l.autor)}</td>
-              <td><span class="badge ${l.categoria_abc === 'A' ? 'aprobado' : l.categoria_abc === 'B' ? 'en_contacto' : 'nuevo'}">${esc(l.categoria_abc || '—')}</span></td>
-              <td><span class="badge ${l.estado_actual}">${esc((l.estado_actual || '').replace('_', ' '))}</span></td>
-              <td>${esc(l.pais_destino || '—')}</td>
-              <td>${l.destacado_seguimiento ? '⭐' : ''}</td>
-              <td>
-                <button class="btn sm ghost" onclick='editarLibro(${JSON.stringify(l.id)})'>Editar</button>
-                <button class="btn sm danger" onclick='eliminarLibro(${JSON.stringify(l.id)})'>×</button>
-              </td>
-            </tr>
-          `).join('')}
+      <table class="table"><thead><tr><th>Título</th><th>Autor</th><th>A/B/C</th><th>Estado</th><th>País</th><th>Destacado</th><th></th></tr></thead>
+        <tbody>${data.map(l => `
+          <tr>
+            <td><strong>${esc(l.titulo)}</strong>${l.codigo_seguimiento ? '<small>' + esc(l.codigo_seguimiento) + '</small>' : ''}</td>
+            <td>${esc(l.autor)}</td>
+            <td><span class="badge ${l.categoria_abc === 'A' ? 'aprobado' : l.categoria_abc === 'B' ? 'en_contacto' : 'nuevo'}">${esc(l.categoria_abc || '—')}</span></td>
+            <td><span class="badge ${l.estado_actual}">${esc((l.estado_actual || '').replace('_', ' '))}</span></td>
+            <td>${esc(l.pais_destino || '—')}</td>
+            <td>${l.destacado_seguimiento ? '⭐' : ''}</td>
+            <td>
+              <button class="btn sm ghost" onclick='editarLibro(${JSON.stringify(l.id)})'>Editar</button>
+              <button class="btn sm danger" onclick='eliminarLibro(${JSON.stringify(l.id)})'>×</button>
+            </td>
+          </tr>`).join('')}
         </tbody>
       </table>`}
     `;
-  } catch (e) {
-    document.getElementById('main').innerHTML = `<div class="msg error">${e.message}</div>`;
-  }
+  } catch (e) { document.getElementById('main').innerHTML = `<div class="msg error">${e.message}</div>`; }
 }
 
 async function editarLibro(id) {
-  let l = { titulo:'', autor:'', isbn:'', editorial:'', anio_publicacion:'', categoria_tematica:'otros', categoria_abc:'A', estado_fisico:'bueno', perforado:false, pais_destino:'', ciudad_destino:'', manos_estimadas:40, estado_actual:'recibido', destacado_seguimiento:false, notas:'' };
-  if (id) {
-    const { data } = await api('libros_listar');
-    l = data.find(x => x.id === id) || l;
-  }
+  let l = { titulo:'', autor:'', isbn:'', editorial:'', anio_publicacion:'', categoria_tematica:'filosofia_pensamiento', categoria_abc:'A', estado_fisico:'bueno', perforado:false, pais_destino:'', ciudad_destino:'', manos_estimadas:40, estado_actual:'recibido', destacado_seguimiento:false, notas:'' };
+  if (id) { const { data } = await api('libros_listar'); l = data.find(x => x.id === id) || l; }
   abrirModal(`
     <h2>${id ? 'Editar' : 'Añadir'} libro</h2>
     <div class="form-row">
@@ -777,14 +687,10 @@ async function editarLibro(id) {
       <div class="form-group"><label>Editorial (opcional)</label><input type="text" id="lEditorial" value="${esc(l.editorial || '')}"></div>
     </div>
     <div class="form-row">
-      <div class="form-group">
-        <label>Categoría temática</label>
-        <select id="lTematica">
-          ${CATEGORIAS_TEMATICAS.map(([k,v]) => `<option value="${k}" ${k === l.categoria_tematica ? 'selected' : ''}>${v}</option>`).join('')}
-        </select>
+      <div class="form-group"><label>Categoría temática</label>
+        <select id="lTematica">${CATEGORIAS_TEMATICAS.map(([k,v]) => `<option value="${k}" ${k === l.categoria_tematica ? 'selected' : ''}>${v}</option>`).join('')}</select>
       </div>
-      <div class="form-group">
-        <label>Categoría A/B/C</label>
+      <div class="form-group"><label>Categoría A/B/C</label>
         <select id="lAbc">
           <option value="A" ${l.categoria_abc === 'A' ? 'selected' : ''}>A · Perforado y distribuido</option>
           <option value="B" ${l.categoria_abc === 'B' ? 'selected' : ''}>B · Vendido para financiar</option>
@@ -793,26 +699,16 @@ async function editarLibro(id) {
       </div>
     </div>
     <div class="form-row">
-      <div class="form-group">
-        <label>Estado físico</label>
-        <select id="lEstadoFisico">
-          ${ESTADOS_FISICOS.map(e => `<option value="${e}" ${e === l.estado_fisico ? 'selected' : ''}>${e.replace('_',' ')}</option>`).join('')}
-        </select>
+      <div class="form-group"><label>Estado físico</label>
+        <select id="lEstadoFisico">${ESTADOS_FISICOS.map(e => `<option value="${e}" ${e === l.estado_fisico ? 'selected' : ''}>${e.replace('_',' ')}</option>`).join('')}</select>
       </div>
-      <div class="form-group">
-        <label>Estado actual (seguimiento)</label>
-        <select id="lEstadoActual">
-          ${ESTADOS_LIBRO.map(e => `<option value="${e}" ${e === l.estado_actual ? 'selected' : ''}>${e.replace('_',' ')}</option>`).join('')}
-        </select>
+      <div class="form-group"><label>Estado actual (seguimiento)</label>
+        <select id="lEstadoActual">${ESTADOS_LIBRO.map(e => `<option value="${e}" ${e === l.estado_actual ? 'selected' : ''}>${e.replace('_',' ')}</option>`).join('')}</select>
       </div>
     </div>
     <div class="form-row">
-      <div class="form-group">
-        <label>País destino</label>
-        <select id="lPais">
-          <option value="">(sin destino)</option>
-          ${PAISES.map(p => `<option value="${p}" ${p === l.pais_destino ? 'selected' : ''}>${p}</option>`).join('')}
-        </select>
+      <div class="form-group"><label>País destino</label>
+        <select id="lPais"><option value="">(sin destino)</option>${PAISES.map(p => `<option value="${p}" ${p === l.pais_destino ? 'selected' : ''}>${p}</option>`).join('')}</select>
       </div>
       <div class="form-group"><label>Ciudad destino</label><input type="text" id="lCiudad" value="${esc(l.ciudad_destino || '')}"></div>
     </div>
@@ -860,19 +756,14 @@ async function guardarLibro(id) {
   try {
     if (id) await api('libros_actualizar', { id, cambios: datos });
     else await api('libros_crear', datos);
-    cerrarModal();
-    cargarLibros();
-    mostrarMsg('Libro guardado', 'ok');
+    cerrarModal(); cargarLibros(); mostrarMsg('Libro guardado', 'ok');
   } catch (e) { mostrarMsg(e.message, 'error'); }
 }
 
 async function eliminarLibro(id) {
   if (!confirm('¿Eliminar este libro permanentemente?')) return;
-  try {
-    await api('libros_eliminar', { id });
-    cargarLibros();
-    mostrarMsg('Libro eliminado', 'ok');
-  } catch (e) { mostrarMsg(e.message, 'error'); }
+  try { await api('libros_eliminar', { id }); cargarLibros(); mostrarMsg('Libro eliminado', 'ok'); }
+  catch (e) { mostrarMsg(e.message, 'error'); }
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -885,48 +776,36 @@ async function cargarResenas() {
     document.getElementById('main').innerHTML = `
       <h1 class="page-title">Reseñas y testimonios</h1>
       <div class="page-subtitle">Aparecen rotativamente en el ticker de la página de impacto</div>
-      <div class="toolbar">
-        <div></div>
-        <button class="btn" onclick="editarResena(null)">+ Añadir reseña</button>
-      </div>
+      <div class="toolbar"><div></div><button class="btn" onclick="editarResena(null)">+ Añadir reseña</button></div>
       ${data.length === 0 ? '<div class="empty">Aún no hay reseñas registradas.</div>' : `
-      <table class="table">
-        <thead><tr><th>Cita</th><th>Autor</th><th>Tipo</th><th>Lugar</th><th>Publicada</th><th></th></tr></thead>
-        <tbody>
-          ${data.map(r => `
-            <tr>
-              <td style="max-width:400px;">"${esc((r.cita || '').slice(0, 120))}${(r.cita || '').length > 120 ? '...' : ''}"</td>
-              <td>${esc(r.autor_nombre || '—')}</td>
-              <td>${esc(r.autor_tipo || '—')}</td>
-              <td>${[r.ciudad, r.pais].filter(Boolean).map(esc).join(', ') || '—'}</td>
-              <td>${r.publicada ? '<span class="badge aprobado">Sí</span>' : '<span class="badge rechazado">No</span>'}${r.destacada ? ' ⭐' : ''}</td>
-              <td>
-                <button class="btn sm ghost" onclick='editarResena(${JSON.stringify(r.id)})'>Editar</button>
-                <button class="btn sm danger" onclick='eliminarResena(${JSON.stringify(r.id)})'>×</button>
-              </td>
-            </tr>
-          `).join('')}
+      <table class="table"><thead><tr><th>Cita</th><th>Autor</th><th>Tipo</th><th>Lugar</th><th>Publicada</th><th></th></tr></thead>
+        <tbody>${data.map(r => `
+          <tr>
+            <td style="max-width:400px;">"${esc((r.cita || '').slice(0, 120))}${(r.cita || '').length > 120 ? '...' : ''}"</td>
+            <td>${esc(r.autor_nombre || '—')}</td>
+            <td>${esc(r.autor_tipo || '—')}</td>
+            <td>${[r.ciudad, r.pais].filter(Boolean).map(esc).join(', ') || '—'}</td>
+            <td>${r.publicada ? '<span class="badge aprobado">Sí</span>' : '<span class="badge rechazado">No</span>'}${r.destacada ? ' ⭐' : ''}</td>
+            <td>
+              <button class="btn sm ghost" onclick='editarResena(${JSON.stringify(r.id)})'>Editar</button>
+              <button class="btn sm danger" onclick='eliminarResena(${JSON.stringify(r.id)})'>×</button>
+            </td>
+          </tr>`).join('')}
         </tbody>
       </table>`}
     `;
-  } catch (e) {
-    document.getElementById('main').innerHTML = `<div class="msg error">${e.message}</div>`;
-  }
+  } catch (e) { document.getElementById('main').innerHTML = `<div class="msg error">${e.message}</div>`; }
 }
 
 async function editarResena(id) {
   let r = { cita:'', autor_nombre:'', autor_tipo:'receptor', ciudad:'', pais:'', publicada:false, destacada:false };
-  if (id) {
-    const { data } = await api('resenas_listar');
-    r = data.find(x => x.id === id) || r;
-  }
+  if (id) { const { data } = await api('resenas_listar'); r = data.find(x => x.id === id) || r; }
   abrirModal(`
     <h2>${id ? 'Editar' : 'Añadir'} reseña</h2>
     <div class="form-group"><label>Cita textual</label><textarea id="rCita" placeholder="Máximo dos frases">${esc(r.cita || '')}</textarea></div>
     <div class="form-row">
       <div class="form-group"><label>Nombre del autor</label><input type="text" id="rNombre" value="${esc(r.autor_nombre || '')}" placeholder="ej. Carmen, 67 años"></div>
-      <div class="form-group">
-        <label>Tipo de autor</label>
+      <div class="form-group"><label>Tipo de autor</label>
         <select id="rTipo">
           <option value="receptor" ${r.autor_tipo === 'receptor' ? 'selected' : ''}>Receptor</option>
           <option value="voluntario" ${r.autor_tipo === 'voluntario' ? 'selected' : ''}>Voluntario</option>
@@ -970,19 +849,14 @@ async function guardarResena(id) {
   try {
     if (id) await api('resenas_actualizar', { id, cambios: datos });
     else await api('resenas_crear', datos);
-    cerrarModal();
-    cargarResenas();
-    mostrarMsg('Reseña guardada', 'ok');
+    cerrarModal(); cargarResenas(); mostrarMsg('Reseña guardada', 'ok');
   } catch (e) { mostrarMsg(e.message, 'error'); }
 }
 
 async function eliminarResena(id) {
   if (!confirm('¿Eliminar esta reseña?')) return;
-  try {
-    await api('resenas_eliminar', { id });
-    cargarResenas();
-    mostrarMsg('Reseña eliminada', 'ok');
-  } catch (e) { mostrarMsg(e.message, 'error'); }
+  try { await api('resenas_eliminar', { id }); cargarResenas(); mostrarMsg('Reseña eliminada', 'ok'); }
+  catch (e) { mostrarMsg(e.message, 'error'); }
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -995,51 +869,36 @@ async function cargarOrganizaciones() {
     document.getElementById('main').innerHTML = `
       <h1 class="page-title">Organizaciones colaboradoras</h1>
       <div class="page-subtitle">ONGs y colectivos que distribuyen o reciben libros</div>
-      <div class="toolbar">
-        <div></div>
-        <button class="btn" onclick="editarOrg(null)">+ Añadir organización</button>
-      </div>
+      <div class="toolbar"><div></div><button class="btn" onclick="editarOrg(null)">+ Añadir organización</button></div>
       ${data.length === 0 ? '<div class="empty">Aún no hay organizaciones registradas.</div>' : `
-      <table class="table">
-        <thead><tr><th>Nombre</th><th>País</th><th>Tipo</th><th>Contacto</th><th>Activa</th><th></th></tr></thead>
-        <tbody>
-          ${data.map(o => `
-            <tr>
-              <td><strong>${esc(o.nombre)}</strong>${o.descripcion ? '<small>' + esc((o.descripcion || '').slice(0, 80)) + '</small>' : ''}</td>
-              <td>${esc(o.pais)}${o.ciudad ? '<small>' + esc(o.ciudad) + '</small>' : ''}</td>
-              <td>${esc(o.tipo_distribucion || '—')}</td>
-              <td>${esc(o.contacto_nombre || '—')}${o.contacto_email ? '<small>' + esc(o.contacto_email) + '</small>' : ''}</td>
-              <td>${o.activa ? '<span class="badge aprobado">Sí</span>' : '<span class="badge rechazado">No</span>'}</td>
-              <td>
-                <button class="btn sm ghost" onclick='editarOrg(${JSON.stringify(o.id)})'>Editar</button>
-                <button class="btn sm danger" onclick='eliminarOrg(${JSON.stringify(o.id)})'>×</button>
-              </td>
-            </tr>
-          `).join('')}
+      <table class="table"><thead><tr><th>Nombre</th><th>País</th><th>Tipo</th><th>Contacto</th><th>Activa</th><th></th></tr></thead>
+        <tbody>${data.map(o => `
+          <tr>
+            <td><strong>${esc(o.nombre)}</strong>${o.descripcion ? '<small>' + esc((o.descripcion || '').slice(0, 80)) + '</small>' : ''}</td>
+            <td>${esc(o.pais)}${o.ciudad ? '<small>' + esc(o.ciudad) + '</small>' : ''}</td>
+            <td>${esc(o.tipo_distribucion || '—')}</td>
+            <td>${esc(o.contacto_nombre || '—')}${o.contacto_email ? '<small>' + esc(o.contacto_email) + '</small>' : ''}</td>
+            <td>${o.activa ? '<span class="badge aprobado">Sí</span>' : '<span class="badge rechazado">No</span>'}</td>
+            <td>
+              <button class="btn sm ghost" onclick='editarOrg(${JSON.stringify(o.id)})'>Editar</button>
+              <button class="btn sm danger" onclick='eliminarOrg(${JSON.stringify(o.id)})'>×</button>
+            </td>
+          </tr>`).join('')}
         </tbody>
       </table>`}
     `;
-  } catch (e) {
-    document.getElementById('main').innerHTML = `<div class="msg error">${e.message}</div>`;
-  }
+  } catch (e) { document.getElementById('main').innerHTML = `<div class="msg error">${e.message}</div>`; }
 }
 
 async function editarOrg(id) {
   let o = { nombre:'', pais:'', ciudad:'', tipo_distribucion:'', contacto_nombre:'', contacto_email:'', contacto_telefono:'', descripcion:'', sitio_web:'', logo_url:'', activa:true, publico:true };
-  if (id) {
-    const { data } = await api('organizaciones_listar');
-    o = data.find(x => x.id === id) || o;
-  }
+  if (id) { const { data } = await api('organizaciones_listar'); o = data.find(x => x.id === id) || o; }
   abrirModal(`
     <h2>${id ? 'Editar' : 'Añadir'} organización</h2>
     <div class="form-group"><label>Nombre</label><input type="text" id="oNombre" value="${esc(o.nombre)}"></div>
     <div class="form-row">
-      <div class="form-group">
-        <label>País</label>
-        <select id="oPais">
-          <option value="">(elige)</option>
-          ${PAISES.map(p => `<option value="${p}" ${p === o.pais ? 'selected' : ''}>${p}</option>`).join('')}
-        </select>
+      <div class="form-group"><label>País</label>
+        <select id="oPais"><option value="">(elige)</option>${PAISES.map(p => `<option value="${p}" ${p === o.pais ? 'selected' : ''}>${p}</option>`).join('')}</select>
       </div>
       <div class="form-group"><label>Ciudad</label><input type="text" id="oCiudad" value="${esc(o.ciudad || '')}"></div>
     </div>
@@ -1090,26 +949,162 @@ async function guardarOrg(id) {
   try {
     if (id) await api('organizaciones_actualizar', { id, cambios: datos });
     else await api('organizaciones_crear', datos);
-    cerrarModal();
-    cargarOrganizaciones();
-    mostrarMsg('Organización guardada', 'ok');
+    cerrarModal(); cargarOrganizaciones(); mostrarMsg('Organización guardada', 'ok');
   } catch (e) { mostrarMsg(e.message, 'error'); }
 }
 
 async function eliminarOrg(id) {
   if (!confirm('¿Eliminar esta organización?')) return;
+  try { await api('organizaciones_eliminar', { id }); cargarOrganizaciones(); mostrarMsg('Organización eliminada', 'ok'); }
+  catch (e) { mostrarMsg(e.message, 'error'); }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SECCIÓN: USUARIOS (solo admin)
+// ═══════════════════════════════════════════════════════════════════
+const PERMISOS_DISPONIBLES = [
+  ['admin', 'Admin — gestiona todo + usuarios'],
+  ['formularios', 'Formularios (bandeja de entrada)'],
+  ['voluntarios', 'Voluntarios (fichas públicas)'],
+  ['libros', 'Libros (inventario)'],
+  ['resenas', 'Reseñas (ticker de impacto)'],
+  ['organizaciones', 'Organizaciones (colaboradoras)'],
+];
+
+async function cargarUsuarios() {
+  document.getElementById('main').innerHTML = '<div class="loading">Cargando usuarios...</div>';
   try {
-    await api('organizaciones_eliminar', { id });
-    cargarOrganizaciones();
-    mostrarMsg('Organización eliminada', 'ok');
+    const { data } = await api('usuarios_listar');
+    document.getElementById('main').innerHTML = `
+      <h1 class="page-title">Usuarios del panel</h1>
+      <div class="page-subtitle">Personas con acceso al panel de administración y sus permisos</div>
+      <div class="toolbar"><div></div><button class="btn" onclick="invitarUsuario()">+ Invitar usuario</button></div>
+      ${data.length === 0 ? '<div class="empty">Aún no hay usuarios.</div>' : `
+      <table class="table"><thead><tr><th>Email</th><th>Nombre</th><th>Permisos</th><th>Activo</th><th>Último acceso</th><th></th></tr></thead>
+        <tbody>${data.map(u => `
+          <tr>
+            <td><strong>${esc(u.email)}</strong>${u.user_id === PERFIL.user_id ? '<small style="color:var(--gold);">(tú)</small>' : ''}</td>
+            <td>${esc(u.nombre || '—')}</td>
+            <td>
+              <div class="perm-badges">
+                ${(u.permisos || []).map(p => `<span class="perm-badge ${p === 'admin' ? 'admin' : ''}">${esc(p)}</span>`).join('')}
+              </div>
+            </td>
+            <td>${u.activo ? '<span class="badge aprobado">Sí</span>' : '<span class="badge rechazado">No</span>'}</td>
+            <td style="font-family:var(--mono);font-size:0.7rem;color:rgba(255,255,255,0.5);">${u.ultimo_acceso ? fecha(u.ultimo_acceso) : 'Nunca'}</td>
+            <td>
+              <button class="btn sm ghost" onclick='editarUsuario(${JSON.stringify(u.user_id)})'>Permisos</button>
+              ${u.user_id !== PERFIL.user_id ? (u.activo
+                ? `<button class="btn sm danger" onclick='desactivarUsuario(${JSON.stringify(u.user_id)}, ${JSON.stringify(u.email)})'>Desactivar</button>`
+                : `<button class="btn sm ghost" onclick='activarUsuario(${JSON.stringify(u.user_id)})'>Activar</button>`
+              ) : ''}
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`}
+    `;
+  } catch (e) { document.getElementById('main').innerHTML = `<div class="msg error">${e.message}</div>`; }
+}
+
+function invitarUsuario() {
+  abrirModal(`
+    <h2>Invitar nuevo usuario</h2>
+    <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;margin-bottom:1.5rem;">
+      La persona recibirá un email para configurar su contraseña. Podrá entrar al panel solo con los permisos que le marques aquí.
+    </p>
+    <div class="form-group"><label>Email</label><input type="email" id="uEmail" placeholder="persona@dominio.com"></div>
+    <div class="form-group"><label>Nombre (opcional)</label><input type="text" id="uNombre" placeholder="Cómo se le va a llamar"></div>
+    <div class="form-group">
+      <label>Permisos</label>
+      <div class="perm-grid">
+        ${PERMISOS_DISPONIBLES.map(([k, v]) => `
+          <div class="checkbox-wrap ${k === 'admin' ? 'admin-perm' : ''}">
+            <input type="checkbox" id="perm_${k}" value="${k}">
+            <label for="perm_${k}">${esc(v)}</label>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn ghost" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn" onclick="confirmarInvitacion()">Enviar invitación</button>
+    </div>
+  `);
+}
+
+async function confirmarInvitacion() {
+  const email = document.getElementById('uEmail').value.trim();
+  const nombre = document.getElementById('uNombre').value.trim();
+  const permisos = PERMISOS_DISPONIBLES
+    .map(([k]) => k)
+    .filter(k => document.getElementById('perm_' + k).checked);
+  if (!email || !email.includes('@')) { mostrarMsg('Email no válido', 'error'); return; }
+  if (permisos.length === 0) { mostrarMsg('Marca al menos un permiso', 'error'); return; }
+  try {
+    const r = await api('usuarios_invitar', { email, nombre, permisos });
+    cerrarModal(); cargarUsuarios(); mostrarMsg(r.mensaje || 'Invitación enviada', 'ok');
   } catch (e) { mostrarMsg(e.message, 'error'); }
+}
+
+async function editarUsuario(user_id) {
+  const { data } = await api('usuarios_listar');
+  const u = data.find(x => x.user_id === user_id);
+  if (!u) return;
+  const permisosActuales = u.permisos || [];
+  abrirModal(`
+    <h2>Permisos de ${esc(u.email)}</h2>
+    <div class="form-group"><label>Nombre</label><input type="text" id="uNombreEdit" value="${esc(u.nombre || '')}"></div>
+    <div class="form-group">
+      <label>Permisos</label>
+      <div class="perm-grid">
+        ${PERMISOS_DISPONIBLES.map(([k, v]) => `
+          <div class="checkbox-wrap ${k === 'admin' ? 'admin-perm' : ''}">
+            <input type="checkbox" id="perm_${k}" value="${k}" ${permisosActuales.includes(k) ? 'checked' : ''}>
+            <label for="perm_${k}">${esc(v)}</label>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn ghost" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn" onclick='guardarPermisosUsuario(${JSON.stringify(user_id)})'>Guardar</button>
+    </div>
+  `);
+}
+
+async function guardarPermisosUsuario(user_id) {
+  const nombre = document.getElementById('uNombreEdit').value.trim();
+  const permisos = PERMISOS_DISPONIBLES
+    .map(([k]) => k)
+    .filter(k => document.getElementById('perm_' + k).checked);
+  if (permisos.length === 0) { mostrarMsg('Marca al menos un permiso', 'error'); return; }
+  try {
+    await api('usuarios_actualizar_permisos', { user_id, permisos, nombre });
+    cerrarModal(); cargarUsuarios(); mostrarMsg('Permisos actualizados', 'ok');
+    // Si me estoy editando a mí mismo, refrescar mi perfil
+    if (user_id === PERFIL.user_id) {
+      const { data: nuevoPerfil } = await api('mi_perfil');
+      PERFIL = nuevoPerfil;
+      mostrarApp();
+    }
+  } catch (e) { mostrarMsg(e.message, 'error'); }
+}
+
+async function desactivarUsuario(user_id, email) {
+  if (!confirm(`¿Desactivar el acceso de ${email}? Podrá reactivarse más tarde.`)) return;
+  try { await api('usuarios_desactivar', { user_id }); cargarUsuarios(); mostrarMsg('Usuario desactivado', 'ok'); }
+  catch (e) { mostrarMsg(e.message, 'error'); }
+}
+
+async function activarUsuario(user_id) {
+  try { await api('usuarios_activar', { user_id }); cargarUsuarios(); mostrarMsg('Usuario reactivado', 'ok'); }
+  catch (e) { mostrarMsg(e.message, 'error'); }
 }
 
 // ═══════════════════════════════════════════════════════════════════
 // ROUTER
 // ═══════════════════════════════════════════════════════════════════
 function cargarSeccion(nombre) {
-  seccionActual = nombre;
   switch (nombre) {
     case 'resumen': return cargarResumen();
     case 'formularios': return cargarFormularios();
@@ -1117,23 +1112,22 @@ function cargarSeccion(nombre) {
     case 'libros': return cargarLibros();
     case 'resenas': return cargarResenas();
     case 'organizaciones': return cargarOrganizaciones();
+    case 'usuarios': return cargarUsuarios();
   }
 }
 
 // ═══════════════════════════════════════════════════════════════════
 // ARRANQUE
 // ═══════════════════════════════════════════════════════════════════
-if (PWD) {
-  // Verificamos la sesión guardada intentando pedir el resumen
-  api('login').then(() => mostrarApp()).catch(() => {
-    sessionStorage.removeItem('vl_admin_pwd');
-    PWD = '';
+if (TOKEN) {
+  api('mi_perfil').then(({ data }) => { PERFIL = data; mostrarApp(); }).catch(() => {
+    sessionStorage.removeItem('vl_admin_token');
+    TOKEN = '';
     mostrarLogin();
   });
 } else {
   mostrarLogin();
 }
 </script>
-
 </body>
 </html>
