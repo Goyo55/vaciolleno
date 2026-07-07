@@ -686,6 +686,17 @@
     .drawer-cta { font-family:var(--mono,monospace); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; padding:0.9rem 2.5rem; background:var(--navy,#0f1f3d); color:#f2ede4; text-decoration:none; }
     .drawer-close { position:absolute; top:1.5rem; right:2rem; font-size:1.75rem; cursor:pointer; background:none; border:none; color:var(--ink,#1c1a14); line-height:1; }
     @media (max-width:768px) { nav { padding:1rem 1.5rem; } .nav-links,.nav-cta { display:none; } .nav-hamburger { display:flex; } }
+  
+  @media (max-width: 700px) {
+      .dashboard a[href="vaciolleno-organizaciones.html"] {
+        grid-template-columns: 1fr !important;
+        text-align: center;
+        padding: 1.75rem !important;
+      }
+      .dashboard a[href="vaciolleno-organizaciones.html"] > div:first-child {
+        margin: 0 auto;
+      }
+    }
   </style>
 </head>
 <body>
@@ -928,6 +939,57 @@
         <div class="mini-stat-label">Ciclos de circulación por libro</div>
       </div>
     </div>
+  </div>
+
+  <!-- ═══════════ LLAMADA A ORGANIZACIONES ═══════════ -->
+  <div class="dashboard" style="padding-top:0;padding-bottom:4rem;">
+    <a href="vaciolleno-organizaciones.html" style="
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      align-items:center;
+      gap:2rem;
+      padding:2.25rem 2.5rem;
+      background:linear-gradient(120deg, rgba(201,168,76,0.08) 0%, rgba(201,168,76,0.03) 50%, rgba(15,31,61,0.4) 100%);
+      border:1px solid rgba(201,168,76,0.25);
+      text-decoration:none;
+      transition:all 0.3s ease;
+    " onmouseover="this.style.borderColor='rgba(201,168,76,0.6)';this.style.transform='translateY(-2px)';"
+       onmouseout="this.style.borderColor='rgba(201,168,76,0.25)';this.style.transform='translateY(0)';">
+      <div style="
+        width:64px;height:64px;
+        border-radius:50%;
+        border:1px solid rgba(201,168,76,0.4);
+        display:flex;align-items:center;justify-content:center;
+        font-size:1.75rem;color:rgba(201,168,76,0.85);
+        flex-shrink:0;
+      ">◎</div>
+      <div>
+        <div style="
+          font-family:var(--mono);font-size:0.65rem;
+          letter-spacing:0.22em;text-transform:uppercase;
+          color:rgba(201,168,76,0.7);margin-bottom:0.5rem;
+        ">Detrás de cada libro entregado</div>
+        <div style="
+          font-family:var(--serif);font-size:clamp(1.35rem,2.5vw,1.75rem);
+          color:var(--white);line-height:1.25;margin-bottom:0.4rem;
+        ">Los libros no llegan solos. Los reciben personas.</div>
+        <div style="
+          font-family:var(--sans);font-size:0.9rem;
+          color:rgba(242,237,228,0.55);line-height:1.5;
+        ">
+          Conoce la red de bibliotecas comunitarias, colectivos culturales y organizaciones locales que hacen posible cada entrega.
+        </div>
+      </div>
+      <div style="
+        font-family:var(--mono);font-size:0.72rem;
+        letter-spacing:0.18em;text-transform:uppercase;
+        color:rgb(201,168,76);
+        padding:0.9rem 1.5rem;
+        border:1px solid rgba(201,168,76,0.5);
+        white-space:nowrap;
+        flex-shrink:0;
+      ">Ver la red →</div>
+    </a>
   </div>
 
   <!-- FOOTER -->
