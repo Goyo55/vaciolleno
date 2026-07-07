@@ -278,7 +278,7 @@ export default async function handler(req, res) {
           body: JSON.stringify({
             type: 'recovery',
             email,
-            options: { redirectTo: 'https://vaciolleno.org/admin.html' },
+            redirect_to: 'https://vaciolleno.org/admin.html',
           }),
         });
         if (!linkRes.ok) {
