@@ -107,6 +107,158 @@
     .drawer-cta { font-family:var(--mono,monospace); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; padding:0.9rem 2.5rem; background:var(--navy,#0f1f3d); color:#f2ede4; text-decoration:none; }
     .drawer-close { position:absolute; top:1.5rem; right:2rem; font-size:1.75rem; cursor:pointer; background:none; border:none; color:var(--ink,#1c1a14); line-height:1; }
     @media (max-width:768px) { nav { padding:1rem 1.5rem; } .nav-links,.nav-cta { display:none; } .nav-hamburger { display:flex; } }
+    /* ═══════════ TARJETAS DE ORGANIZACIONES ═══════════ */
+    .orgs-section {
+      margin: 3rem 0 4rem;
+    }
+    .orgs-eyebrow {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(201,168,76,0.7);
+      margin-bottom: 0.75rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .orgs-eyebrow::before { content: ""; width: 32px; height: 1px; background: rgba(201,168,76,0.4); }
+    .orgs-title {
+      font-family: var(--serif);
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      font-weight: 700;
+      color: rgba(242,237,228,0.95);
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+    .orgs-sub {
+      font-size: 0.95rem;
+      line-height: 1.75;
+      color: rgba(242,237,228,0.55);
+      max-width: 600px;
+      margin-bottom: 2.5rem;
+    }
+    .orgs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .org-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 1.75rem;
+      transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+      display: flex; flex-direction: column;
+    }
+    .org-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(201,168,76,0.35);
+      background: rgba(255,255,255,0.05);
+    }
+    .org-logo {
+      width: 60px; height: 60px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(201,168,76,0.9), rgba(184,145,47,0.9));
+      color: #0f1f3d;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--serif);
+      font-size: 1.4rem; font-weight: 700;
+      margin-bottom: 1.25rem;
+      overflow: hidden;
+    }
+    .org-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+    .org-country {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(201,168,76,0.75);
+      margin-bottom: 0.5rem;
+    }
+    .org-name {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: rgba(242,237,228,0.95);
+      line-height: 1.25;
+      margin-bottom: 0.5rem;
+    }
+    .org-type {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(242,237,228,0.5);
+      padding: 0.25rem 0.55rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 1rem;
+      align-self: flex-start;
+    }
+    .org-desc {
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: rgba(242,237,228,0.6);
+      margin-bottom: 1.25rem;
+      flex: 1;
+    }
+    .org-link {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(201,168,76,0.85);
+      text-decoration: none;
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .org-link:hover { color: rgb(201,168,76); }
+
+    /* Placeholder cuando aún no hay organizaciones */
+    .orgs-empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3.5rem 2rem;
+      background: rgba(255,255,255,0.02);
+      border: 1px dashed rgba(201,168,76,0.25);
+    }
+    .orgs-empty-icon {
+      font-size: 2.5rem;
+      color: rgba(201,168,76,0.5);
+      margin-bottom: 1.25rem;
+    }
+    .orgs-empty-text {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      color: rgba(242,237,228,0.85);
+      max-width: 500px;
+      margin: 0 auto 1.5rem;
+      line-height: 1.5;
+    }
+    .orgs-empty-sub {
+      font-size: 0.9rem;
+      color: rgba(242,237,228,0.5);
+      margin-bottom: 1.75rem;
+      line-height: 1.6;
+    }
+    .orgs-empty-cta {
+      display: inline-block;
+      padding: 0.85rem 1.75rem;
+      background: rgba(201,168,76,0.15);
+      border: 1px solid rgba(201,168,76,0.4);
+      color: rgb(201,168,76);
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all 0.25s;
+    }
+    .orgs-empty-cta:hover { background: rgb(201,168,76); color: #0f1f3d; }
+
+    @media (max-width: 600px) {
+      .orgs-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -139,13 +291,16 @@
 
   <div class="content-wrap">
 
-    <div class="coming-soon">
-      <div class="cs-icon">○</div>
-      <div>
-        <div class="cs-title">Esta página está en construcción</div>
-        <p class="cs-text">Estamos construyendo activamente la red de organizaciones colaboradoras. Cuando una organización se une, aparece aquí con su perfil, su país y el tipo de distribución que realiza.<br><br>Si representas una organización interesada en recibir o distribuir libros perforados, escríbenos: <strong>hola@vaciolleno.org</strong></p>
+    <section class="orgs-section">
+      <div class="orgs-eyebrow">La red</div>
+      <h2 class="orgs-title">Organizaciones ya en la red</h2>
+      <p class="orgs-sub">
+        Estas son las organizaciones locales que ya reciben o distribuyen libros perforados de Vacío Lleno. Cada una es un nodo de la red que hace posible que un libro donado en España pase por 40 manos distintas en Latinoamérica.
+      </p>
+      <div id="orgsGrid" class="orgs-grid">
+        <!-- Rellenado dinámicamente por metricas.js -->
       </div>
-    </div>
+    </section>
 
     <h2>Cómo colaboran las organizaciones</h2>
     <p>Las organizaciones colaboradoras actúan como <strong>puntos de distribución local</strong> para los libros perforados que Vacío Lleno envía desde España. No necesitan financiación ni infraestructura — solo compromiso con el acceso al conocimiento.</p>
@@ -201,5 +356,7 @@
     <a href="vaciolleno-donaciones.html" class="drawer-cta">Donar</a>
   </div>
   <script>document.getElementById('navHamburger').addEventListener('click',function(){document.getElementById('navDrawer').classList.add('open');});</script>
+  <!-- Métricas dinámicas desde Supabase -->
+  <script src="/js/metricas.js"></script>
 </body>
 </html>
