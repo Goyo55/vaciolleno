@@ -44,7 +44,6 @@
     en_circulacion: { texto: 'En circulación', icono: '🔄', clase: 'delivered' },
   };
 
-  // ═══ 10 categorías temáticas (deben coincidir con la BD) ═══
   const CATEGORIA_LABELS = {
     economia_finanzas: 'Economía & Finanzas',
     filosofia_pensamiento: 'Filosofía & Pensamiento Crítico',
@@ -85,6 +84,15 @@
     if (p.length === 1) return p[0].charAt(0).toUpperCase();
     return (p[0].charAt(0) + p[p.length - 1].charAt(0)).toUpperCase();
   }
+
+  // Mapa rápido país → bandera (mismo dataset que paises_config)
+  const BANDERAS = {
+    'México':'🇲🇽','Colombia':'🇨🇴','Venezuela':'🇻🇪','Perú':'🇵🇪','Argentina':'🇦🇷',
+    'Chile':'🇨🇱','Ecuador':'🇪🇨','Cuba':'🇨🇺','Bolivia':'🇧🇴','Nicaragua':'🇳🇮',
+    'Paraguay':'🇵🇾','Guatemala':'🇬🇹','Honduras':'🇭🇳','El Salvador':'🇸🇻',
+    'Costa Rica':'🇨🇷','Panamá':'🇵🇦','Uruguay':'🇺🇾','R. Dominicana':'🇩🇴','Puerto Rico':'🇵🇷',
+    'España':'🇪🇸'
+  };
 
   // ═══ RENDERIZADORES ═══
 
@@ -277,12 +285,8 @@
     }).join('');
   }
 
-  // ═══ NUEVO: RENDERIZAR LIBROS DENTRO DE CADA CAT-CARD ═══
   function renderCategoriasCards(detalle) {
-    // detalle = {"economia_finanzas": {total:X, libros:[...]}, ...}
     detalle = detalle || {};
-
-    // Rellenar los 3 libros de ejemplo por card
     document.querySelectorAll('[data-cat-books]').forEach((cont) => {
       const cat = cont.dataset.catBooks;
       const info = detalle[cat];
@@ -302,8 +306,6 @@
         </div>
       `).join('');
     });
-
-    // Rellenar los contadores "N en circulación"
     document.querySelectorAll('[data-cat-stat]').forEach((el) => {
       const cat = el.dataset.catStat;
       const info = detalle[cat];
@@ -315,6 +317,45 @@
         el.style.opacity = '1';
       }
     });
+  }
+
+  // ═══ NUEVO: RENDERIZAR TARJETAS DE ORGANIZACIONES ═══
+  function renderOrganizaciones(orgs) {
+    const cont = document.getElementById('orgsGrid');
+    if (!cont) return;
+
+    if (!orgs || orgs.length === 0) {
+      cont.innerHTML = `
+        <div class="orgs-empty">
+          <div class="orgs-empty-icon">○</div>
+          <div class="orgs-empty-text">
+            La red está empezando a tejerse.<br>
+            <strong>Sé el primer nodo.</strong>
+          </div>
+          <p class="orgs-empty-sub">
+            Cuando una organización se une, aparece aquí con su perfil, país y tipo de distribución. Aún estamos en fase de contactos iniciales.
+          </p>
+          <a href="mailto:hola@vaciolleno.org" class="orgs-empty-cta">Contactar →</a>
+        </div>
+      `;
+      return;
+    }
+
+    cont.innerHTML = orgs.map(o => {
+      const bandera = BANDERAS[o.pais] || '🏳️';
+      const lugar = [o.ciudad, o.pais].filter(Boolean).join(', ');
+      const logo = o.logo_url
+        ? `<img src="${esc(o.logo_url)}" alt="${esc(o.nombre)}" onerror="this.style.display='none';this.parentElement.textContent='${esc(iniciales(o.nombre))}';">`
+        : esc(iniciales(o.nombre));
+      return `<article class="org-card">
+        <div class="org-logo">${logo}</div>
+        <div class="org-country">${bandera} ${esc(lugar)}</div>
+        <h3 class="org-name">${esc(o.nombre)}</h3>
+        ${o.tipo_distribucion ? `<span class="org-type">${esc(o.tipo_distribucion)}</span>` : ''}
+        ${o.descripcion ? `<p class="org-desc">${esc(o.descripcion)}</p>` : '<p class="org-desc"></p>'}
+        ${o.sitio_web ? `<a href="${esc(o.sitio_web)}" target="_blank" rel="noopener" class="org-link">Visitar sitio →</a>` : ''}
+      </article>`;
+    }).join('');
   }
 
   // ═══ ORQUESTADOR ═══
@@ -341,6 +382,7 @@
       renderLibrosPorCategoria(m.libros_por_categoria);
       renderVoluntarios(m.voluntarios_publicados);
       renderCategoriasCards(m.libros_por_categoria_detalle);
+      renderOrganizaciones(m.organizaciones_publicadas);
     } catch (err) {
       console.warn('Error cargando métricas:', err);
     }
