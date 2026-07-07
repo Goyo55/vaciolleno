@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════
-// VACÍO LLENO — Carga automática de métricas desde Supabase
+// VACÍO LLENO — Carga automática de métricas y contenido desde Supabase
 // ═══════════════════════════════════════════════════════════════════
 // Rellena todo el contenido dinámico del sitio desde la base de datos:
 //   - Números simples (data-metrica en cualquier página)
@@ -10,15 +10,14 @@
 //   - Libro destacado en seguimiento
 //   - Barras horizontales por país
 //   - Donut por categoría
+//   - Tarjetas del equipo (voluntarios publicados)
 // ═══════════════════════════════════════════════════════════════════
 
 (function() {
   const SUPABASE_URL = 'https://tuagkbjixoolmtmwwsus.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_VFoLqoJsalIKNJ2GFpSbzA_QS5RH4-U';
 
-  // ─────────────────────────────────────────────────────────
-  // FORMATEADORES
-  // ─────────────────────────────────────────────────────────
+  // ─── FORMATEADORES ───
   const formateadores = {
     numero: (n) => {
       if (n === null || n === undefined) return '0';
@@ -37,9 +36,6 @@
     },
   };
 
-  // ─────────────────────────────────────────────────────────
-  // ANIMACIÓN DE CONTEO
-  // ─────────────────────────────────────────────────────────
   function animarNumero(el, valorFinal, formato = 'numero') {
     const fmt = formateadores[formato] || formateadores.numero;
     const dur = 1200;
@@ -54,9 +50,6 @@
     requestAnimationFrame(tick);
   }
 
-  // ─────────────────────────────────────────────────────────
-  // ETIQUETAS DE ESTADO (para feed y seguimiento)
-  // ─────────────────────────────────────────────────────────
   const ESTADO_LABELS = {
     recibido:       { texto: 'Recibido',        icono: '📥', clase: 'new' },
     clasificado:    { texto: 'Clasificado',     icono: '📚', clase: 'new' },
@@ -85,9 +78,6 @@
     '#6c5ce7', '#fdcb6e'
   ];
 
-  // ─────────────────────────────────────────────────────────
-  // TIEMPO RELATIVO ("hace 2m", "hace 3h", "hace 2d")
-  // ─────────────────────────────────────────────────────────
   function tiempoRelativo(fechaStr) {
     if (!fechaStr) return '';
     const fecha = new Date(fechaStr);
@@ -99,9 +89,6 @@
     return Math.round(diff / 604800) + 'sem';
   }
 
-  // ─────────────────────────────────────────────────────────
-  // ESCAPE HTML
-  // ─────────────────────────────────────────────────────────
   function esc(s) {
     if (s === null || s === undefined) return '';
     return String(s)
@@ -109,9 +96,15 @@
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
-  // ─────────────────────────────────────────────────────────
-  // RENDERIZAR SECCIONES
-  // ─────────────────────────────────────────────────────────
+  // Iniciales para el placeholder de foto
+  function iniciales(nombre) {
+    if (!nombre) return '?';
+    const partes = nombre.trim().split(/\s+/);
+    if (partes.length === 1) return partes[0].charAt(0).toUpperCase();
+    return (partes[0].charAt(0) + partes[partes.length - 1].charAt(0)).toUpperCase();
+  }
+
+  // ─── RENDERIZADORES ───
 
   function renderNumeros(m) {
     document.querySelectorAll('[data-metrica]').forEach((el) => {
@@ -119,7 +112,7 @@
       const formato = el.dataset.formato || 'numero';
       const valor = m[clave];
       if (valor === undefined || valor === null) return;
-      if (typeof valor !== 'number') return; // solo aplica a números
+      if (typeof valor !== 'number') return;
       const rect = el.getBoundingClientRect();
       const enViewport = rect.top < window.innerHeight && rect.bottom > 0;
       if (enViewport) animarNumero(el, valor, formato);
@@ -134,7 +127,6 @@
       cont.innerHTML = '<div class="ticker-item"><span class="ticker-quote" style="opacity:0.4;">Aún no hay reseñas publicadas. Serán las voces de quienes reciban los libros.</span></div>';
       return;
     }
-    // Duplicamos las reseñas para conseguir el efecto de scroll infinito
     const items = [...resenas, ...resenas].map((r, i) => {
       const sep = i < resenas.length * 2 - 1 ? '<span class="ticker-sep">·</span>' : '';
       const lugar = [r.ciudad, r.pais].filter(Boolean).join(', ');
@@ -274,7 +266,7 @@
       return;
     }
     const total = cats.reduce((s, c) => s + c.total, 0) || 1;
-    const perimetro = 2 * Math.PI * 40; // ~251.3
+    const perimetro = 2 * Math.PI * 40;
     let offset = 0;
     const segmentos = cats.map((c, i) => {
       const pct = c.total / total;
@@ -308,9 +300,45 @@
     donutWrap.style.alignItems = 'center';
   }
 
-  // ─────────────────────────────────────────────────────────
-  // ORQUESTADOR
-  // ─────────────────────────────────────────────────────────
+  // ─── NUEVO: RENDERIZAR TARJETAS DEL EQUIPO ───
+  function renderVoluntarios(voluntarios) {
+    const cont = document.getElementById('voluntariosGrid');
+    if (!cont) return;
+
+    // Estado vacío — mensaje elegante que invita a unirse
+    if (!voluntarios || voluntarios.length === 0) {
+      cont.innerHTML = `
+        <div class="team-empty">
+          <div class="team-empty-icon">○</div>
+          <div class="team-empty-text">
+            Pronto tendrás caras aquí.<br>
+            <strong>Sé una de ellas.</strong>
+          </div>
+          <a href="#form" class="team-empty-cta">Quiero ser voluntario/a →</a>
+        </div>
+      `;
+      return;
+    }
+
+    // Tarjetas normales
+    cont.innerHTML = voluntarios.map(v => {
+      const lugar = [v.ciudad, v.pais].filter(Boolean).join(' · ');
+      const foto = v.foto_url
+        ? `<img src="${esc(v.foto_url)}" alt="${esc(v.nombre)}" onerror="this.style.display='none';this.parentElement.textContent='${esc(iniciales(v.nombre))}';">`
+        : esc(iniciales(v.nombre));
+      return `
+        <article class="team-card">
+          <div class="team-photo">${foto}</div>
+          <div class="team-role">${esc(v.rol)}</div>
+          <h3 class="team-name">${esc(v.nombre)}</h3>
+          ${lugar ? `<div class="team-loc">${esc(lugar)}</div>` : ''}
+          ${v.bio_corta ? `<p class="team-bio">${esc(v.bio_corta)}</p>` : ''}
+        </article>
+      `;
+    }).join('');
+  }
+
+  // ─── ORQUESTADOR ───
   async function cargarTodo() {
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_metricas_publicas`, {
@@ -335,6 +363,7 @@
       renderSeguimiento(m.libro_seguimiento);
       renderLibrosPorPais(m.libros_por_pais);
       renderLibrosPorCategoria(m.libros_por_categoria);
+      renderVoluntarios(m.voluntarios_publicados);
     } catch (err) {
       console.warn('Error cargando métricas:', err);
     }
