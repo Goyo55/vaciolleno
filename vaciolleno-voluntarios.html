@@ -763,6 +763,149 @@
     .drawer-cta { font-family:var(--mono,monospace); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; padding:0.9rem 2.5rem; background:var(--navy,#0f1f3d); color:#f2ede4; text-decoration:none; }
     .drawer-close { position:absolute; top:1.5rem; right:2rem; font-size:1.75rem; cursor:pointer; background:none; border:none; color:var(--ink,#1c1a14); line-height:1; }
     @media (max-width:768px) { nav { padding:1rem 1.5rem; } .nav-links,.nav-cta { display:none; } .nav-hamburger { display:flex; } }
+
+    /* ═══════════════════════════════════
+       SECCIÓN "EL EQUIPO"
+       ═══════════════════════════════════ */
+    .team-section {
+      padding: 6rem 2rem;
+      background: var(--cream);
+      color: var(--navy);
+    }
+    .team-header {
+      max-width: 900px;
+      margin: 0 auto 4rem;
+      text-align: center;
+    }
+    .team-header .section-eyebrow {
+      color: var(--gold);
+      justify-content: center;
+    }
+    .team-header .section-eyebrow::before { background: var(--gold); }
+    .team-title {
+      font-family: var(--serif);
+      font-size: clamp(2.2rem, 4.5vw, 3.2rem);
+      font-weight: 400;
+      line-height: 1.1;
+      margin: 1.5rem 0 1.25rem;
+      color: var(--navy);
+    }
+    .team-header-body {
+      font-family: var(--sans);
+      font-size: 1.05rem;
+      line-height: 1.65;
+      color: rgba(15,31,61,0.7);
+      max-width: 620px;
+      margin: 0 auto;
+    }
+    .team-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 2rem;
+    }
+    .team-card {
+      background: white;
+      padding: 2.5rem 1.75rem 2rem;
+      text-align: center;
+      border-top: 3px solid var(--gold);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+    }
+    .team-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px -20px rgba(15,31,61,0.15);
+    }
+    .team-photo {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      margin: 0 auto 1.5rem;
+      background: linear-gradient(135deg, var(--gold), #b8912f);
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--serif);
+      font-size: 2rem;
+      font-weight: 700;
+      overflow: hidden;
+      position: relative;
+    }
+    .team-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+    .team-role {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+    }
+    .team-name {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      font-weight: 400;
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
+      color: var(--navy);
+    }
+    .team-loc {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+      color: rgba(15,31,61,0.5);
+      margin-bottom: 1rem;
+    }
+    .team-bio {
+      font-family: var(--sans);
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: rgba(15,31,61,0.65);
+    }
+    .team-empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 4rem 2rem;
+      background: white;
+      border-top: 3px solid var(--gold);
+    }
+    .team-empty-icon {
+      font-size: 2.5rem;
+      color: var(--gold);
+      margin-bottom: 1.25rem;
+      opacity: 0.6;
+    }
+    .team-empty-text {
+      font-family: var(--serif);
+      font-size: 1.35rem;
+      color: var(--navy);
+      max-width: 480px;
+      margin: 0 auto 1.75rem;
+      line-height: 1.4;
+    }
+    .team-empty-cta {
+      display: inline-block;
+      padding: 0.9rem 2rem;
+      background: var(--navy);
+      color: var(--cream);
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.25s;
+    }
+    .team-empty-cta:hover { background: var(--gold); color: var(--navy); }
+    @media (max-width: 700px) {
+      .team-section { padding: 4rem 1.25rem; }
+      .team-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+      .team-card { padding: 2rem 1.5rem 1.75rem; }
+    }
   </style>
 </head>
 <body>
@@ -1078,6 +1221,22 @@
   </section>
 
   <!-- FORM -->
+  <!-- ═══════════════ SECCIÓN "EL EQUIPO" ═══════════════ -->
+  <section class="team-section">
+    <div class="team-header">
+      <div class="section-eyebrow reveal">Quienes lo hacen posible</div>
+      <h2 class="team-title reveal d1">El equipo</h2>
+      <p class="team-header-body reveal d2">
+        La cara de la insurgencia intelectual. Personas de distintas
+        edades, ciudades y trayectorias, unidas por una sola convicción:
+        que los libros no deben quedarse quietos.
+      </p>
+    </div>
+    <div id="voluntariosGrid" class="team-grid">
+      <!-- Rellenado dinámicamente por metricas.js -->
+    </div>
+  </section>
+
   <section class="form-section" id="form">
     <div class="form-aside">
       <div class="section-eyebrow reveal">Únete ahora</div>
@@ -1473,5 +1632,7 @@
     <a href="vaciolleno-donaciones.html" class="drawer-cta">Donar</a>
   </div>
   <script>document.getElementById('navHamburger').addEventListener('click',function(){document.getElementById('navDrawer').classList.add('open');});</script>
+  <!-- Métricas dinámicas desde Supabase -->
+  <script src="/js/metricas.js"></script>
 </body>
 </html>
