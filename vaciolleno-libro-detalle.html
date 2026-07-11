@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Explora los libros que ya circulan por Latinoamérica en esta categoría, y descubre cuáles seguimos buscando." />
+  <link rel="canonical" href="https://vaciolleno.org/vaciolleno-libro-detalle.html" />
+  <link rel="icon" href="favicon.png">
+  <title id="pageTitle">Categoría · Vacío Lleno</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --navy: #0f1f3d;
+    --navy-mid: #1a3260;
+    --paper: #f2ede4;
+    --paper-warm: #e8e2d6;
+    --ink: #1c1a14;
+    --ink-mid: #555050;
+    --gold: #c9a84c;
+    --red: #c0392b;
+    --cream: #f5f0e5;
+    --mono: 'DM Mono', monospace;
+    --serif: 'Playfair Display', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(242,237,228,0.94); backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(28,26,20,0.08);
+    padding: 1rem 3rem; display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo { font-family: var(--serif); font-size: 1.35rem; font-weight: 700; color: var(--ink); text-decoration: none; letter-spacing: 0.02em; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--ink-mid); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+  .nav-cta {
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.15em;
+    text-transform: uppercase; padding: 0.75rem 1.5rem;
+    background: var(--navy); color: var(--paper); text-decoration: none;
+  }
+  .nav-hamburger { display: none; flex-direction: column; gap: 4px; cursor: pointer; background: none; border: none; padding: 0.5rem; }
+  .nav-hamburger span { width: 24px; height: 2px; background: var(--ink); }
+
+  /* HEADER de la categoría */
+  .cat-header {
+    max-width: 1100px; margin: 0 auto;
+    padding: 4rem 3rem 3rem;
+    border-bottom: 1px solid rgba(28,26,20,0.08);
+  }
+  .cat-back {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-mid);
+    text-decoration: none; margin-bottom: 2rem;
+  }
+  .cat-back:hover { color: var(--gold); }
+  .cat-num {
+    font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .cat-num::before { content: ""; width: 32px; height: 1px; background: var(--gold); }
+  .cat-title {
+    font-family: var(--serif); font-size: clamp(2.5rem, 5vw, 3.75rem);
+    line-height: 1.05; font-weight: 700; margin-bottom: 1rem;
+  }
+  .cat-tagline {
+    font-family: var(--serif); font-style: italic; font-size: 1.35rem;
+    color: var(--ink-mid); max-width: 750px; margin-bottom: 1.5rem;
+    line-height: 1.4;
+  }
+  .cat-desc { font-size: 1rem; color: var(--ink-mid); max-width: 720px; line-height: 1.7; margin-bottom: 2rem; }
+  .cat-urgency {
+    display: inline-block; font-family: var(--mono); font-size: 0.65rem;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    padding: 0.3rem 0.75rem; margin-bottom: 1.5rem;
+  }
+  .urgency-critical { background: rgba(192,57,43,0.1); color: var(--red); border: 1px solid rgba(192,57,43,0.3); }
+  .urgency-high { background: rgba(201,168,76,0.15); color: #8b6d1a; border: 1px solid rgba(201,168,76,0.35); }
+  .urgency-media { background: rgba(28,26,20,0.05); color: var(--ink-mid); border: 1px solid rgba(28,26,20,0.1); }
+
+  .cat-metrics {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.75rem; margin-top: 2rem;
+  }
+  .metric-box {
+    background: white; padding: 1.25rem 1.5rem;
+    border-left: 3px solid var(--gold);
+  }
+  .metric-num {
+    font-family: var(--serif); font-size: 2.1rem; font-weight: 700;
+    line-height: 1; color: var(--ink);
+  }
+  .metric-label {
+    font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-mid); margin-top: 0.4rem;
+  }
+
+  /* Secciones */
+  .section-wrap {
+    max-width: 1100px; margin: 0 auto;
+    padding: 4rem 3rem;
+    border-bottom: 1px solid rgba(28,26,20,0.08);
+  }
+  .section-eyebrow {
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .section-eyebrow::before { content: ""; width: 32px; height: 1px; background: var(--gold); }
+  .section-title {
+    font-family: var(--serif); font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    line-height: 1.15; font-weight: 700; margin-bottom: 0.75rem;
+  }
+  .section-sub {
+    color: var(--ink-mid); max-width: 700px; margin-bottom: 2.5rem;
+    line-height: 1.65;
+  }
+
+  /* Libros enviados (agrupados) */
+  .books-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+  .book-card {
+    background: white; padding: 1.5rem 1.75rem;
+    border-top: 3px solid var(--gold);
+    display: flex; flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .book-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px -15px rgba(28,26,20,0.15);
+  }
+  .book-card-title {
+    font-family: var(--serif); font-size: 1.1rem; font-weight: 700;
+    line-height: 1.25; margin-bottom: 0.35rem;
+  }
+  .book-card-author {
+    font-family: var(--sans); font-size: 0.85rem;
+    color: var(--ink-mid); margin-bottom: 1rem;
+  }
+  .book-card-stats {
+    display: flex; gap: 1rem; margin-top: auto;
+    padding-top: 0.75rem; border-top: 1px solid rgba(28,26,20,0.08);
+  }
+  .book-stat {
+    font-family: var(--mono); font-size: 0.7rem;
+    color: var(--ink-mid); letter-spacing: 0.05em;
+  }
+  .book-stat strong { color: var(--ink); font-weight: 700; }
+  .book-card-countries {
+    display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.75rem;
+  }
+  .country-chip {
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 0.2rem 0.55rem;
+    background: rgba(28,26,20,0.04); color: var(--ink-mid);
+  }
+
+  /* Wishlist */
+  .wishlist-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+  }
+  .wish-card {
+    background: rgba(255,255,255,0.5); padding: 1.5rem 1.75rem;
+    border-left: 3px dashed rgba(201,168,76,0.5);
+    display: flex; flex-direction: column;
+  }
+  .wish-card.alta { border-left-color: var(--red); background: rgba(192,57,43,0.03); }
+  .wish-priority {
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.15em;
+    text-transform: uppercase; margin-bottom: 0.6rem; align-self: flex-start;
+    padding: 0.15rem 0.5rem;
+  }
+  .wish-priority.alta { background: var(--red); color: white; }
+  .wish-priority.media { background: rgba(201,168,76,0.2); color: #8b6d1a; }
+  .wish-priority.baja { background: rgba(28,26,20,0.06); color: var(--ink-mid); }
+  .wish-title {
+    font-family: var(--serif); font-size: 1.1rem; font-weight: 700;
+    line-height: 1.25; margin-bottom: 0.35rem;
+  }
+  .wish-author {
+    font-family: var(--sans); font-size: 0.85rem;
+    color: var(--ink-mid); margin-bottom: 0.85rem;
+  }
+  .wish-motivo {
+    font-family: var(--sans); font-size: 0.85rem; line-height: 1.55;
+    color: var(--ink-mid); margin-bottom: 1rem; font-style: italic;
+  }
+  .wish-card a {
+    margin-top: auto;
+    font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.12em;
+    text-transform: uppercase; text-decoration: none; color: var(--navy);
+    padding: 0.6rem 1rem; background: rgba(201,168,76,0.15);
+    border: 1px solid rgba(201,168,76,0.4); text-align: center;
+    transition: all 0.25s;
+  }
+  .wish-card a:hover { background: var(--navy); color: var(--paper); border-color: var(--navy); }
+
+  .empty-box {
+    grid-column: 1 / -1; padding: 3rem 2rem; text-align: center;
+    background: rgba(255,255,255,0.5); border: 1px dashed rgba(28,26,20,0.15);
+  }
+  .empty-icon { font-size: 2.25rem; color: var(--gold); opacity: 0.5; margin-bottom: 1rem; }
+  .empty-text {
+    font-family: var(--serif); font-size: 1.1rem; color: var(--ink);
+    max-width: 480px; margin: 0 auto 1.5rem; line-height: 1.5;
+  }
+
+  /* CTA final: 3 botones */
+  .final-cta {
+    max-width: 1100px; margin: 0 auto;
+    padding: 4rem 3rem 5rem; text-align: center;
+  }
+  .cta-title {
+    font-family: var(--serif); font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.1; font-weight: 700; margin-bottom: 1rem;
+  }
+  .cta-sub { color: var(--ink-mid); margin-bottom: 2.5rem; }
+  .cta-buttons {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+    max-width: 800px; margin: 0 auto;
+  }
+  .cta-btn {
+    padding: 1.1rem 1.25rem; text-decoration: none;
+    font-family: var(--mono); font-size: 0.7rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    background: var(--navy); color: var(--paper);
+    text-align: center; transition: all 0.25s;
+    border: 1px solid var(--navy);
+  }
+  .cta-btn:hover { background: var(--gold); color: var(--navy); border-color: var(--gold); }
+  .cta-btn.outline { background: transparent; color: var(--navy); }
+  .cta-btn.outline:hover { background: var(--navy); color: var(--paper); }
+
+  /* Footer */
+  footer {
+    background: var(--navy); color: rgba(242,237,228,0.7);
+    padding: 3rem; text-align: center;
+    display: flex; align-items: center; justify-content: center; gap: 2rem; flex-wrap: wrap;
+  }
+  .footer-logo { font-family: var(--serif); font-size: 1.35rem; color: var(--paper); }
+  .footer-copy { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em; }
+
+  /* Estado carga */
+  .loading-full {
+    min-height: 60vh; display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.1em; color: var(--ink-mid);
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links, .nav-cta { display: none; }
+    .nav-hamburger { display: flex; }
+    .cat-header, .section-wrap, .final-cta { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .cta-buttons { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">Vacío Lleno</a>
+  <ul class="nav-links">
+    <li><a href="vaciolleno-proyecto.html">El Proyecto</a></li>
+    <li><a href="vaciolleno-voluntarios.html">Voluntarios</a></li>
+    <li><a href="vaciolleno-libros.html" class="active">Libros</a></li>
+    <li><a href="vaciolleno-impacto.html">Impacto</a></li>
+    <li><a href="vaciolleno-manifiesto.html">Manifiesto</a></li>
+  </ul>
+  <a href="vaciolleno-donaciones.html" class="nav-cta">Donar</a>
+  <button class="nav-hamburger" id="navHamburger"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- CONTENIDO DINÁMICO -->
+<div id="content">
+  <div class="loading-full">Cargando categoría...</div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">Vacío Lleno</span>
+  <span class="footer-copy">© 2026 · Todos los libros circulan libres · vaciolleno.org</span>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// Config Supabase
+// ═══════════════════════════════════════════════════════════════════
+const SUPABASE_URL = 'https://tuagkbjixoolmtmwwsus.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_VFoLqoJsalIKNJ2GFpSbzA_QS5RH4-U';
+
+// Metadatos curatoriales de las 10 categorías (mismos que vaciolleno-libros.html)
+const CATEGORIA_META = {
+  economia_finanzas: {
+    n: "01", eyebrow: "ECONOMÍA & FINANZAS",
+    nombre: "Economía & Finanzas",
+    tagline: "Lo que tu escuela nunca quiso que entendieras sobre el dinero.",
+    desc: "Textos clásicos y contemporáneos que explican cómo funciona realmente la economía y las finanzas personales — más allá del ruido y las promesas fáciles.",
+    urgencia: "critical", urgencia_label: "Urgente", icono: "📊",
+  },
+  filosofia_pensamiento: {
+    n: "02", eyebrow: "FILOSOFÍA",
+    nombre: "Filosofía & Pensamiento Crítico",
+    tagline: "Pensar por uno mismo es el acto más subversivo que existe.",
+    desc: "Las herramientas para cuestionar dogmas, resistir manipulaciones y construir criterios propios. Filosofía del individuo, de la libertad — la base de todo lo demás.",
+    urgencia: "critical", urgencia_label: "Urgente", icono: "🏛️",
+  },
+  libertad_derechos: {
+    n: "03", eyebrow: "LIBERTAD",
+    nombre: "Libertad & Derechos",
+    tagline: "Lo que se pierde sin defenderlo, se pierde para siempre.",
+    desc: "Fundamentos de la libertad individual, derechos naturales y por qué defenderlos importa hoy más que nunca — especialmente donde escasean.",
+    urgencia: "critical", urgencia_label: "Urgente", icono: "⚖️",
+  },
+  historia_politica: {
+    n: "04", eyebrow: "HISTORIA & POLÍTICA",
+    nombre: "Historia & Política",
+    tagline: "Quien no conoce el pasado está condenado a repetirlo.",
+    desc: "Historia crítica y análisis político — obras que explican cómo llegamos aquí y hacia dónde apuntan las corrientes actuales sin miedo a incomodar.",
+    urgencia: "high", urgencia_label: "Alta", icono: "📜",
+  },
+  ciencia_tecnologia: {
+    n: "05", eyebrow: "CIENCIA & TECNOLOGÍA",
+    nombre: "Ciencia & Tecnología",
+    tagline: "El método es la mejor herencia que dejó la razón.",
+    desc: "Divulgación científica rigurosa y tecnología entendida como palanca de progreso individual — no como magia ni como amenaza.",
+    urgencia: "high", urgencia_label: "Alta", icono: "🔬",
+  },
+  psicologia_desarrollo: {
+    n: "06", eyebrow: "PSICOLOGÍA",
+    nombre: "Psicología & Desarrollo",
+    tagline: "Entenderte a ti mismo es el primer acto de libertad.",
+    desc: "Psicología aplicada seria, hábitos y desarrollo personal con fundamento — nada de autoayuda barata ni fórmulas mágicas.",
+    urgencia: "media", urgencia_label: "Media", icono: "🧠",
+  },
+  liderazgo_emprendimiento: {
+    n: "07", eyebrow: "LIDERAZGO",
+    nombre: "Liderazgo & Emprendimiento",
+    tagline: "Construir algo desde cero no es un lujo, es un derecho.",
+    desc: "Cómo se piensa, se lidera y se construye. Emprendimiento real, con casos y honestidad — no motivación de instagram.",
+    urgencia: "media", urgencia_label: "Media", icono: "🚀",
+  },
+  biografias_memorias: {
+    n: "08", eyebrow: "BIOGRAFÍAS",
+    nombre: "Biografías & Memorias",
+    tagline: "Las vidas que se atrevieron son el mapa para las que vienen.",
+    desc: "Vidas reales que demuestran lo posible. Memorias, testimonios y biografías de quienes cambiaron algo — la mejor forma de aprender lo que los manuales no cuentan.",
+    urgencia: "media", urgencia_label: "Media", icono: "👤",
+  },
+  literatura_ficcion: {
+    n: "09", eyebrow: "LITERATURA",
+    nombre: "Literatura & Ficción",
+    tagline: "Ninguna verdad se enseña mejor que a través de una historia.",
+    desc: "Grandes novelas, cuentos y obras que forman el criterio a través de la belleza y la imaginación — las verdades más duras suelen llegar por aquí.",
+    urgencia: "media", urgencia_label: "Media", icono: "📖",
+  },
+  educacion_pedagogia: {
+    n: "10", eyebrow: "EDUCACIÓN",
+    nombre: "Educación & Pedagogía",
+    tagline: "Enseñar a otros es la forma más honesta de cambiar el mundo.",
+    desc: "Métodos, filosofías educativas y visiones alternativas del aprender y el enseñar — porque enseñar libremente sigue siendo un acto de resistencia.",
+    urgencia: "media", urgencia_label: "Media", icono: "🎓",
+  },
+};
+
+function esc(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// Extraer ?cat= de la URL
+function getCategoriaKey() {
+  const params = new URLSearchParams(window.location.search);
+  const cat = params.get('cat');
+  if (cat && CATEGORIA_META[cat]) return cat;
+  return null;
+}
+
+async function cargarCategoria() {
+  const cat = getCategoriaKey();
+  const content = document.getElementById('content');
+
+  if (!cat) {
+    content.innerHTML = `
+      <div class="cat-header">
+        <a href="vaciolleno-libros.html" class="cat-back">← Volver a categorías</a>
+        <h1 class="cat-title">Categoría no encontrada</h1>
+        <p class="cat-desc">Elige una categoría desde la <a href="vaciolleno-libros.html" style="color:var(--gold);">página de libros</a>.</p>
+      </div>
+    `;
+    return;
+  }
+
+  const meta = CATEGORIA_META[cat];
+  document.getElementById('pageTitle').textContent = `${meta.nombre} · Vacío Lleno`;
+
+  // Llamar a la RPC
+  let datos = { total_enviados: 0, paises_alcanzados: 0, libros_agrupados: [], libros_deseados: [] };
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_categoria_detalle`, {
+      method: 'POST',
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ categoria_key: cat }),
+    });
+    if (res.ok) datos = await res.json();
+  } catch (e) {
+    console.warn('Error cargando categoría:', e);
+  }
+
+  // HEADER
+  const headerHTML = `
+    <div class="cat-header">
+      <a href="vaciolleno-libros.html" class="cat-back">← Todas las categorías</a>
+      <div class="cat-num">${meta.n} · ${meta.eyebrow}</div>
+      <h1 class="cat-title">${meta.icono} ${esc(meta.nombre)}</h1>
+      <div class="cat-tagline">"${esc(meta.tagline)}"</div>
+      <p class="cat-desc">${esc(meta.desc)}</p>
+      <span class="cat-urgency urgency-${meta.urgencia}">${meta.urgencia_label}</span>
+      <div class="cat-metrics">
+        <div class="metric-box">
+          <div class="metric-num">${datos.total_enviados}</div>
+          <div class="metric-label">Libros en circulación</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-num">${datos.paises_alcanzados}</div>
+          <div class="metric-label">Países alcanzados</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-num">${datos.libros_deseados.length}</div>
+          <div class="metric-label">Libros que buscamos</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // LIBROS ENVIADOS
+  const enviadosHTML = `
+    <div class="section-wrap">
+      <div class="section-eyebrow">Ya en circulación</div>
+      <h2 class="section-title">Los libros que ya viajan</h2>
+      <p class="section-sub">
+        Cada uno de estos títulos fue perforado, catalogado y enviado a Latinoamérica. Detrás de cada uno hay un donante, un voluntario y un lector esperando.
+      </p>
+      ${datos.libros_agrupados.length === 0 ? `
+        <div class="empty-box">
+          <div class="empty-icon">○</div>
+          <div class="empty-text">
+            Aún no hemos enviado libros de esta categoría.<br>
+            <strong>Puedes ser el primero en cambiar eso.</strong>
+          </div>
+        </div>
+      ` : `
+        <div class="books-grid">
+          ${datos.libros_agrupados.map(l => `
+            <div class="book-card">
+              <div class="book-card-title">${esc(l.titulo)}</div>
+              <div class="book-card-author">${esc(l.autor)}</div>
+              ${l.paises && l.paises.length > 0 ? `
+                <div class="book-card-countries">
+                  ${l.paises.map(p => `<span class="country-chip">${esc(p)}</span>`).join('')}
+                </div>
+              ` : ''}
+              <div class="book-card-stats">
+                <span class="book-stat"><strong>${l.copias}</strong> ${l.copias === 1 ? 'copia' : 'copias'}</span>
+                ${l.en_circulacion > 0 ? `<span class="book-stat"><strong>${l.en_circulacion}</strong> circulando</span>` : ''}
+                ${l.perforados > 0 ? `<span class="book-stat">○ ${l.perforados}</span>` : ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `}
+    </div>
+  `;
+
+  // WISHLIST
+  const wishlistHTML = `
+    <div class="section-wrap">
+      <div class="section-eyebrow">Lo que buscamos</div>
+      <h2 class="section-title">Libros que queremos enviar</h2>
+      <p class="section-sub">
+        Estos son títulos que buscamos activamente. Si tienes alguno en casa —o quieres comprarlo para donarlo— aquí sabes exactamente qué falta.
+      </p>
+      ${datos.libros_deseados.length === 0 ? `
+        <div class="empty-box">
+          <div class="empty-icon">◇</div>
+          <div class="empty-text">
+            Estamos definiendo la wishlist de esta categoría.<br>
+            <strong>Mientras tanto, cualquier libro relevante suma.</strong>
+          </div>
+          <a href="vaciolleno-donaciones.html#libros" class="cta-btn" style="display:inline-block;">Donar un libro →</a>
+        </div>
+      ` : `
+        <div class="wishlist-grid">
+          ${datos.libros_deseados.map(w => `
+            <div class="wish-card ${w.prioridad}">
+              <span class="wish-priority ${w.prioridad}">Prioridad ${w.prioridad}</span>
+              <div class="wish-title">${esc(w.titulo)}</div>
+              <div class="wish-author">${esc(w.autor)}</div>
+              ${w.motivo ? `<div class="wish-motivo">${esc(w.motivo)}</div>` : ''}
+              <a href="vaciolleno-donaciones.html#libros">Yo tengo este libro →</a>
+            </div>
+          `).join('')}
+        </div>
+      `}
+    </div>
+  `;
+
+  // CTA FINAL con 3 botones
+  const ctaHTML = `
+    <div class="final-cta">
+      <h2 class="cta-title">Tres formas de hacer que un libro cruce el mar</h2>
+      <p class="cta-sub">Elige la tuya.</p>
+      <div class="cta-buttons">
+        <a href="vaciolleno-donaciones.html#libros" class="cta-btn">Donar libros</a>
+        <a href="vaciolleno-donaciones.html#dinero" class="cta-btn">Donar dinero</a>
+        <a href="vaciolleno-voluntarios.html#form" class="cta-btn outline">Ser voluntario</a>
+      </div>
+    </div>
+  `;
+
+  content.innerHTML = headerHTML + enviadosHTML + wishlistHTML + ctaHTML;
+}
+
+cargarCategoria();
+</script>
+
+</body>
+</html>
