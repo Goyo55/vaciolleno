@@ -207,6 +207,7 @@
       <li data-seccion="libros" data-permiso="libros">Libros</li>
       <li data-seccion="resenas" data-permiso="resenas">Reseñas</li>
       <li data-seccion="organizaciones" data-permiso="organizaciones">Organizaciones</li>
+      <li data-seccion="wishlist" data-permiso="libros">Wishlist</li>
       <li data-seccion="usuarios" data-permiso="admin">Usuarios</li>
     </ul>
     <div class="user-info">
@@ -959,6 +960,95 @@ async function eliminarOrg(id) {
   catch (e) { mostrarMsg(e.message, 'error'); }
 }
 
+  // ═══════════════════════════════════════════════════════════════════
+// SECCIÓN: WISHLIST (libros deseados)
+// ═══════════════════════════════════════════════════════════════════
+async function cargarWishlist() {
+  document.getElementById('main').innerHTML = '<div class="loading">Cargando wishlist...</div>';
+  try {
+    const { data } = await api('libros_deseados_listar');
+    document.getElementById('main').innerHTML = `
+      <h1 class="page-title">Libros que buscamos</h1>
+      <div class="page-subtitle">Wishlist visible en cada página de categoría — invitación pública a donar</div>
+      <div class="toolbar"><div></div><button class="btn" onclick="editarLibroDeseado(null)">+ Añadir libro a la wishlist</button></div>
+      ${data.length === 0 ? '<div class="empty">Aún no hay libros en la wishlist.</div>' : `
+      <table class="table"><thead><tr><th>Título</th><th>Autor</th><th>Categoría</th><th>Prioridad</th><th>Activo</th><th></th></tr></thead>
+        <tbody>${data.map(l => `
+          <tr>
+            <td><strong>${esc(l.titulo)}</strong>${l.motivo ? '<small>' + esc(l.motivo.slice(0, 80)) + (l.motivo.length > 80 ? '...' : '') + '</small>' : ''}</td>
+            <td>${esc(l.autor)}</td>
+            <td>${esc((CATEGORIAS_TEMATICAS.find(c => c[0] === l.categoria_tematica) || ['', l.categoria_tematica])[1])}</td>
+            <td><span class="badge ${l.prioridad === 'alta' ? 'rechazado' : l.prioridad === 'media' ? 'en_contacto' : 'nuevo'}">${esc(l.prioridad)}</span></td>
+            <td>${l.activo ? '<span class="badge aprobado">Sí</span>' : '<span class="badge rechazado">No</span>'}</td>
+            <td>
+              <button class="btn sm ghost" onclick='editarLibroDeseado(${JSON.stringify(l.id)})'>Editar</button>
+              <button class="btn sm danger" onclick='eliminarLibroDeseado(${JSON.stringify(l.id)})'>×</button>
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`}
+    `;
+  } catch (e) { document.getElementById('main').innerHTML = `<div class="msg error">${e.message}</div>`; }
+}
+
+async function editarLibroDeseado(id) {
+  let l = { titulo:'', autor:'', categoria_tematica:'filosofia_pensamiento', motivo:'', prioridad:'media', activo:true };
+  if (id) { const { data } = await api('libros_deseados_listar'); l = data.find(x => x.id === id) || l; }
+  abrirModal(`
+    <h2>${id ? 'Editar' : 'Añadir'} libro a la wishlist</h2>
+    <div class="form-row">
+      <div class="form-group"><label>Título</label><input type="text" id="wTitulo" value="${esc(l.titulo)}"></div>
+      <div class="form-group"><label>Autor</label><input type="text" id="wAutor" value="${esc(l.autor)}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Categoría</label>
+        <select id="wCategoria">${CATEGORIAS_TEMATICAS.map(([k,v]) => `<option value="${k}" ${k === l.categoria_tematica ? 'selected' : ''}>${v}</option>`).join('')}</select>
+      </div>
+      <div class="form-group"><label>Prioridad</label>
+        <select id="wPrioridad">
+          <option value="alta" ${l.prioridad === 'alta' ? 'selected' : ''}>Alta (urgente)</option>
+          <option value="media" ${l.prioridad === 'media' ? 'selected' : ''}>Media</option>
+          <option value="baja" ${l.prioridad === 'baja' ? 'selected' : ''}>Baja</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label>Motivo (opcional — por qué queremos este libro)</label>
+      <textarea id="wMotivo" placeholder="ej. Explicación clara de conceptos financieros básicos para adolescentes.">${esc(l.motivo || '')}</textarea>
+    </div>
+    <div class="checkbox-wrap">
+      <input type="checkbox" id="wActivo" ${l.activo ? 'checked' : ''}>
+      <label for="wActivo" style="margin:0;text-transform:none;letter-spacing:0;font-family:var(--sans);font-size:0.9rem;color:rgba(255,255,255,0.8);">Activo (visible en la wishlist pública)</label>
+    </div>
+    <div class="form-actions">
+      <button class="btn ghost" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn" onclick='guardarLibroDeseado(${JSON.stringify(id)})'>Guardar</button>
+    </div>
+  `);
+}
+
+async function guardarLibroDeseado(id) {
+  const datos = {
+    titulo: document.getElementById('wTitulo').value.trim(),
+    autor: document.getElementById('wAutor').value.trim(),
+    categoria_tematica: document.getElementById('wCategoria').value,
+    prioridad: document.getElementById('wPrioridad').value,
+    motivo: document.getElementById('wMotivo').value.trim() || null,
+    activo: document.getElementById('wActivo').checked,
+  };
+  if (!datos.titulo || !datos.autor) { mostrarMsg('Título y autor son obligatorios', 'error'); return; }
+  try {
+    if (id) await api('libros_deseados_actualizar', { id, cambios: datos });
+    else await api('libros_deseados_crear', datos);
+    cerrarModal(); cargarWishlist(); mostrarMsg('Guardado', 'ok');
+  } catch (e) { mostrarMsg(e.message, 'error'); }
+}
+
+async function eliminarLibroDeseado(id) {
+  if (!confirm('¿Eliminar este libro de la wishlist?')) return;
+  try { await api('libros_deseados_eliminar', { id }); cargarWishlist(); mostrarMsg('Eliminado', 'ok'); }
+  catch (e) { mostrarMsg(e.message, 'error'); }
+}
+  
 // ═══════════════════════════════════════════════════════════════════
 // SECCIÓN: USUARIOS (solo admin)
 // ═══════════════════════════════════════════════════════════════════
@@ -1112,6 +1202,7 @@ function cargarSeccion(nombre) {
     case 'libros': return cargarLibros();
     case 'resenas': return cargarResenas();
     case 'organizaciones': return cargarOrganizaciones();
+    case 'wishlist': return cargarWishlist();
     case 'usuarios': return cargarUsuarios();
   }
 }
