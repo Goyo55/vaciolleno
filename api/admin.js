@@ -36,6 +36,11 @@ const PERMISOS_REQUERIDOS = {
   organizaciones_actualizar: 'organizaciones',
   organizaciones_eliminar: 'organizaciones',
 
+  libros_deseados_listar: 'libros',
+  libros_deseados_crear: 'libros',
+  libros_deseados_actualizar: 'libros',
+  libros_deseados_eliminar: 'libros',
+
   usuarios_listar: 'admin',
   usuarios_invitar: 'admin',
   usuarios_actualizar_permisos: 'admin',
@@ -223,6 +228,22 @@ export default async function handler(req, res) {
         return res.status(200).json({ ok: true });
       }
 
+        // ─── LIBROS DESEADOS (wishlist) ───
+      case 'libros_deseados_listar':
+        return res.status(200).json({ ok: true, data: await supa(`libros_deseados?select=*&order=prioridad.asc,creado_en.desc&limit=500`) });
+      case 'libros_deseados_crear':
+        return res.status(200).json({ ok: true, data: await supa(`libros_deseados`, { method: 'POST', body: JSON.stringify(datos) }) });
+      case 'libros_deseados_actualizar': {
+        const { id, cambios } = datos;
+        if (!id) return res.status(400).json({ error: 'Falta id' });
+        return res.status(200).json({ ok: true, data: await supa(`libros_deseados?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify(cambios) }) });
+      }
+      case 'libros_deseados_eliminar': {
+        if (!datos.id) return res.status(400).json({ error: 'Falta id' });
+        await supa(`libros_deseados?id=eq.${datos.id}`, { method: 'DELETE' });
+        return res.status(200).json({ ok: true });
+      }
+        
       // ─── USUARIOS DEL PANEL (solo admin) ───
       case 'usuarios_listar':
         return res.status(200).json({ ok: true, data: await supa(`admin_perfiles?select=*&order=creado_en.asc&limit=200`) });
