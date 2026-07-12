@@ -1,0 +1,27 @@
+# robots.txt — vaciolleno.org
+# Insurgencia intelectual. Distribución libre de conocimiento.
+
+User-agent: *
+Allow: /
+
+# No indexar zonas privadas ni endpoints
+Disallow: /admin.html
+Disallow: /admin
+Disallow: /api/
+Disallow: /*.json$
+
+# Bloquear crawlers agresivos de scraping para IA sin permiso
+User-agent: GPTBot
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+# Sitemap
+Sitemap: https://vaciolleno.org/sitemap.xml
