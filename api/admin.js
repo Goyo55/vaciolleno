@@ -10,8 +10,8 @@ const SERVICE_KEY  = process.env.SUPABASE_SERVICE_KEY;
 
 // ─── Mapa de acciones → permiso requerido ───
 const PERMISOS_REQUERIDOS = {
-  mi_perfil: null,      // cualquier autenticado
-  resumen: null,        // cualquier autenticado
+  mi_perfil: null,
+  resumen: null,
 
   formularios_listar: 'formularios',
   formularios_actualizar: 'formularios',
@@ -30,6 +30,9 @@ const PERMISOS_REQUERIDOS = {
   resenas_crear: 'resenas',
   resenas_actualizar: 'resenas',
   resenas_eliminar: 'resenas',
+  resenas_aprobar: 'resenas',
+  resenas_rechazar: 'resenas',
+  resenas_destacar_toggle: 'resenas',
 
   organizaciones_listar: 'organizaciones',
   organizaciones_crear: 'organizaciones',
@@ -72,7 +75,6 @@ async function supa(path, opciones = {}) {
 async function verificarUsuario(accessToken) {
   if (!accessToken) return null;
 
-  // Verificar token contra Supabase Auth
   const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
     headers: {
       apikey: SERVICE_KEY,
@@ -83,13 +85,11 @@ async function verificarUsuario(accessToken) {
   const user = await userRes.json();
   if (!user || !user.id) return null;
 
-  // Obtener perfil
   const perfiles = await supa(`admin_perfiles?user_id=eq.${user.id}&select=*`);
   if (!perfiles || perfiles.length === 0) return null;
   const perfil = perfiles[0];
   if (!perfil.activo) return null;
 
-  // Actualizar último acceso (fire-and-forget)
   supa(`admin_perfiles?user_id=eq.${user.id}`, {
     method: 'PATCH',
     body: JSON.stringify({ ultimo_acceso: new Date().toISOString() }),
@@ -99,9 +99,8 @@ async function verificarUsuario(accessToken) {
   return perfil;
 }
 
-// ─── Verificar si el usuario tiene un permiso ───
 function tienePermiso(perfil, permisoRequerido) {
-  if (permisoRequerido === null) return true;  // no requiere permiso
+  if (permisoRequerido === null) return true;
   if (!perfil.permisos) return false;
   return perfil.permisos.includes('admin') || perfil.permisos.includes(permisoRequerido);
 }
@@ -116,13 +115,11 @@ export default async function handler(req, res) {
 
   const { access_token, accion, datos = {} } = req.body || {};
 
-  // 1. Verificar autenticación
   const perfil = await verificarUsuario(access_token);
   if (!perfil) {
     return res.status(401).json({ error: 'Sesión no válida o expirada' });
   }
 
-  // 2. Verificar permisos
   const permisoRequerido = PERMISOS_REQUERIDOS[accion];
   if (permisoRequerido === undefined) {
     return res.status(400).json({ error: `Acción desconocida: ${accion}` });
@@ -133,7 +130,6 @@ export default async function handler(req, res) {
     });
   }
 
-  // 3. Ejecutar acción
   try {
     let resultado;
     switch (accion) {
@@ -142,6 +138,7 @@ export default async function handler(req, res) {
         return res.status(200).json({
           ok: true,
           data: {
+            user_id: perfil.user_id,
             email: perfil.email,
             nombre: perfil.nombre,
             permisos: perfil.permisos,
@@ -197,8 +194,16 @@ export default async function handler(req, res) {
       }
 
       // ─── RESEÑAS ───
-      case 'resenas_listar':
-        return res.status(200).json({ ok: true, data: await supa(`resenas?select=*&order=creado_en.desc&limit=200`) });
+      // Ordena por pendientes primero (publicada=false), luego por fecha
+      case 'resenas_listar': {
+        let filtro = '';
+        if (datos.filtro === 'pendientes') filtro = '&publicada=eq.false';
+        else if (datos.filtro === 'publicadas') filtro = '&publicada=eq.true';
+        return res.status(200).json({
+          ok: true,
+          data: await supa(`resenas?select=*&order=publicada.asc,creado_en.desc&limit=300${filtro}`),
+        });
+      }
       case 'resenas_crear':
         return res.status(200).json({ ok: true, data: await supa(`resenas`, { method: 'POST', body: JSON.stringify(datos) }) });
       case 'resenas_actualizar': {
@@ -210,6 +215,47 @@ export default async function handler(req, res) {
         if (!datos.id) return res.status(400).json({ error: 'Falta id' });
         await supa(`resenas?id=eq.${datos.id}`, { method: 'DELETE' });
         return res.status(200).json({ ok: true });
+      }
+      // Acciones rápidas
+      case 'resenas_aprobar': {
+        if (!datos.id) return res.status(400).json({ error: 'Falta id' });
+        return res.status(200).json({
+          ok: true,
+          data: await supa(`resenas?id=eq.${datos.id}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+              publicada: true,
+              motivo_rechazo: null,
+              aprobada_en: new Date().toISOString(),
+              aprobada_por: perfil.user_id,
+            }),
+          }),
+        });
+      }
+      case 'resenas_rechazar': {
+        if (!datos.id) return res.status(400).json({ error: 'Falta id' });
+        return res.status(200).json({
+          ok: true,
+          data: await supa(`resenas?id=eq.${datos.id}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+              publicada: false,
+              motivo_rechazo: datos.motivo || 'No cumple criterios editoriales',
+            }),
+          }),
+        });
+      }
+      case 'resenas_destacar_toggle': {
+        if (!datos.id) return res.status(400).json({ error: 'Falta id' });
+        const actual = await supa(`resenas?id=eq.${datos.id}&select=destacada`);
+        const nuevo = !(actual[0]?.destacada);
+        return res.status(200).json({
+          ok: true,
+          data: await supa(`resenas?id=eq.${datos.id}`, {
+            method: 'PATCH',
+            body: JSON.stringify({ destacada: nuevo }),
+          }),
+        });
       }
 
       // ─── ORGANIZACIONES ───
@@ -228,7 +274,7 @@ export default async function handler(req, res) {
         return res.status(200).json({ ok: true });
       }
 
-        // ─── LIBROS DESEADOS (wishlist) ───
+      // ─── LIBROS DESEADOS (wishlist) ───
       case 'libros_deseados_listar':
         return res.status(200).json({ ok: true, data: await supa(`libros_deseados?select=*&order=prioridad.asc,creado_en.desc&limit=500`) });
       case 'libros_deseados_crear':
@@ -243,7 +289,7 @@ export default async function handler(req, res) {
         await supa(`libros_deseados?id=eq.${datos.id}`, { method: 'DELETE' });
         return res.status(200).json({ ok: true });
       }
-        
+
       // ─── USUARIOS DEL PANEL (solo admin) ───
       case 'usuarios_listar':
         return res.status(200).json({ ok: true, data: await supa(`admin_perfiles?select=*&order=creado_en.asc&limit=200`) });
@@ -253,7 +299,6 @@ export default async function handler(req, res) {
         if (!email || !email.includes('@')) return res.status(400).json({ error: 'Email no válido' });
         if (!Array.isArray(permisos) || permisos.length === 0) return res.status(400).json({ error: 'Selecciona al menos un permiso' });
 
-        // 1. Crear usuario en Auth (o recuperarlo si ya existe)
         let newUserId = null;
         const createRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users`, {
           method: 'POST',
@@ -272,7 +317,6 @@ export default async function handler(req, res) {
           const created = await createRes.json();
           newUserId = created.id || created.user?.id;
         } else {
-          // Si ya existe, buscarlo
           const searchRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users?filter=email.eq.${encodeURIComponent(email)}`, {
             headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` },
           });
@@ -288,7 +332,6 @@ export default async function handler(req, res) {
           }
         }
 
-        // 2. Generar magic link para setear contraseña (tipo recovery)
         const linkRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/generate_link`, {
           method: 'POST',
           headers: {
@@ -310,7 +353,6 @@ export default async function handler(req, res) {
         const inviteUrl = linkData.action_link || linkData.properties?.action_link;
         if (!inviteUrl) return res.status(500).json({ error: 'No se pudo obtener el enlace de invitación' });
 
-        // 3. Crear/actualizar perfil en admin_perfiles
         try {
           await supa(`admin_perfiles`, {
             method: 'POST',
@@ -332,7 +374,6 @@ export default async function handler(req, res) {
           });
         }
 
-        // 4. Enviar email de invitación con Resend
         const RESEND_API_KEY = process.env.RESEND_API_KEY;
         if (RESEND_API_KEY) {
           const nombreMostrar = nombre || email.split('@')[0];
@@ -375,7 +416,6 @@ export default async function handler(req, res) {
           if (!emailRes.ok) {
             const errText = await emailRes.text();
             console.error('Resend error:', errText);
-            // No devolvemos error — el perfil ya existe y podemos dar el link como fallback
             return res.status(200).json({ ok: true, mensaje: `Perfil creado, pero email falló. Enlace directo: ${inviteUrl}` });
           }
         }
@@ -388,7 +428,6 @@ export default async function handler(req, res) {
         if (!user_id) return res.status(400).json({ error: 'Falta user_id' });
         if (!Array.isArray(permisos)) return res.status(400).json({ error: 'Permisos deben ser un array' });
 
-        // Protección: no puedes quitarte a ti mismo el permiso 'admin' si eres el único admin
         if (user_id === perfil.user_id && !permisos.includes('admin')) {
           const otrosAdmins = await supa(`admin_perfiles?permisos=cs.{admin}&activo=eq.true&user_id=neq.${perfil.user_id}&select=user_id`);
           if (!otrosAdmins || otrosAdmins.length === 0) {
@@ -436,10 +475,11 @@ export default async function handler(req, res) {
 
       // ─── RESUMEN ───
       case 'resumen': {
-        const [formNuevos, voluntarios, libros, resenas, donaciones] = await Promise.all([
+        const [formNuevos, voluntarios, libros, resenasPendientes, resenasTotal, donaciones] = await Promise.all([
           supa(`formularios?select=id&estado=eq.nuevo`),
           supa(`voluntarios?select=id`),
           supa(`libros?select=id`),
+          supa(`resenas?select=id&publicada=eq.false`),
           supa(`resenas?select=id`),
           supa(`donaciones?select=id&estado=eq.confirmada`),
         ]);
@@ -449,7 +489,8 @@ export default async function handler(req, res) {
             formularios_nuevos: formNuevos.length,
             voluntarios_publicados: voluntarios.length,
             libros_total: libros.length,
-            resenas_total: resenas.length,
+            resenas_pendientes: resenasPendientes.length,
+            resenas_total: resenasTotal.length,
             donaciones_confirmadas: donaciones.length,
           },
         });
