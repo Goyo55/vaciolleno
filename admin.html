@@ -120,6 +120,7 @@
   .btn.ghost { background: transparent; color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.15); }
   .btn.ghost:hover { border-color: var(--gold); color: var(--gold); }
   .btn.danger { background: var(--red); color: white; }
+  .btn.success { background: var(--green); color: var(--navy); }
   .btn.sm { padding: 0.4rem 0.8rem; font-size: 0.65rem; }
   .btn.active { background: var(--gold); color: var(--navy); }
 
@@ -127,6 +128,7 @@
   .table th { background: rgba(0,0,0,0.3); padding: 0.75rem 1rem; text-align: left; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.6); font-weight: normal; border-bottom: 1px solid rgba(255,255,255,0.08); }
   .table td { padding: 0.9rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: middle; }
   .table tr:hover td { background: rgba(255,255,255,0.02); }
+  .table tr.pendiente td { background: rgba(201,168,76,0.05); }
   .table td small { display: block; font-family: var(--mono); font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-top: 0.2rem; }
   .empty { padding: 3rem; text-align: center; color: rgba(255,255,255,0.4); font-style: italic; }
 
@@ -136,6 +138,7 @@
   .badge.entrevistado { background: rgba(162,155,254,0.15); color: #a29bfe; }
   .badge.aprobado { background: rgba(0,212,161,0.15); color: var(--green); }
   .badge.rechazado { background: rgba(255,71,87,0.15); color: #ff4757; }
+  .badge.pendiente { background: rgba(201,168,76,0.15); color: var(--gold); }
   .badge.recibido, .badge.clasificado, .badge.perforado, .badge.en_transito, .badge.entregado, .badge.en_circulacion { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.7); }
 
   /* Modal */
@@ -205,7 +208,7 @@
       <li data-seccion="formularios" data-permiso="formularios">Formularios <span class="nav-badge" id="badgeFormularios" style="display:none;"></span></li>
       <li data-seccion="voluntarios" data-permiso="voluntarios">Voluntarios</li>
       <li data-seccion="libros" data-permiso="libros">Libros</li>
-      <li data-seccion="resenas" data-permiso="resenas">Reseñas</li>
+      <li data-seccion="resenas" data-permiso="resenas">Reseñas <span class="nav-badge" id="badgeResenas" style="display:none;"></span></li>
       <li data-seccion="organizaciones" data-permiso="organizaciones">Organizaciones</li>
       <li data-seccion="wishlist" data-permiso="libros">Wishlist</li>
       <li data-seccion="usuarios" data-permiso="admin">Usuarios</li>
@@ -237,8 +240,9 @@ const SUPABASE_ANON_KEY = 'sb_publishable_VFoLqoJsalIKNJ2GFpSbzA_QS5RH4-U';
 // ESTADO GLOBAL
 // ═══════════════════════════════════════════════════════════════════
 let TOKEN = sessionStorage.getItem('vl_admin_token') || '';
-let PERFIL = null;  // { email, nombre, permisos: [...] }
+let PERFIL = null;
 let filtroFormularios = '';
+let filtroResenas = 'pendientes'; // pendientes | publicadas | todas
 
 // ═══════════════════════════════════════════════════════════════════
 // COMUNICACIÓN CON /api/admin
@@ -263,7 +267,7 @@ async function api(accion, datos = {}) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// LOGIN / LOGOUT (Supabase Auth)
+// LOGIN / LOGOUT
 // ═══════════════════════════════════════════════════════════════════
 async function hacerLogin() {
   const email = document.getElementById('emailInput').value.trim();
@@ -275,7 +279,6 @@ async function hacerLogin() {
   err.style.display = 'none';
 
   try {
-    // Login contra Supabase Auth
     const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', apikey: SUPABASE_ANON_KEY },
@@ -287,7 +290,6 @@ async function hacerLogin() {
     }
     TOKEN = data.access_token;
 
-    // Verificar que tiene perfil de admin activo
     const { data: perfil } = await api('mi_perfil');
     PERFIL = perfil;
 
@@ -315,12 +317,8 @@ function mostrarLogin() {
 function mostrarApp() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('app').style.display = 'grid';
-
-  // Mostrar info del usuario
   document.getElementById('userName').textContent = PERFIL.nombre || 'Sin nombre';
   document.getElementById('userEmail').textContent = PERFIL.email;
-
-  // Ocultar pestañas sin permiso
   document.querySelectorAll('.nav li').forEach(li => {
     const permiso = li.dataset.permiso;
     if (!permiso) { li.classList.remove('hidden'); return; }
@@ -330,7 +328,6 @@ function mostrarApp() {
       li.classList.add('hidden');
     }
   });
-
   cargarSeccion('resumen');
 }
 
@@ -377,9 +374,12 @@ async function cargarResumen() {
   document.getElementById('main').innerHTML = '<div class="loading">Cargando resumen...</div>';
   try {
     const { data } = await api('resumen');
-    const badge = document.getElementById('badgeFormularios');
-    if (data.formularios_nuevos > 0) { badge.textContent = data.formularios_nuevos; badge.style.display = 'inline-block'; }
-    else badge.style.display = 'none';
+    const badgeF = document.getElementById('badgeFormularios');
+    if (data.formularios_nuevos > 0) { badgeF.textContent = data.formularios_nuevos; badgeF.style.display = 'inline-block'; }
+    else badgeF.style.display = 'none';
+    const badgeR = document.getElementById('badgeResenas');
+    if (data.resenas_pendientes > 0) { badgeR.textContent = data.resenas_pendientes; badgeR.style.display = 'inline-block'; }
+    else badgeR.style.display = 'none';
 
     document.getElementById('main').innerHTML = `
       <h1 class="page-title">Bienvenido/a, ${esc(PERFIL.nombre || PERFIL.email.split('@')[0])}</h1>
@@ -389,15 +389,25 @@ async function cargarResumen() {
           <div class="label">Formularios nuevos</div>
           <div class="value">${data.formularios_nuevos}</div>
         </div>
+        <div class="summary-card ${data.resenas_pendientes > 0 ? 'alert' : ''}">
+          <div class="label">Reseñas por moderar</div>
+          <div class="value">${data.resenas_pendientes}</div>
+        </div>
         <div class="summary-card"><div class="label">Voluntarios publicados</div><div class="value">${data.voluntarios_publicados}</div></div>
         <div class="summary-card"><div class="label">Libros total</div><div class="value">${data.libros_total}</div></div>
-        <div class="summary-card"><div class="label">Reseñas</div><div class="value">${data.resenas_total}</div></div>
+        <div class="summary-card"><div class="label">Reseñas publicadas</div><div class="value">${(data.resenas_total || 0) - (data.resenas_pendientes || 0)}</div></div>
         <div class="summary-card"><div class="label">Donaciones confirmadas</div><div class="value">${data.donaciones_confirmadas}</div></div>
       </div>
       ${(data.formularios_nuevos > 0 && puedo('formularios')) ? `
         <div style="margin-top:2rem;padding:1.5rem;background:rgba(201,168,76,0.06);border-left:3px solid var(--gold);">
           Tienes <strong>${data.formularios_nuevos}</strong> ${data.formularios_nuevos === 1 ? 'formulario nuevo' : 'formularios nuevos'} sin revisar.
           <button class="btn sm" style="margin-left:1rem;" onclick="document.querySelector('[data-seccion=formularios]').click()">Ir a formularios →</button>
+        </div>
+      ` : ''}
+      ${(data.resenas_pendientes > 0 && puedo('resenas')) ? `
+        <div style="margin-top:1rem;padding:1.5rem;background:rgba(201,168,76,0.06);border-left:3px solid var(--gold);">
+          Tienes <strong>${data.resenas_pendientes}</strong> ${data.resenas_pendientes === 1 ? 'reseña por moderar' : 'reseñas por moderar'}.
+          <button class="btn sm" style="margin-left:1rem;" onclick="document.querySelector('[data-seccion=resenas]').click()">Ir a reseñas →</button>
         </div>
       ` : ''}
     `;
@@ -768,28 +778,47 @@ async function eliminarLibro(id) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// SECCIÓN: RESEÑAS
+// SECCIÓN: RESEÑAS (moderación de testimonios enviados desde la web)
 // ═══════════════════════════════════════════════════════════════════
+const AUTOR_TIPO_LABEL = { donante:'Donante', voluntario:'Voluntario', receptor:'Receptor', organizacion:'Organización', otro:'Otro' };
+
+function filtrarResenas(f) { filtroResenas = f; cargarResenas(); }
+
 async function cargarResenas() {
   document.getElementById('main').innerHTML = '<div class="loading">Cargando reseñas...</div>';
   try {
-    const { data } = await api('resenas_listar');
+    const filtroArg = filtroResenas === 'todas' ? {} : { filtro: filtroResenas };
+    const { data } = await api('resenas_listar', filtroArg);
+    const filtrosBotones = [
+      ['pendientes', 'Pendientes'],
+      ['publicadas', 'Publicadas'],
+      ['todas', 'Todas'],
+    ].map(([k, label]) => `<button class="btn ghost sm ${filtroResenas === k ? 'active' : ''}" onclick="filtrarResenas('${k}')">${label}</button>`).join('');
+
     document.getElementById('main').innerHTML = `
       <h1 class="page-title">Reseñas y testimonios</h1>
-      <div class="page-subtitle">Aparecen rotativamente en el ticker de la página de impacto</div>
-      <div class="toolbar"><div></div><button class="btn" onclick="editarResena(null)">+ Añadir reseña</button></div>
-      ${data.length === 0 ? '<div class="empty">Aún no hay reseñas registradas.</div>' : `
-      <table class="table"><thead><tr><th>Cita</th><th>Autor</th><th>Tipo</th><th>Lugar</th><th>Publicada</th><th></th></tr></thead>
+      <div class="page-subtitle">Moderación de testimonios enviados desde la web · Se muestran en la Home</div>
+      <div class="toolbar">
+        <div class="filters">${filtrosBotones}</div>
+        <button class="btn" onclick="editarResena(null)">+ Añadir reseña manual</button>
+      </div>
+      ${data.length === 0 ? '<div class="empty">No hay reseñas que mostrar en este filtro.</div>' : `
+      <table class="table">
+        <thead><tr><th>Cita</th><th>Autor</th><th>Tipo</th><th>Lugar</th><th>Estado</th><th>Recibida</th><th></th></tr></thead>
         <tbody>${data.map(r => `
-          <tr>
-            <td style="max-width:400px;">"${esc((r.cita || '').slice(0, 120))}${(r.cita || '').length > 120 ? '...' : ''}"</td>
-            <td>${esc(r.autor_nombre || '—')}</td>
-            <td>${esc(r.autor_tipo || '—')}</td>
+          <tr class="${!r.publicada ? 'pendiente' : ''}">
+            <td style="max-width:360px;">"${esc((r.cita || '').slice(0, 140))}${(r.cita || '').length > 140 ? '...' : ''}"${r.motivo_rechazo ? '<small style="color:#ff6b7a;">Rechazada: ' + esc(r.motivo_rechazo) + '</small>' : ''}</td>
+            <td><strong>${esc(r.autor_nombre || '—')}</strong>${r.email ? '<small>' + esc(r.email) + '</small>' : ''}</td>
+            <td>${esc(AUTOR_TIPO_LABEL[r.autor_tipo] || r.autor_tipo || '—')}</td>
             <td>${[r.ciudad, r.pais].filter(Boolean).map(esc).join(', ') || '—'}</td>
-            <td>${r.publicada ? '<span class="badge aprobado">Sí</span>' : '<span class="badge rechazado">No</span>'}${r.destacada ? ' ⭐' : ''}</td>
-            <td>
+            <td>${r.publicada ? '<span class="badge aprobado">Publicada</span>' : '<span class="badge pendiente">Pendiente</span>'}${r.destacada ? ' ⭐' : ''}</td>
+            <td>${fecha(r.creado_en)}</td>
+            <td style="white-space:nowrap;">
+              ${!r.publicada ? `<button class="btn sm success" onclick='aprobarResena(${JSON.stringify(r.id)})' title="Aprobar y publicar">✓</button>` : ''}
+              ${r.publicada ? `<button class="btn sm ghost" onclick='rechazarResenaModal(${JSON.stringify(r.id)})' title="Retirar de publicación">✕</button>` : ''}
+              <button class="btn sm ghost" onclick='toggleDestacada(${JSON.stringify(r.id)})' title="Destacar">${r.destacada ? '★' : '☆'}</button>
               <button class="btn sm ghost" onclick='editarResena(${JSON.stringify(r.id)})'>Editar</button>
-              <button class="btn sm danger" onclick='eliminarResena(${JSON.stringify(r.id)})'>×</button>
+              <button class="btn sm danger" onclick='eliminarResena(${JSON.stringify(r.id)})' title="Eliminar">×</button>
             </td>
           </tr>`).join('')}
         </tbody>
@@ -798,9 +827,46 @@ async function cargarResenas() {
   } catch (e) { document.getElementById('main').innerHTML = `<div class="msg error">${e.message}</div>`; }
 }
 
+async function aprobarResena(id) {
+  try { await api('resenas_aprobar', { id }); cargarResenas(); mostrarMsg('Reseña publicada', 'ok'); }
+  catch (e) { mostrarMsg(e.message, 'error'); }
+}
+
+function rechazarResenaModal(id) {
+  abrirModal(`
+    <h2>Retirar / rechazar reseña</h2>
+    <p style="color:rgba(255,255,255,0.6);font-size:0.85rem;margin-bottom:1rem;">
+      La reseña dejará de aparecer en la web. Puedes opcionalmente registrar un motivo (solo visible en el panel).
+    </p>
+    <div class="form-group"><label>Motivo (opcional)</label>
+      <textarea id="rMotivo" placeholder="ej. Contenido inapropiado, spam, no cumple criterios..."></textarea>
+    </div>
+    <div class="form-actions">
+      <button class="btn ghost" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn danger" onclick='confirmarRechazoResena(${JSON.stringify(id)})'>Retirar</button>
+    </div>
+  `);
+}
+
+async function confirmarRechazoResena(id) {
+  const motivo = document.getElementById('rMotivo').value.trim();
+  try {
+    await api('resenas_rechazar', { id, motivo: motivo || null });
+    cerrarModal(); cargarResenas(); mostrarMsg('Reseña retirada', 'ok');
+  } catch (e) { mostrarMsg(e.message, 'error'); }
+}
+
+async function toggleDestacada(id) {
+  try { await api('resenas_destacar_toggle', { id }); cargarResenas(); }
+  catch (e) { mostrarMsg(e.message, 'error'); }
+}
+
 async function editarResena(id) {
-  let r = { cita:'', autor_nombre:'', autor_tipo:'receptor', ciudad:'', pais:'', publicada:false, destacada:false };
-  if (id) { const { data } = await api('resenas_listar'); r = data.find(x => x.id === id) || r; }
+  let r = { cita:'', autor_nombre:'', autor_tipo:'receptor', ciudad:'', pais:'', email:'', publicada:false, destacada:false, motivo_rechazo:'' };
+  if (id) {
+    const { data } = await api('resenas_listar', { filtro: 'todas' });
+    r = data.find(x => x.id === id) || r;
+  }
   abrirModal(`
     <h2>${id ? 'Editar' : 'Añadir'} reseña</h2>
     <div class="form-group"><label>Cita textual</label><textarea id="rCita" placeholder="Máximo dos frases">${esc(r.cita || '')}</textarea></div>
@@ -812,6 +878,7 @@ async function editarResena(id) {
           <option value="voluntario" ${r.autor_tipo === 'voluntario' ? 'selected' : ''}>Voluntario</option>
           <option value="donante" ${r.autor_tipo === 'donante' ? 'selected' : ''}>Donante</option>
           <option value="organizacion" ${r.autor_tipo === 'organizacion' ? 'selected' : ''}>Organización</option>
+          <option value="otro" ${r.autor_tipo === 'otro' ? 'selected' : ''}>Otro</option>
         </select>
       </div>
     </div>
@@ -819,6 +886,7 @@ async function editarResena(id) {
       <div class="form-group"><label>Ciudad</label><input type="text" id="rCiudad" value="${esc(r.ciudad || '')}"></div>
       <div class="form-group"><label>País</label><input type="text" id="rPais" value="${esc(r.pais || '')}"></div>
     </div>
+    <div class="form-group"><label>Email de contacto (opcional, privado)</label><input type="email" id="rEmail" value="${esc(r.email || '')}"></div>
     <div style="display:flex;gap:2rem;">
       <div class="checkbox-wrap">
         <input type="checkbox" id="rPublicada" ${r.publicada ? 'checked' : ''}>
@@ -829,6 +897,7 @@ async function editarResena(id) {
         <label for="rDestacada" style="margin:0;text-transform:none;letter-spacing:0;font-family:var(--sans);font-size:0.9rem;color:rgba(255,255,255,0.8);">Destacada (aparece primero)</label>
       </div>
     </div>
+    <div class="form-group" style="margin-top:1rem;"><label>Motivo de rechazo (privado, opcional)</label><textarea id="rMotivoRechazo" placeholder="Solo visible en el panel">${esc(r.motivo_rechazo || '')}</textarea></div>
     <div class="form-actions">
       <button class="btn ghost" onclick="cerrarModal()">Cancelar</button>
       <button class="btn" onclick='guardarResena(${JSON.stringify(id)})'>Guardar</button>
@@ -843,8 +912,10 @@ async function guardarResena(id) {
     autor_tipo: document.getElementById('rTipo').value,
     ciudad: document.getElementById('rCiudad').value.trim() || null,
     pais: document.getElementById('rPais').value.trim() || null,
+    email: document.getElementById('rEmail').value.trim() || null,
     publicada: document.getElementById('rPublicada').checked,
     destacada: document.getElementById('rDestacada').checked,
+    motivo_rechazo: document.getElementById('rMotivoRechazo').value.trim() || null,
   };
   if (!datos.cita) { mostrarMsg('La cita es obligatoria', 'error'); return; }
   try {
@@ -855,7 +926,7 @@ async function guardarResena(id) {
 }
 
 async function eliminarResena(id) {
-  if (!confirm('¿Eliminar esta reseña?')) return;
+  if (!confirm('¿Eliminar esta reseña permanentemente? Esta acción no se puede deshacer.')) return;
   try { await api('resenas_eliminar', { id }); cargarResenas(); mostrarMsg('Reseña eliminada', 'ok'); }
   catch (e) { mostrarMsg(e.message, 'error'); }
 }
@@ -960,8 +1031,8 @@ async function eliminarOrg(id) {
   catch (e) { mostrarMsg(e.message, 'error'); }
 }
 
-  // ═══════════════════════════════════════════════════════════════════
-// SECCIÓN: WISHLIST (libros deseados)
+// ═══════════════════════════════════════════════════════════════════
+// SECCIÓN: WISHLIST
 // ═══════════════════════════════════════════════════════════════════
 async function cargarWishlist() {
   document.getElementById('main').innerHTML = '<div class="loading">Cargando wishlist...</div>';
@@ -1048,7 +1119,7 @@ async function eliminarLibroDeseado(id) {
   try { await api('libros_deseados_eliminar', { id }); cargarWishlist(); mostrarMsg('Eliminado', 'ok'); }
   catch (e) { mostrarMsg(e.message, 'error'); }
 }
-  
+
 // ═══════════════════════════════════════════════════════════════════
 // SECCIÓN: USUARIOS (solo admin)
 // ═══════════════════════════════════════════════════════════════════
@@ -1057,7 +1128,7 @@ const PERMISOS_DISPONIBLES = [
   ['formularios', 'Formularios (bandeja de entrada)'],
   ['voluntarios', 'Voluntarios (fichas públicas)'],
   ['libros', 'Libros (inventario)'],
-  ['resenas', 'Reseñas (ticker de impacto)'],
+  ['resenas', 'Reseñas (testimonios)'],
   ['organizaciones', 'Organizaciones (colaboradoras)'],
 ];
 
@@ -1171,7 +1242,6 @@ async function guardarPermisosUsuario(user_id) {
   try {
     await api('usuarios_actualizar_permisos', { user_id, permisos, nombre });
     cerrarModal(); cargarUsuarios(); mostrarMsg('Permisos actualizados', 'ok');
-    // Si me estoy editando a mí mismo, refrescar mi perfil
     if (user_id === PERFIL.user_id) {
       const { data: nuevoPerfil } = await api('mi_perfil');
       PERFIL = nuevoPerfil;
@@ -1208,7 +1278,7 @@ function cargarSeccion(nombre) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// PANTALLA DE ESTABLECER CONTRASEÑA (invitación / recovery)
+// PANTALLA DE ESTABLECER CONTRASEÑA
 // ═══════════════════════════════════════════════════════════════════
 function mostrarSetupPassword(accessToken) {
   const login = document.getElementById('loginScreen');
@@ -1228,7 +1298,7 @@ function mostrarSetupPassword(accessToken) {
     <button id="setupBtn" onclick="establecerPassword('${accessToken}')">Establecer y entrar</button>
     <div id="setupError" class="login-error" style="display:none;"></div>
   `;
-  history.replaceState(null, '', window.location.pathname);  // limpiar el hash
+  history.replaceState(null, '', window.location.pathname);
 }
 
 async function establecerPassword(accessToken) {
@@ -1253,12 +1323,11 @@ async function establecerPassword(accessToken) {
     const data = await res.json();
     if (!res.ok) throw new Error(data.msg || data.error_description || 'No se pudo establecer la contraseña.');
 
-    // Entrar con el token que ya tenemos
     TOKEN = accessToken;
     sessionStorage.setItem('vl_admin_token', TOKEN);
     const { data: perfil } = await api('mi_perfil');
     PERFIL = perfil;
-    location.reload();  // Recargar para restaurar la pantalla de login normal
+    location.reload();
   } catch (e) {
     err.textContent = e.message;
     err.style.display = 'block';
@@ -1271,7 +1340,6 @@ async function establecerPassword(accessToken) {
 // ARRANQUE
 // ═══════════════════════════════════════════════════════════════════
 (function arrancar() {
-  // Detectar si venimos desde un link de invitación/recovery
   const hash = new URLSearchParams(window.location.hash.slice(1));
   const hashToken = hash.get('access_token');
   const hashType = hash.get('type');
@@ -1280,7 +1348,6 @@ async function establecerPassword(accessToken) {
     return;
   }
 
-  // Arranque normal
   if (TOKEN) {
     api('mi_perfil').then(({ data }) => { PERFIL = data; mostrarApp(); }).catch(() => {
       sessionStorage.removeItem('vl_admin_token');
