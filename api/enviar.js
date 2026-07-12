@@ -1,10 +1,14 @@
 // ═══════════════════════════════════════════════════════════════════
 // VACÍO LLENO — Función serverless universal para formularios
 // ═══════════════════════════════════════════════════════════════════
-// Recibe los envíos de los 3 formularios del sitio, los guarda en
+// Recibe los envíos de los formularios del sitio, los guarda en
 // Google Sheets vía webhook de Apps Script, y envía dos emails con
 // Resend: uno de notificación a hola@vaciolleno.org y otro de
 // respuesta automática al usuario.
+//
+// Para el tipo 'resena', ADEMÁS guarda directamente en la tabla
+// resenas de Supabase con publicada=false (queda pendiente de
+// moderación en el panel).
 // ═══════════════════════════════════════════════════════════════════
 
 import { Resend } from 'resend';
@@ -35,6 +39,11 @@ const CONFIG = {
     replyTo: 'hola@vaciolleno.org',
     notificationSubject: '✉️ Nuevo mensaje de contacto',
   },
+  resena: {
+    subject: 'Gracias por compartir tu experiencia — Vacío Lleno',
+    replyTo: 'hola@vaciolleno.org',
+    notificationSubject: '⭐ Nueva reseña pendiente de moderación',
+  },
 };
 
 const REMITENTE = 'Vacío Lleno <hola@vaciolleno.org>';
@@ -62,6 +71,10 @@ export default async function handler(req, res) {
     if (!datos.nombre) {
       return res.status(400).json({ error: 'Falta el nombre' });
     }
+    // Validación específica de reseñas: se requiere el texto
+    if (tipo === 'resena' && !(datos.cita || datos.mensaje || datos.texto)) {
+      return res.status(400).json({ error: 'Falta el texto de la reseña' });
+    }
 
     const config = CONFIG[tipo];
 
@@ -82,6 +95,46 @@ export default async function handler(req, res) {
       } catch (sheetsErr) {
         // Si Sheets falla, seguimos con los emails; no bloqueamos al usuario
         console.error('Error guardando en Sheets:', sheetsErr);
+      }
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // 1b. Guardar reseñas en Supabase (pendiente de moderación)
+    // ─────────────────────────────────────────────────────────
+    if (tipo === 'resena') {
+      const supabaseUrl = process.env.SUPABASE_URL;
+      const serviceKey = process.env.SUPABASE_SERVICE_KEY;
+      if (supabaseUrl && serviceKey) {
+        try {
+          const cita = (datos.cita || datos.mensaje || datos.texto || '').trim().slice(0, 1000);
+          const tipoValidos = ['donante', 'voluntario', 'receptor', 'organizacion', 'otro'];
+          const autor_tipo = tipoValidos.includes(datos.tipo_perfil) ? datos.tipo_perfil : 'otro';
+          const resSupa = await fetch(`${supabaseUrl}/rest/v1/resenas`, {
+            method: 'POST',
+            headers: {
+              apikey: serviceKey,
+              Authorization: `Bearer ${serviceKey}`,
+              'Content-Type': 'application/json',
+              Prefer: 'return=minimal',
+            },
+            body: JSON.stringify({
+              cita,
+              autor_nombre: datos.nombre,
+              autor_tipo,
+              ciudad: datos.ciudad || null,
+              pais: datos.pais || null,
+              email: datos.email,
+              publicada: false,
+              destacada: false,
+            }),
+          });
+          if (!resSupa.ok) {
+            const err = await resSupa.text();
+            console.error('Supabase insert resena falló:', err);
+          }
+        } catch (supaErr) {
+          console.error('Error guardando reseña en Supabase:', supaErr);
+        }
       }
     }
 
@@ -128,6 +181,13 @@ function renderNotificacion(tipo, datos) {
     })
     .join('');
 
+  const banner = tipo === 'resena'
+    ? `<div style="background:#fff8e1;border-left:3px solid #c9a84c;padding:12px 16px;margin-bottom:16px;font-family:Arial,sans-serif;font-size:13px;color:#5c4a12;">
+         Esta reseña está <strong>pendiente de moderación</strong>. Entra al panel para publicarla o descartarla.
+         <br><a href="https://vaciolleno.org/admin.html" style="color:#0f1f3d;">Ir al panel de administración →</a>
+       </div>`
+    : '';
+
   return `<!DOCTYPE html>
 <html><body style="font-family:Arial,sans-serif;background:#f5f3ee;padding:24px;">
   <div style="max-width:600px;margin:0 auto;background:white;padding:32px;">
@@ -135,6 +195,7 @@ function renderNotificacion(tipo, datos) {
       Nuevo envío de formulario: <span style="text-transform:capitalize;">${tipo.replace('-', ' ')}</span>
     </h2>
     <p style="color:#666;font-size:13px;">Recibido el ${new Date().toLocaleString('es-ES', { timeZone: 'Europe/Madrid' })}</p>
+    ${banner}
     <table style="width:100%;border-collapse:collapse;margin-top:20px;">
       ${filas}
     </table>
@@ -228,12 +289,30 @@ function renderAutoresponder(tipo, datos) {
       <p class="sign-name">El equipo de Vacío Lleno</p>
       <p class="sign-role">Insurgencia intelectual · vaciolleno.org</p>
     `, 'contacto'),
+    resena: () => {
+      const citaOriginal = datos.cita || datos.mensaje || datos.texto || '';
+      return wrapper(`
+        <p class="salutation">Hola, ${nombre}.</p>
+        <p>Hemos recibido tu testimonio. Compartir tu experiencia con Vacío Lleno significa mucho — sirve para que otras personas conozcan el proyecto desde una voz real.</p>
+        <div class="highlight">
+          <p><strong>Tu reseña:</strong><br>
+          <em>"${escapeHtml(citaOriginal)}"</em></p>
+        </div>
+        <p>Antes de aparecer en la web pasa por una revisión rápida por parte del equipo. En los próximos <strong>2–3 días</strong> te avisaremos por email cuando quede publicada.</p>
+        <p>Mientras tanto, puedes ver testimonios de otras personas y el impacto acumulado del proyecto:</p>
+        <p><a href="https://vaciolleno.org/vaciolleno-impacto.html" class="btn">Ver impacto en vivo →</a></p>
+        <hr class="divider">
+        <p class="sign">Gracias de verdad,</p>
+        <p class="sign-name">El equipo de Vacío Lleno</p>
+        <p class="sign-role">Insurgencia intelectual · vaciolleno.org</p>
+      `, 'reseña');
+    },
   };
 
   return templates[tipo]();
 }
 
-// Envoltorio HTML común para las 4 plantillas
+// Envoltorio HTML común para las plantillas
 function wrapper(inner, formularioLabel) {
   return `<!DOCTYPE html>
 <html lang="es"><head><meta charset="UTF-8"></head>
