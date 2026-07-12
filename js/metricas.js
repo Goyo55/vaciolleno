@@ -63,6 +63,14 @@
     '#6c5ce7', '#fdcb6e'
   ];
 
+  const BANDERAS = {
+    'México':'🇲🇽','Colombia':'🇨🇴','Venezuela':'🇻🇪','Perú':'🇵🇪','Argentina':'🇦🇷',
+    'Chile':'🇨🇱','Ecuador':'🇪🇨','Cuba':'🇨🇺','Bolivia':'🇧🇴','Nicaragua':'🇳🇮',
+    'Paraguay':'🇵🇾','Guatemala':'🇬🇹','Honduras':'🇭🇳','El Salvador':'🇸🇻',
+    'Costa Rica':'🇨🇷','Panamá':'🇵🇦','Uruguay':'🇺🇾','R. Dominicana':'🇩🇴','Puerto Rico':'🇵🇷',
+    'España':'🇪🇸'
+  };
+
   function tiempoRelativo(fechaStr) {
     if (!fechaStr) return '';
     const diff = (Date.now() - new Date(fechaStr).getTime()) / 1000;
@@ -85,49 +93,14 @@
     return (p[0].charAt(0) + p[p.length - 1].charAt(0)).toUpperCase();
   }
 
-  // Mapa rápido país → bandera (mismo dataset que paises_config)
-  const BANDERAS = {
-    'México':'🇲🇽','Colombia':'🇨🇴','Venezuela':'🇻🇪','Perú':'🇵🇪','Argentina':'🇦🇷',
-    'Chile':'🇨🇱','Ecuador':'🇪🇨','Cuba':'🇨🇺','Bolivia':'🇧🇴','Nicaragua':'🇳🇮',
-    'Paraguay':'🇵🇾','Guatemala':'🇬🇹','Honduras':'🇭🇳','El Salvador':'🇸🇻',
-    'Costa Rica':'🇨🇷','Panamá':'🇵🇦','Uruguay':'🇺🇾','R. Dominicana':'🇩🇴','Puerto Rico':'🇵🇷',
-    'España':'🇪🇸'
-  };
+  // Emoji avatar según edad estimada (fallback si no hay foto)
+  function avatarEmoji(idx) {
+    const opts = ['👩‍🦳','👨‍💼','👩‍🎓','👨‍🎨','👩‍💻','👨‍🦱'];
+    return opts[idx % opts.length];
+  }
 
   // ═══ RENDERIZADORES ═══
 
-  function renderDeltas(m) {
-    const deltas = m.deltas_semana || {};
-    const hayReferencia = deltas.hay_referencia;
-
-    document.querySelectorAll('[data-delta]').forEach((el) => {
-      const clave = el.dataset.delta;
-      const formato = el.dataset.deltaFormato || 'numero';
-      const valor = deltas[clave];
-
-      // Si no hay snapshot de referencia (proyecto muy nuevo), mostrar señal viva
-      if (!hayReferencia) {
-        el.innerHTML = '<span style="opacity:0.5;">· nuevo esta semana</span>';
-        return;
-      }
-
-      if (valor === 0 || valor === undefined || valor === null) {
-        el.innerHTML = '&nbsp;';
-        return;
-      }
-
-      const signo = valor > 0 ? '↑' : '↓';
-      const abs = Math.abs(valor);
-      const fmt = formato === 'euros'
-        ? '€' + abs.toLocaleString('es-ES')
-        : abs.toLocaleString('es-ES');
-      const sufijo = ' esta semana';
-
-      el.innerHTML = `${signo} +${fmt}${sufijo}`;
-      el.style.color = valor > 0 ? 'var(--green)' : 'var(--red)';
-    });
-  }
-  
   function renderNumeros(m) {
     document.querySelectorAll('[data-metrica]').forEach((el) => {
       const clave = el.dataset.metrica;
@@ -139,6 +112,23 @@
       const enViewport = rect.top < window.innerHeight && rect.bottom > 0;
       if (enViewport) animarNumero(el, valor, formato);
       else el.textContent = (formateadores[formato] || formateadores.numero)(valor);
+    });
+  }
+
+  function renderDeltas(m) {
+    const deltas = m.deltas_semana || {};
+    const hayReferencia = deltas.hay_referencia;
+    document.querySelectorAll('[data-delta]').forEach((el) => {
+      const clave = el.dataset.delta;
+      const formato = el.dataset.deltaFormato || 'numero';
+      const valor = deltas[clave];
+      if (!hayReferencia) { el.innerHTML = '<span style="opacity:0.5;">· nuevo esta semana</span>'; return; }
+      if (valor === 0 || valor === undefined || valor === null) { el.innerHTML = '&nbsp;'; return; }
+      const signo = valor > 0 ? '↑' : '↓';
+      const abs = Math.abs(valor);
+      const fmt = formato === 'euros' ? '€' + abs.toLocaleString('es-ES') : abs.toLocaleString('es-ES');
+      el.innerHTML = `${signo} +${fmt} esta semana`;
+      el.style.color = valor > 0 ? 'var(--green)' : 'var(--red)';
     });
   }
 
@@ -317,6 +307,46 @@
     }).join('');
   }
 
+  // ═══ NUEVO: Sección "Quiénes ya están" en voluntarios ═══
+  function renderQuienesYaEstan(voluntarios) {
+    const cont = document.getElementById('profilesInline');
+    if (!cont) return;
+
+    // Placeholder final "Tú, aquí"
+    const tuTarjeta = `
+      <div class="profile-card" style="border:2px dashed rgba(28,28,46,0.12);background:transparent;">
+        <div class="profile-avatar" style="background:rgba(28,28,46,0.05);">?</div>
+        <div class="profile-info">
+          <div class="profile-name" style="color:rgba(28,28,46,0.3);">Tú, aquí</div>
+          <div class="profile-role">Tu rol · Tu ciudad · Tu disponibilidad</div>
+        </div>
+        <div class="profile-tag" style="background:rgba(28,28,46,0.04);color:rgba(28,28,46,0.25);">Pronto</div>
+      </div>`;
+
+    if (!voluntarios || voluntarios.length === 0) {
+      cont.innerHTML = tuTarjeta;
+      return;
+    }
+
+    const tarjetas = voluntarios.slice(0, 3).map((v, i) => {
+      const lugar = [v.ciudad, v.pais].filter(Boolean).join(' · ');
+      const avatar = v.foto_url
+        ? `<img src="${esc(v.foto_url)}" alt="${esc(v.nombre)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" onerror="this.replaceWith(document.createTextNode('${avatarEmoji(i)}'))">`
+        : avatarEmoji(i);
+      return `
+        <div class="profile-card${i === 0 ? ' active' : ''}">
+          <div class="profile-avatar">${avatar}</div>
+          <div class="profile-info">
+            <div class="profile-name">${esc(v.nombre)}</div>
+            <div class="profile-role">${esc(v.rol)}${lugar ? ' · ' + esc(lugar) : ''}</div>
+          </div>
+          <div class="profile-tag">${v.publicado === false ? 'Pausa' : 'Activo'}</div>
+        </div>`;
+    }).join('');
+
+    cont.innerHTML = tarjetas + tuTarjeta;
+  }
+
   function renderCategoriasCards(detalle) {
     detalle = detalle || {};
     document.querySelectorAll('[data-cat-books]').forEach((cont) => {
@@ -351,28 +381,19 @@
     });
   }
 
-  // ═══ NUEVO: RENDERIZAR TARJETAS DE ORGANIZACIONES ═══
   function renderOrganizaciones(orgs) {
     const cont = document.getElementById('orgsGrid');
     if (!cont) return;
-
     if (!orgs || orgs.length === 0) {
       cont.innerHTML = `
         <div class="orgs-empty">
           <div class="orgs-empty-icon">○</div>
-          <div class="orgs-empty-text">
-            La red está empezando a tejerse.<br>
-            <strong>Sé el primer nodo.</strong>
-          </div>
-          <p class="orgs-empty-sub">
-            Cuando una organización se une, aparece aquí con su perfil, país y tipo de distribución. Aún estamos en fase de contactos iniciales.
-          </p>
+          <div class="orgs-empty-text">La red está empezando a tejerse.<br><strong>Sé el primer nodo.</strong></div>
+          <p class="orgs-empty-sub">Cuando una organización se une, aparece aquí con su perfil, país y tipo de distribución. Aún estamos en fase de contactos iniciales.</p>
           <a href="mailto:hola@vaciolleno.org" class="orgs-empty-cta">Contactar →</a>
-        </div>
-      `;
+        </div>`;
       return;
     }
-
     cont.innerHTML = orgs.map(o => {
       const bandera = BANDERAS[o.pais] || '🏳️';
       const lugar = [o.ciudad, o.pais].filter(Boolean).join(', ');
@@ -390,7 +411,6 @@
     }).join('');
   }
 
-  // ═══ ORQUESTADOR ═══
   async function cargarTodo() {
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_metricas_publicas`, {
@@ -414,6 +434,7 @@
       renderLibrosPorPais(m.libros_por_pais);
       renderLibrosPorCategoria(m.libros_por_categoria);
       renderVoluntarios(m.voluntarios_publicados);
+      renderQuienesYaEstan(m.voluntarios_publicados);
       renderCategoriasCards(m.libros_por_categoria_detalle);
       renderOrganizaciones(m.organizaciones_publicadas);
     } catch (err) {
