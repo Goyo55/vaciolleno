@@ -1005,6 +1005,13 @@
       document.getElementById('bookForm').classList.toggle('active', type === 'book');
     }
 
+    // ═══ Al cargar, si viene con #libros o #dinero, activa la pestaña correspondiente ═══
+    (function leerAncla() {
+      const hash = window.location.hash;
+      if (hash === '#libros') switchTab('book');
+      else if (hash === '#dinero') switchTab('money');
+    })();
+
     // ============================================
     // FREQUENCY
     // ============================================

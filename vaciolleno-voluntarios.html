@@ -954,39 +954,8 @@
         <div class="hero-right-label">Quiénes ya están</div>
         <h2 class="hero-right-title">Personas de todas las edades.<br/>Una sola misión.</h2>
       </div>
-      <div class="profiles">
-        <div class="profile-card active">
-          <div class="profile-avatar">👩‍🦳</div>
-          <div class="profile-info">
-            <div class="profile-name">Carmen, 67 años</div>
-            <div class="profile-role">Clasificadora · Madrid · 3 mañanas/semana</div>
-          </div>
-          <div class="profile-tag">Activa</div>
-        </div>
-        <div class="profile-card">
-          <div class="profile-avatar">👨‍💼</div>
-          <div class="profile-info">
-            <div class="profile-name">Miguel, 34 años</div>
-            <div class="profile-role">Coordinador de envíos · Barcelona · Remoto</div>
-          </div>
-          <div class="profile-tag">Activo</div>
-        </div>
-        <div class="profile-card">
-          <div class="profile-avatar">👩‍🎓</div>
-          <div class="profile-info">
-            <div class="profile-name">Lucía, 22 años</div>
-            <div class="profile-role">Redes sociales · Valencia · Digital</div>
-          </div>
-          <div class="profile-tag">Activa</div>
-        </div>
-        <div class="profile-card" style="border:2px dashed rgba(28,28,46,0.12);background:transparent;">
-          <div class="profile-avatar" style="background:rgba(28,28,46,0.05);">?</div>
-          <div class="profile-info">
-            <div class="profile-name" style="color:rgba(28,28,46,0.3);">Tú, aquí</div>
-            <div class="profile-role">Tu rol · Tu ciudad · Tu disponibilidad</div>
-          </div>
-          <div class="profile-tag" style="background:rgba(28,28,46,0.04);color:rgba(28,28,46,0.25);">Pronto</div>
-        </div>
+      <div class="profiles" id="profilesInline">
+        <!-- Rellenado dinámicamente por metricas.js con voluntarios reales publicados + placeholder "Tú, aquí" -->
       </div>
     </div>
   </section>
@@ -994,19 +963,19 @@
   <!-- COUNTER -->
   <div class="counter-strip">
     <div class="counter-item">
-      <div class="counter-num">23</div>
+      <div class="counter-num" data-metrica="total_voluntarios">0</div>
       <div class="counter-label">Voluntarios activos</div>
     </div>
     <div class="counter-item">
-      <div class="counter-num">8</div>
-      <div class="counter-label">Ciudades en España</div>
+      <div class="counter-num" data-metrica="total_ciudades_voluntarios">0</div>
+      <div class="counter-label">Ciudades del equipo</div>
     </div>
     <div class="counter-item">
-      <div class="counter-num">340h</div>
+      <div class="counter-num">—</div>
       <div class="counter-label">Horas donadas este mes</div>
     </div>
     <div class="counter-item">
-      <div class="counter-num">847</div>
+      <div class="counter-num" data-metrica="total_libros">0</div>
       <div class="counter-label">Libros procesados</div>
     </div>
   </div>
@@ -1073,7 +1042,7 @@
       </div>
 
       <div class="roles-grid">
-        <div class="role-card reveal">
+        <div class="role-card reveal" data-rol="clasificador" onclick="seleccionarRolYScroll('clasificador')" style="cursor:pointer;">
           <div class="role-number">01</div>
           <span class="role-emoji">📦</span>
           <div class="role-title">Clasificador/a</div>
@@ -1087,7 +1056,7 @@
           <span class="role-time">Presencial · 2-4h/semana</span>
         </div>
 
-        <div class="role-card reveal d1">
+        <div class="role-card reveal d1" data-rol="envios" onclick="seleccionarRolYScroll('envios')" style="cursor:pointer;">
           <div class="role-number">02</div>
           <span class="role-emoji">✈️</span>
           <div class="role-title">Coordinador/a de envíos</div>
@@ -1101,7 +1070,7 @@
           <span class="role-time">Remoto · 3-5h/semana</span>
         </div>
 
-        <div class="role-card reveal d2">
+        <div class="role-card reveal d2" data-rol="comunicacion" onclick="seleccionarRolYScroll('comunicacion')" style="cursor:pointer;">
           <div class="role-number">03</div>
           <span class="role-emoji">💬</span>
           <div class="role-title">Comunicación digital</div>
@@ -1115,7 +1084,7 @@
           <span class="role-time">Remoto · Flexible</span>
         </div>
 
-        <div class="role-card reveal">
+        <div class="role-card reveal" data-rol="embajador" onclick="seleccionarRolYScroll('embajador')" style="cursor:pointer;">
           <div class="role-number">04</div>
           <span class="role-emoji">🤝</span>
           <div class="role-title">Embajador/a local</div>
@@ -1129,7 +1098,7 @@
           <span class="role-time">Híbrido · 2-3h/semana</span>
         </div>
 
-        <div class="role-card reveal d1">
+        <div class="role-card reveal d1" data-rol="tecnico" onclick="seleccionarRolYScroll('tecnico')" style="cursor:pointer;">
           <div class="role-number">05</div>
           <span class="role-emoji">💻</span>
           <div class="role-title">Soporte técnico</div>
@@ -1143,7 +1112,7 @@
           <span class="role-time">Remoto · Proyecto a proyecto</span>
         </div>
 
-        <div class="role-card reveal d2">
+        <div class="role-card reveal d2" data-rol="receptor" onclick="seleccionarRolYScroll('receptor')" style="cursor:pointer;">
           <div class="role-number">06</div>
           <span class="role-emoji">🌍</span>
           <div class="role-title">Receptor/a en Latinoamérica</div>
@@ -1431,6 +1400,35 @@
       entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
     }, { threshold: 0.1 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ═══ Click en role-card: preselecciona rol y hace scroll al formulario ═══
+    function seleccionarRolYScroll(rol) {
+      const check = document.querySelector('.role-check input[value="' + rol + '"]');
+      if (check) {
+        check.checked = true;
+        // Trigger cambio visual del label
+        const label = check.closest('.role-check');
+        if (label) label.classList.add('selected');
+      }
+      const form = document.getElementById('form');
+      if (form) form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // ═══ Al cargar: si viene con #form o ?rol=X, actuar ═══
+    (function manejarAnclas() {
+      const hash = window.location.hash;
+      const params = new URLSearchParams(window.location.search);
+      const rolParam = params.get('rol');
+
+      if (rolParam) {
+        setTimeout(() => seleccionarRolYScroll(rolParam), 200);
+      } else if (hash === '#form') {
+        setTimeout(() => {
+          const form = document.getElementById('form');
+          if (form) form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 200);
+      }
+    })();
 
     // AVAILABILITY TOGGLE
     function toggleAvail(el) { el.classList.toggle('selected'); }
