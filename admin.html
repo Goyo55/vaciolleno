@@ -6,6 +6,8 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Panel de administración · Vacío Lleno</title>
 <link rel="icon" href="favicon.png">
+<!-- Marked.js para renderizar Markdown en el editor del blog -->
+<script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
 
 <style>
   :root {
@@ -171,12 +173,156 @@
   .perm-badge { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.7); padding: 0.15rem 0.5rem; font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.05em; text-transform: uppercase; }
   .perm-badge.admin { background: rgba(201,168,76,0.2); color: var(--gold); }
 
+  /* ═══ BLOG EDITOR ═══ */
+  .blog-editor {
+    background: rgba(0,0,0,0.15);
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 2rem;
+    margin-top: 1rem;
+  }
+  .blog-editor-toolbar {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;
+    padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .blog-editor-title { font-family: var(--serif); font-size: 1.3rem; margin: 0; }
+  .blog-editor-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .blog-editor .form-row-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1rem; }
+  .blog-slug {
+    font-family: var(--mono); font-size: 0.75rem;
+    color: rgba(255,255,255,0.4); margin-top: 0.4rem;
+    padding: 0.4rem 0.6rem; background: rgba(0,0,0,0.25);
+    border-left: 2px solid var(--gold);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .blog-slug-input {
+    background: transparent; border: none; color: var(--gold);
+    font-family: var(--mono); font-size: 0.75rem; flex: 1;
+    padding: 0; margin: 0; outline: none;
+  }
+  .blog-slug-preview { color: rgba(255,255,255,0.5); }
+
+  /* Chips de etiquetas */
+  .tags-container {
+    background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.1);
+    padding: 0.5rem; min-height: 42px; display: flex; flex-wrap: wrap; gap: 0.4rem;
+    align-items: center;
+  }
+  .tags-container:focus-within { border-color: var(--gold); }
+  .tag-chip {
+    background: rgba(201,168,76,0.15); color: var(--gold);
+    padding: 0.25rem 0.6rem; font-family: var(--mono); font-size: 0.7rem;
+    letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 0.4rem;
+    border: 1px solid rgba(201,168,76,0.3);
+  }
+  .tag-chip button {
+    background: none; border: none; color: var(--gold); cursor: pointer;
+    font-size: 1rem; line-height: 1; padding: 0; opacity: 0.6;
+  }
+  .tag-chip button:hover { opacity: 1; }
+  .tags-input {
+    flex: 1; min-width: 120px; background: transparent; border: none;
+    color: var(--white); font-family: var(--sans); font-size: 0.85rem;
+    padding: 0.3rem 0.4rem; outline: none;
+  }
+  .tag-suggestions {
+    position: absolute; background: var(--navy-mid);
+    border: 1px solid rgba(255,255,255,0.1); max-height: 200px; overflow-y: auto;
+    z-index: 10; min-width: 200px;
+  }
+  .tag-suggestion {
+    padding: 0.6rem 1rem; cursor: pointer; font-family: var(--mono);
+    font-size: 0.75rem; color: rgba(255,255,255,0.7);
+  }
+  .tag-suggestion:hover { background: rgba(255,255,255,0.05); color: var(--gold); }
+
+  /* Editor markdown de dos columnas */
+  .markdown-editor {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    min-height: 500px;
+  }
+  .markdown-editor > * { background: var(--navy-mid); padding: 1.25rem; }
+  .markdown-textarea {
+    width: 100%; border: none; background: transparent; color: var(--white);
+    font-family: 'DM Mono', monospace; font-size: 0.85rem; line-height: 1.7;
+    resize: none; outline: none; min-height: 480px;
+  }
+  .markdown-preview {
+    font-family: var(--sans); font-size: 0.95rem; line-height: 1.7;
+    color: rgba(255,255,255,0.85); overflow-y: auto; max-height: 60vh;
+  }
+  .markdown-preview h1, .markdown-preview h2, .markdown-preview h3 {
+    font-family: var(--serif); margin: 1.5rem 0 0.75rem; color: var(--white);
+  }
+  .markdown-preview h1 { font-size: 1.8rem; }
+  .markdown-preview h2 { font-size: 1.4rem; }
+  .markdown-preview h3 { font-size: 1.15rem; }
+  .markdown-preview p { margin: 0.75rem 0; }
+  .markdown-preview a { color: var(--gold); }
+  .markdown-preview blockquote {
+    border-left: 3px solid var(--gold); padding-left: 1rem;
+    color: rgba(255,255,255,0.7); font-style: italic; margin: 1rem 0;
+  }
+  .markdown-preview code {
+    background: rgba(0,0,0,0.35); padding: 0.15rem 0.4rem;
+    font-family: var(--mono); font-size: 0.85em; color: var(--gold);
+  }
+  .markdown-preview pre {
+    background: rgba(0,0,0,0.35); padding: 1rem; overflow-x: auto; margin: 1rem 0;
+  }
+  .markdown-preview pre code { background: none; padding: 0; color: rgba(255,255,255,0.85); }
+  .markdown-preview ul, .markdown-preview ol { padding-left: 1.5rem; margin: 0.75rem 0; }
+  .markdown-preview img { max-width: 100%; height: auto; margin: 1rem 0; }
+  .markdown-preview hr { border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 2rem 0; }
+  .editor-label {
+    font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.15em;
+    text-transform: uppercase; color: rgba(255,255,255,0.4);
+    padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 0.75rem;
+  }
+  .editor-hint {
+    font-family: var(--mono); font-size: 0.65rem;
+    color: rgba(255,255,255,0.35); margin-top: 0.4rem; line-height: 1.5;
+  }
+
+  /* Subida de imagen destacada */
+  .imagen-destacada-box {
+    display: grid; grid-template-columns: 200px 1fr; gap: 1rem;
+    background: rgba(0,0,0,0.15); padding: 1rem;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .imagen-destacada-preview {
+    width: 200px; height: 140px; background: rgba(0,0,0,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 0.65rem;
+    color: rgba(255,255,255,0.3); text-align: center;
+    background-size: cover; background-position: center;
+    border: 1px dashed rgba(255,255,255,0.1);
+  }
+  .imagen-destacada-controls { display: flex; flex-direction: column; gap: 0.5rem; }
+  .imagen-destacada-controls input[type="url"] {
+    width: 100%; padding: 0.5rem 0.7rem;
+    background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.1);
+    color: var(--white); font-family: var(--mono); font-size: 0.75rem;
+  }
+  .upload-btn-wrap {
+    position: relative; overflow: hidden; display: inline-block;
+  }
+  .upload-btn-wrap input[type="file"] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer;
+  }
+
   @media (max-width: 900px) {
     .app { grid-template-columns: 1fr; }
     .sidebar { position: static; height: auto; }
     .main { padding: 1.5rem; }
     .form-row { grid-template-columns: 1fr; }
     .perm-grid { grid-template-columns: 1fr; }
+    .markdown-editor { grid-template-columns: 1fr; }
+    .blog-editor .form-row-3 { grid-template-columns: 1fr; }
+    .imagen-destacada-box { grid-template-columns: 1fr; }
+    .imagen-destacada-preview { width: 100%; }
   }
 </style>
 </head>
@@ -209,6 +355,7 @@
       <li data-seccion="voluntarios" data-permiso="voluntarios">Voluntarios</li>
       <li data-seccion="libros" data-permiso="libros">Libros</li>
       <li data-seccion="resenas" data-permiso="resenas">Reseñas <span class="nav-badge" id="badgeResenas" style="display:none;"></span></li>
+      <li data-seccion="blog" data-permiso="blog">Blog <span class="nav-badge" id="badgeBlog" style="display:none;"></span></li>
       <li data-seccion="organizaciones" data-permiso="organizaciones">Organizaciones</li>
       <li data-seccion="wishlist" data-permiso="libros">Wishlist</li>
       <li data-seccion="usuarios" data-permiso="admin">Usuarios</li>
@@ -243,6 +390,9 @@ let TOKEN = sessionStorage.getItem('vl_admin_token') || '';
 let PERFIL = null;
 let filtroFormularios = '';
 let filtroResenas = 'pendientes'; // pendientes | publicadas | todas
+let filtroBlog = ''; // '' | borrador | publicado
+let busquedaBlog = '';
+let entradaEditando = null; // entrada del blog en edición actual
 
 // ═══════════════════════════════════════════════════════════════════
 // COMUNICACIÓN CON /api/admin
@@ -380,6 +530,9 @@ async function cargarResumen() {
     const badgeR = document.getElementById('badgeResenas');
     if (data.resenas_pendientes > 0) { badgeR.textContent = data.resenas_pendientes; badgeR.style.display = 'inline-block'; }
     else badgeR.style.display = 'none';
+    const badgeB = document.getElementById('badgeBlog');
+    if (data.blog_borradores > 0) { badgeB.textContent = data.blog_borradores; badgeB.style.display = 'inline-block'; }
+    else badgeB.style.display = 'none';
 
     document.getElementById('main').innerHTML = `
       <h1 class="page-title">Bienvenido/a, ${esc(PERFIL.nombre || PERFIL.email.split('@')[0])}</h1>
@@ -393,8 +546,13 @@ async function cargarResumen() {
           <div class="label">Reseñas por moderar</div>
           <div class="value">${data.resenas_pendientes}</div>
         </div>
+        <div class="summary-card ${data.blog_borradores > 0 ? 'alert' : ''}">
+          <div class="label">Borradores del blog</div>
+          <div class="value">${data.blog_borradores || 0}</div>
+        </div>
         <div class="summary-card"><div class="label">Voluntarios publicados</div><div class="value">${data.voluntarios_publicados}</div></div>
         <div class="summary-card"><div class="label">Libros total</div><div class="value">${data.libros_total}</div></div>
+        <div class="summary-card"><div class="label">Entradas publicadas</div><div class="value">${data.blog_publicadas || 0}</div></div>
         <div class="summary-card"><div class="label">Reseñas publicadas</div><div class="value">${(data.resenas_total || 0) - (data.resenas_pendientes || 0)}</div></div>
         <div class="summary-card"><div class="label">Donaciones confirmadas</div><div class="value">${data.donaciones_confirmadas}</div></div>
       </div>
@@ -1121,6 +1279,403 @@ async function eliminarLibroDeseado(id) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
+// SECCIÓN: BLOG
+// ═══════════════════════════════════════════════════════════════════
+const BLOG_ESTADOS = { borrador:'Borrador', publicado:'Publicado', programado:'Programado' };
+
+function filtrarBlog(estado) { filtroBlog = estado; cargarBlog(); }
+
+async function cargarBlog() {
+  document.getElementById('main').innerHTML = '<div class="loading">Cargando entradas...</div>';
+  try {
+    const args = {};
+    if (filtroBlog) args.estado = filtroBlog;
+    if (busquedaBlog) args.busqueda = busquedaBlog;
+    const { data } = await api('blog_listar', args);
+
+    const filtros = [
+      ['', 'Todas'],
+      ['borrador', 'Borradores'],
+      ['publicado', 'Publicadas'],
+      ['programado', 'Programadas'],
+    ].map(([k, l]) => `<button class="btn ghost sm ${filtroBlog === k ? 'active' : ''}" onclick="filtrarBlog('${k}')">${l}</button>`).join('');
+
+    document.getElementById('main').innerHTML = `
+      <h1 class="page-title">Blog</h1>
+      <div class="page-subtitle">Ensayos, historias y actualizaciones del proyecto</div>
+      <div class="toolbar">
+        <div class="filters">${filtros}</div>
+        <div style="display:flex;gap:0.5rem;align-items:center;">
+          <input type="text" id="busquedaBlog" placeholder="Buscar por título..." value="${esc(busquedaBlog)}" 
+            style="padding:0.5rem 0.8rem;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.1);color:var(--white);font-family:var(--sans);font-size:0.85rem;width:220px;">
+          <button class="btn" onclick="editarEntrada(null)">+ Nueva entrada</button>
+        </div>
+      </div>
+      ${data.length === 0 ? '<div class="empty">No hay entradas que mostrar en este filtro.</div>' : `
+      <table class="table">
+        <thead><tr><th>Título</th><th>Autor</th><th>Etiquetas</th><th>Estado</th><th>Publicada</th><th>Vistas</th><th></th></tr></thead>
+        <tbody>${data.map(e => `
+          <tr class="${e.estado === 'borrador' ? 'pendiente' : ''}">
+            <td style="max-width:340px;">
+              <strong>${esc(e.titulo)}</strong>${e.destacada ? ' <span style="color:var(--gold);">★</span>' : ''}
+              ${e.resumen ? '<small>' + esc(e.resumen.slice(0, 100)) + (e.resumen.length > 100 ? '...' : '') + '</small>' : ''}
+              <small style="color:rgba(201,168,76,0.6);">/${esc(e.slug)}</small>
+            </td>
+            <td>${esc(e.autor_nombre || '—')}</td>
+            <td>${(e.etiquetas || []).map(t => `<span class="perm-badge">${esc(t)}</span>`).join(' ') || '—'}</td>
+            <td><span class="badge ${e.estado === 'publicado' ? 'aprobado' : e.estado === 'borrador' ? 'pendiente' : 'en_contacto'}">${BLOG_ESTADOS[e.estado] || e.estado}</span></td>
+            <td style="font-family:var(--mono);font-size:0.7rem;color:rgba(255,255,255,0.5);">${e.fecha_publicacion ? fecha(e.fecha_publicacion) : '—'}</td>
+            <td style="font-family:var(--mono);color:rgba(255,255,255,0.5);">${e.vistas || 0}</td>
+            <td style="white-space:nowrap;">
+              ${e.estado !== 'publicado' 
+                ? `<button class="btn sm success" onclick='publicarEntrada(${JSON.stringify(e.id)})' title="Publicar ahora">✓</button>` 
+                : `<button class="btn sm ghost" onclick='despublicarEntrada(${JSON.stringify(e.id)})' title="Volver a borrador">✕</button>`}
+              <button class="btn sm ghost" onclick='editarEntrada(${JSON.stringify(e.id)})'>Editar</button>
+              ${e.estado === 'publicado' ? `<a href="/vaciolleno-blog-entrada.html?slug=${esc(e.slug)}" target="_blank" class="btn sm ghost" style="text-decoration:none;">Ver</a>` : ''}
+              <button class="btn sm danger" onclick='eliminarEntrada(${JSON.stringify(e.id)})' title="Eliminar">×</button>
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`}
+    `;
+
+    // Buscador con debounce
+    const buscador = document.getElementById('busquedaBlog');
+    if (buscador) {
+      buscador.addEventListener('input', (ev) => {
+        clearTimeout(window._blogSearchTimer);
+        window._blogSearchTimer = setTimeout(() => {
+          busquedaBlog = ev.target.value.trim();
+          cargarBlog();
+        }, 400);
+      });
+    }
+  } catch (e) { document.getElementById('main').innerHTML = `<div class="msg error">${e.message}</div>`; }
+}
+
+async function publicarEntrada(id) {
+  try { await api('blog_publicar', { id }); cargarBlog(); mostrarMsg('Entrada publicada', 'ok'); }
+  catch (e) { mostrarMsg(e.message, 'error'); }
+}
+
+async function despublicarEntrada(id) {
+  if (!confirm('¿Volver esta entrada a borrador? Dejará de estar visible en la web.')) return;
+  try { await api('blog_despublicar', { id }); cargarBlog(); mostrarMsg('Entrada despublicada', 'ok'); }
+  catch (e) { mostrarMsg(e.message, 'error'); }
+}
+
+async function eliminarEntrada(id) {
+  if (!confirm('¿Eliminar esta entrada permanentemente? Esta acción no se puede deshacer.')) return;
+  try { await api('blog_eliminar', { id }); cargarBlog(); mostrarMsg('Entrada eliminada', 'ok'); }
+  catch (e) { mostrarMsg(e.message, 'error'); }
+}
+
+// ─── EDITOR DE ENTRADA (pantalla completa dentro de main) ───
+async function editarEntrada(id) {
+  let e = {
+    id: null, slug: '', titulo: '', resumen: '', contenido: '', etiquetas: [],
+    imagen_url: '', imagen_alt: '', autor_nombre: PERFIL.nombre || PERFIL.email.split('@')[0],
+    estado: 'borrador', fecha_publicacion: null, destacada: false,
+  };
+  if (id) {
+    const { data } = await api('blog_obtener', { id });
+    e = data;
+    e.etiquetas = e.etiquetas || [];
+  }
+  entradaEditando = { ...e };
+
+  const fechaVal = e.fecha_publicacion ? e.fecha_publicacion.slice(0, 16) : '';
+
+  document.getElementById('main').innerHTML = `
+    <div class="blog-editor">
+      <div class="blog-editor-toolbar">
+        <h2 class="blog-editor-title">${id ? 'Editar entrada' : 'Nueva entrada del blog'}</h2>
+        <div class="blog-editor-actions">
+          <button class="btn ghost" onclick="cargarBlog()">← Volver al listado</button>
+          <button class="btn ghost" onclick="guardarEntrada(false)">Guardar borrador</button>
+          <button class="btn success" onclick="guardarEntrada(true)">${e.estado === 'publicado' ? 'Actualizar publicación' : 'Publicar'}</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Título</label>
+        <input type="text" id="bTitulo" value="${esc(e.titulo)}" placeholder="Un título que enganche" oninput="actualizarSlugAuto()">
+        <div class="blog-slug">
+          <span>URL:</span>
+          <span class="blog-slug-preview">vaciolleno.org/blog/</span>
+          <input type="text" id="bSlug" class="blog-slug-input" value="${esc(e.slug)}" placeholder="mi-entrada">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Resumen (aparece en el listado)</label>
+        <textarea id="bResumen" placeholder="Una o dos frases que despierten curiosidad. Se muestra en el listado del blog y en las redes.">${esc(e.resumen || '')}</textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Etiquetas <span style="color:rgba(255,255,255,0.4);text-transform:none;letter-spacing:0;font-family:var(--sans);font-size:0.75rem;">(escribe y pulsa Enter para añadir)</span></label>
+        <div class="tags-container" id="tagsContainer" onclick="document.getElementById('tagsInput').focus()">
+          ${(e.etiquetas || []).map(t => renderTagChip(t)).join('')}
+          <input type="text" id="tagsInput" class="tags-input" placeholder="ej. filosofía" 
+            onkeydown="handleTagKeydown(event)" oninput="mostrarSugerenciasTags(event)">
+        </div>
+        <div class="editor-hint">Usa palabras cortas y consistentes. Las etiquetas ayudan a los lectores a encontrar contenido relacionado.</div>
+      </div>
+
+      <div class="form-group">
+        <label>Imagen destacada</label>
+        <div class="imagen-destacada-box">
+          <div class="imagen-destacada-preview" id="imagenPreview" 
+            style="${e.imagen_url ? `background-image:url('${esc(e.imagen_url)}');` : ''}">
+            ${e.imagen_url ? '' : 'Sin imagen'}
+          </div>
+          <div class="imagen-destacada-controls">
+            <input type="url" id="bImagenUrl" value="${esc(e.imagen_url || '')}" 
+              placeholder="URL de imagen externa" oninput="actualizarPreviewImagen()">
+            <div style="display:flex;gap:0.5rem;">
+              <label class="btn ghost sm upload-btn-wrap">
+                Subir imagen
+                <input type="file" accept="image/*" onchange="subirImagenDestacada(event)">
+              </label>
+              ${e.imagen_url ? '<button class="btn ghost sm" onclick="quitarImagenDestacada()">Quitar</button>' : ''}
+            </div>
+            <input type="text" id="bImagenAlt" value="${esc(e.imagen_alt || '')}" 
+              placeholder="Texto alternativo (accesibilidad)"
+              style="padding:0.5rem 0.7rem;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.1);color:var(--white);font-family:var(--sans);font-size:0.8rem;">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row-3">
+        <div class="form-group"><label>Autor a mostrar</label>
+          <input type="text" id="bAutor" value="${esc(e.autor_nombre || '')}">
+        </div>
+        <div class="form-group"><label>Estado</label>
+          <select id="bEstado">
+            <option value="borrador" ${e.estado === 'borrador' ? 'selected' : ''}>Borrador</option>
+            <option value="publicado" ${e.estado === 'publicado' ? 'selected' : ''}>Publicado</option>
+            <option value="programado" ${e.estado === 'programado' ? 'selected' : ''}>Programado</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Fecha publicación</label>
+          <input type="datetime-local" id="bFechaPub" value="${fechaVal}">
+        </div>
+      </div>
+
+      <div class="checkbox-wrap">
+        <input type="checkbox" id="bDestacada" ${e.destacada ? 'checked' : ''}>
+        <label for="bDestacada" style="margin:0;text-transform:none;letter-spacing:0;font-family:var(--sans);font-size:0.9rem;color:rgba(255,255,255,0.85);">
+          Destacada (aparece primera en el listado)
+        </label>
+      </div>
+
+      <div class="form-group" style="margin-top:1.5rem;">
+        <label>Contenido</label>
+        <div class="markdown-editor">
+          <div>
+            <div class="editor-label">Markdown</div>
+            <textarea id="bContenido" class="markdown-textarea" oninput="actualizarPreview()" 
+              placeholder="# Un título\n\nEmpieza a escribir tu entrada aquí. Usa Markdown:\n\n**negrita**, *cursiva*, [enlaces](https://example.com)\n\n## Subtítulo\n\n- Listas con guiones\n- Otro elemento\n\n> Una cita destacada\n\n\`\`\`\nBloques de código\n\`\`\`\n\n![Imagen](https://url-de-imagen.jpg)">${esc(e.contenido || '')}</textarea>
+          </div>
+          <div>
+            <div class="editor-label">Vista previa</div>
+            <div id="markdownPreview" class="markdown-preview"></div>
+          </div>
+        </div>
+        <div class="editor-hint">
+          <a href="https://www.markdownguide.org/basic-syntax/" target="_blank" style="color:var(--gold);">Guía rápida de Markdown ↗</a>
+          · Autoguardado local en curso.
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Inicializar preview y focus
+  actualizarPreview();
+  setTimeout(() => document.getElementById('bTitulo').focus(), 100);
+}
+
+// Genera slug automáticamente al escribir el título (solo si el slug está vacío o es una entrada nueva)
+async function actualizarSlugAuto() {
+  const titulo = document.getElementById('bTitulo').value.trim();
+  const slugInput = document.getElementById('bSlug');
+  // Solo autogenera si estamos creando una entrada nueva y el usuario no ha editado el slug manualmente
+  if (entradaEditando && entradaEditando.id) return; // No autogenerar si estamos editando
+  if (slugInput.dataset.manual === '1') return;
+  if (!titulo) { slugInput.value = ''; return; }
+  clearTimeout(window._slugTimer);
+  window._slugTimer = setTimeout(() => {
+    // Simple slug local (el server lo hará único al guardar)
+    const simple = titulo.toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
+    slugInput.value = simple;
+  }, 300);
+}
+
+// Detecta si el usuario edita el slug manualmente
+document.addEventListener('input', (e) => {
+  if (e.target && e.target.id === 'bSlug') e.target.dataset.manual = '1';
+});
+
+// Renderiza un chip de etiqueta
+function renderTagChip(tag) {
+  return `<span class="tag-chip" data-tag="${esc(tag)}">${esc(tag)}<button onclick="quitarTag('${esc(tag)}')">×</button></span>`;
+}
+
+function handleTagKeydown(e) {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    const valor = e.target.value.trim().toLowerCase().replace(/,/g, '');
+    if (valor) añadirTag(valor);
+    e.target.value = '';
+  } else if (e.key === 'Backspace' && e.target.value === '') {
+    // Quitar la última etiqueta
+    const chips = document.querySelectorAll('.tag-chip');
+    if (chips.length > 0) chips[chips.length - 1].remove();
+  }
+}
+
+function añadirTag(tag) {
+  const container = document.getElementById('tagsContainer');
+  const existentes = Array.from(container.querySelectorAll('.tag-chip')).map(c => c.dataset.tag);
+  if (existentes.includes(tag)) return;
+  const input = document.getElementById('tagsInput');
+  const html = renderTagChip(tag);
+  input.insertAdjacentHTML('beforebegin', html);
+}
+
+function quitarTag(tag) {
+  const chip = document.querySelector(`.tag-chip[data-tag="${tag.replace(/"/g, '\\"')}"]`);
+  if (chip) chip.remove();
+}
+
+function obtenerTags() {
+  return Array.from(document.querySelectorAll('.tag-chip')).map(c => c.dataset.tag);
+}
+
+// Sugerencias de etiquetas ya usadas (autocompletar simple)
+let tagsCache = null;
+async function mostrarSugerenciasTags(e) {
+  // Cargar cache la primera vez
+  if (tagsCache === null) {
+    try { const { data } = await api('blog_etiquetas_todas'); tagsCache = data || []; }
+    catch (_) { tagsCache = []; }
+  }
+  // TODO: mostrar dropdown con sugerencias (por simplicidad no lo hacemos ahora)
+}
+
+// Renderiza el preview Markdown (usa marked cargado desde CDN)
+function actualizarPreview() {
+  const md = document.getElementById('bContenido').value;
+  const preview = document.getElementById('markdownPreview');
+  if (!preview) return;
+  if (typeof marked === 'undefined') {
+    preview.innerHTML = '<em style="color:rgba(255,255,255,0.4);">Cargando renderer de Markdown...</em>';
+    return;
+  }
+  preview.innerHTML = marked.parse(md || '_Empieza a escribir para ver el preview aquí._');
+}
+
+// Actualiza el preview de imagen destacada al cambiar la URL
+function actualizarPreviewImagen() {
+  const url = document.getElementById('bImagenUrl').value.trim();
+  const preview = document.getElementById('imagenPreview');
+  if (url) {
+    preview.style.backgroundImage = `url('${url}')`;
+    preview.textContent = '';
+  } else {
+    preview.style.backgroundImage = '';
+    preview.textContent = 'Sin imagen';
+  }
+}
+
+function quitarImagenDestacada() {
+  document.getElementById('bImagenUrl').value = '';
+  document.getElementById('bImagenAlt').value = '';
+  actualizarPreviewImagen();
+}
+
+// Subir imagen directamente a Supabase Storage (bucket blog-imagenes)
+async function subirImagenDestacada(ev) {
+  const file = ev.target.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { mostrarMsg('La imagen no puede pesar más de 5 MB', 'error'); return; }
+  const preview = document.getElementById('imagenPreview');
+  preview.textContent = 'Subiendo...';
+
+  // Nombre único: timestamp + slug del nombre original
+  const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+  const nombreLimpio = file.name.split('.').slice(0, -1).join('.')
+    .toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-').slice(0, 40);
+  const filename = `${Date.now()}-${nombreLimpio || 'img'}.${ext}`;
+
+  try {
+    const url = `${SUPABASE_URL}/storage/v1/object/blog-imagenes/${filename}`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+        apikey: SUPABASE_ANON_KEY,
+        'Content-Type': file.type || 'image/jpeg',
+        'x-upsert': 'false',
+      },
+      body: file,
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`Subida falló: ${res.status} ${errText}`);
+    }
+    const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/blog-imagenes/${filename}`;
+    document.getElementById('bImagenUrl').value = publicUrl;
+    actualizarPreviewImagen();
+    mostrarMsg('Imagen subida', 'ok');
+  } catch (err) {
+    console.error(err);
+    mostrarMsg('Error subiendo la imagen: ' + err.message, 'error');
+    actualizarPreviewImagen();
+  } finally {
+    ev.target.value = ''; // reset input
+  }
+}
+
+async function guardarEntrada(publicar) {
+  const datos = {
+    slug: document.getElementById('bSlug').value.trim() || null,
+    titulo: document.getElementById('bTitulo').value.trim(),
+    resumen: document.getElementById('bResumen').value.trim() || null,
+    contenido: document.getElementById('bContenido').value,
+    etiquetas: obtenerTags(),
+    imagen_url: document.getElementById('bImagenUrl').value.trim() || null,
+    imagen_alt: document.getElementById('bImagenAlt').value.trim() || null,
+    autor_nombre: document.getElementById('bAutor').value.trim() || null,
+    estado: publicar ? 'publicado' : document.getElementById('bEstado').value,
+    destacada: document.getElementById('bDestacada').checked,
+  };
+  const fechaInput = document.getElementById('bFechaPub').value;
+  if (fechaInput) datos.fecha_publicacion = new Date(fechaInput).toISOString();
+  else if (publicar && !fechaInput) datos.fecha_publicacion = new Date().toISOString();
+
+  if (!datos.titulo) { mostrarMsg('El título es obligatorio', 'error'); return; }
+  if (!datos.contenido || datos.contenido.trim().length < 20) {
+    mostrarMsg('El contenido debe tener al menos 20 caracteres', 'error'); return;
+  }
+
+  try {
+    if (entradaEditando && entradaEditando.id) {
+      await api('blog_actualizar', { id: entradaEditando.id, cambios: datos });
+      mostrarMsg(publicar ? 'Entrada publicada' : 'Entrada guardada', 'ok');
+    } else {
+      await api('blog_crear', datos);
+      mostrarMsg(publicar ? 'Entrada creada y publicada' : 'Borrador guardado', 'ok');
+    }
+    entradaEditando = null;
+    cargarBlog();
+  } catch (e) { mostrarMsg(e.message, 'error'); }
+}
+
+// ═══════════════════════════════════════════════════════════════════
 // SECCIÓN: USUARIOS (solo admin)
 // ═══════════════════════════════════════════════════════════════════
 const PERMISOS_DISPONIBLES = [
@@ -1129,6 +1684,7 @@ const PERMISOS_DISPONIBLES = [
   ['voluntarios', 'Voluntarios (fichas públicas)'],
   ['libros', 'Libros (inventario)'],
   ['resenas', 'Reseñas (testimonios)'],
+  ['blog', 'Blog (entradas y publicación)'],
   ['organizaciones', 'Organizaciones (colaboradoras)'],
 ];
 
@@ -1271,6 +1827,7 @@ function cargarSeccion(nombre) {
     case 'voluntarios': return cargarVoluntarios();
     case 'libros': return cargarLibros();
     case 'resenas': return cargarResenas();
+    case 'blog': return cargarBlog();
     case 'organizaciones': return cargarOrganizaciones();
     case 'wishlist': return cargarWishlist();
     case 'usuarios': return cargarUsuarios();
