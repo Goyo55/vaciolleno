@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Testimonios de personas que forman parte de Vacío Lleno. Donantes, voluntarios, receptores y organizaciones cuentan su experiencia." />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="Vacío Lleno" />
+  <link rel="canonical" href="https://vaciolleno.org/vaciolleno-resenas.html" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Vacío Lleno" />
+  <meta property="og:title" content="Voces del proyecto — Vacío Lleno" />
+  <meta property="og:description" content="Testimonios de personas que forman parte de Vacío Lleno. Comparte también tu experiencia." />
+  <meta property="og:url" content="https://vaciolleno.org/vaciolleno-resenas.html" />
+  <meta property="og:image" content="https://vaciolleno.org/og-image.png" />
+  <meta property="og:locale" content="es_ES" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Voces del proyecto — Vacío Lleno" />
+  <meta name="twitter:description" content="Testimonios de personas que forman parte de Vacío Lleno." />
+  <meta name="twitter:image" content="https://vaciolleno.org/og-image.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <meta name="theme-color" content="#0f1f3d" />
+  <title>Voces del proyecto — Vacío Lleno</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0f1f3d;
+      --navy-mid: #1a3260;
+      --navy-light: #243f78;
+      --white: #f5f3ee;
+      --cream: #ede9df;
+      --gold: #c9a84c;
+      --red: #c0392b;
+      --mono: 'DM Mono', monospace;
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans: 'DM Sans', sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: var(--sans);
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* CURSOR */
+    .cursor {
+      position: fixed; width: 12px; height: 12px; border-radius: 50%;
+      background: var(--gold); pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s, width 0.2s, height 0.2s, opacity 0.2s;
+      mix-blend-mode: difference;
+    }
+    .cursor-ring {
+      position: fixed; width: 36px; height: 36px; border-radius: 50%;
+      border: 1px solid rgba(201,168,76,0.5); pointer-events: none; z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.15s ease-out, width 0.25s, height 0.25s;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.5rem 4rem;
+      background: linear-gradient(to bottom, rgba(15,31,61,0.98), transparent);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+    .nav-logo-text { font-family: var(--serif); font-size: 1.1rem; font-weight: 700; color: var(--white); letter-spacing: 0.05em; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a { font-family: var(--mono); font-size: 0.75rem; color: rgba(245,243,238,0.6); text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+    .nav-cta {
+      font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.6rem 1.5rem; border: 1px solid var(--gold); color: var(--gold);
+      text-decoration: none; transition: all 0.25s;
+    }
+    .nav-cta:hover { background: var(--gold); color: var(--navy); }
+    .nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 42px; height: 42px; padding: 9px; background: none; border: none; cursor: pointer; z-index: 101; }
+    .nav-hamburger span { display: block; width: 100%; height: 2px; background: var(--white); border-radius: 2px; }
+    .nav-drawer {
+      position: fixed; inset: 0; z-index: 9999; background: var(--navy);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 2rem; opacity: 0; visibility: hidden; transform: translateY(-12px);
+      transition: opacity .3s ease, transform .3s ease, visibility .3s;
+    }
+    .nav-drawer.open { opacity: 1; visibility: visible; transform: translateY(0); }
+    .nav-drawer ul { list-style: none; display: flex; flex-direction: column; align-items: center; gap: 1.75rem; margin: 0; padding: 0; }
+    .nav-drawer ul a { font-family: var(--serif); font-size: 1.85rem; font-weight: 700; color: var(--white); text-decoration: none; }
+    .nav-drawer ul a:hover { color: var(--gold); }
+    .nav-drawer .drawer-cta { font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.9rem 2.5rem; border: 1px solid var(--gold); color: var(--gold); text-decoration: none; margin-top: 1rem; }
+    .nav-drawer .drawer-close { position: absolute; top: 1.5rem; right: 2rem; font-size: 2rem; line-height: 1; background: none; border: none; color: var(--white); cursor: pointer; }
+
+    /* HERO SIMPLE */
+    .page-hero {
+      min-height: 60vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 12rem 4rem 6rem;
+      position: relative;
+      background: radial-gradient(ellipse at center top, rgba(36,63,120,0.4), transparent 60%);
+    }
+    .page-hero-eyebrow {
+      font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 2rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .page-hero-eyebrow::before, .page-hero-eyebrow::after {
+      content: ''; display: block; width: 40px; height: 1px; background: var(--gold);
+    }
+    .page-hero-title {
+      font-family: var(--serif); font-size: clamp(3rem, 5.5vw, 5.5rem);
+      line-height: 1; font-weight: 900; margin-bottom: 1.5rem; letter-spacing: -0.02em;
+    }
+    .page-hero-sub {
+      font-family: var(--sans); font-size: 1.05rem; font-weight: 300;
+      line-height: 1.7; color: rgba(245,243,238,0.6); max-width: 560px;
+    }
+
+    /* LISTADO */
+    .resenas-section {
+      padding: 4rem 4rem 8rem;
+      max-width: 1200px; margin: 0 auto;
+    }
+    .resenas-toolbar {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 1rem; flex-wrap: wrap; margin-bottom: 3rem;
+      padding-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .resenas-contador {
+      font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(245,243,238,0.4);
+    }
+    .resenas-filtros { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .resenas-filtros button {
+      font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 0.5rem 1rem;
+      background: transparent; border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(245,243,238,0.6); cursor: pointer; transition: all 0.2s;
+    }
+    .resenas-filtros button:hover { border-color: var(--gold); color: var(--gold); }
+    .resenas-filtros button.active { background: var(--gold); color: var(--navy); border-color: var(--gold); font-weight: 500; }
+
+    .resenas-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* TARJETA (compartida con la Home) */
+    .resena-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 2.5rem 2rem 2rem;
+      position: relative;
+      transition: all 0.3s;
+      display: flex; flex-direction: column;
+    }
+    .resena-card:hover {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(201,168,76,0.25);
+      transform: translateY(-4px);
+    }
+    .resena-quote-mark {
+      font-family: var(--serif); font-size: 5rem; font-weight: 900;
+      color: var(--gold); opacity: 0.35; line-height: 0.6;
+      margin-bottom: 0.5rem; user-select: none;
+    }
+    .resena-cita {
+      font-family: var(--serif); font-size: 1.1rem; font-style: italic;
+      line-height: 1.6; color: rgba(245,243,238,0.85); margin-bottom: 2rem;
+      flex: 1;
+    }
+    .resena-autor {
+      padding-top: 1.25rem; border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .resena-nombre {
+      font-family: var(--sans); font-size: 0.95rem; font-weight: 500;
+      color: var(--white); margin-bottom: 0.35rem;
+    }
+    .resena-meta {
+      font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(201,168,76,0.75);
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+    }
+    .resena-sep { opacity: 0.4; }
+    .resenas-loading {
+      grid-column: 1 / -1;
+      padding: 4rem 2rem; text-align: center;
+      font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.1em;
+      color: rgba(245,243,238,0.4); font-style: italic;
+    }
+
+    /* FORMULARIO */
+    .form-section {
+      background: var(--navy-mid);
+      padding: 8rem 4rem;
+      border-top: 1px solid rgba(201,168,76,0.15);
+    }
+    .form-inner {
+      max-width: 720px; margin: 0 auto;
+    }
+    .form-eyebrow {
+      font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 1.25rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .form-eyebrow::before {
+      content: ''; display: block; width: 40px; height: 1px; background: var(--gold);
+    }
+    .form-title {
+      font-family: var(--serif); font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 700; line-height: 1.1; margin-bottom: 1.5rem;
+    }
+    .form-lead {
+      font-size: 1rem; line-height: 1.75; color: rgba(245,243,238,0.65);
+      margin-bottom: 3rem;
+    }
+
+    .form-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;
+    }
+    .form-field { margin-bottom: 1.25rem; }
+    .form-field.full { grid-column: 1 / -1; }
+    .form-field label {
+      display: block; font-family: var(--mono); font-size: 0.65rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(245,243,238,0.5); margin-bottom: 0.5rem;
+    }
+    .form-field label .req { color: var(--gold); }
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+      width: 100%; padding: 0.9rem 1rem;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--white); font-family: var(--sans); font-size: 0.95rem;
+      font-weight: 300;
+      transition: border-color 0.2s;
+    }
+    .form-field textarea { resize: vertical; min-height: 140px; line-height: 1.6; }
+    .form-field input:focus,
+    .form-field select:focus,
+    .form-field textarea:focus {
+      outline: none; border-color: var(--gold);
+    }
+    .form-field .hint {
+      font-family: var(--mono); font-size: 0.65rem;
+      color: rgba(245,243,238,0.35); margin-top: 0.4rem; letter-spacing: 0.05em;
+    }
+
+    .form-submit {
+      display: inline-block;
+      padding: 1.1rem 3rem;
+      background: var(--gold); color: var(--navy);
+      font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
+      text-transform: uppercase; font-weight: 500;
+      border: none; cursor: pointer; transition: opacity 0.2s;
+      margin-top: 1rem;
+    }
+    .form-submit:hover:not(:disabled) { opacity: 0.9; }
+    .form-submit:disabled { opacity: 0.5; cursor: wait; }
+
+    .resena-form-msg {
+      margin-top: 1.5rem; padding: 1rem 1.25rem;
+      font-family: var(--mono); font-size: 0.75rem; line-height: 1.5;
+      display: none;
+    }
+    .resena-form-msg.ok,
+    .resena-form-msg.error {
+      display: block;
+    }
+    .resena-form-msg.ok {
+      background: rgba(201,168,76,0.1);
+      border-left: 3px solid var(--gold);
+      color: rgba(245,243,238,0.9);
+    }
+    .resena-form-msg.error {
+      background: rgba(192,57,43,0.15);
+      border-left: 3px solid var(--red);
+      color: #ff9a91;
+    }
+
+    .form-note {
+      margin-top: 2rem; padding: 1.25rem 1.5rem;
+      background: rgba(15,31,61,0.5); border-left: 2px solid rgba(201,168,76,0.4);
+      font-family: var(--mono); font-size: 0.72rem; line-height: 1.7;
+      color: rgba(245,243,238,0.55); letter-spacing: 0.02em;
+    }
+
+    /* FOOTER */
+    footer { background: #080f1e; padding: 5rem 4rem 3rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; }
+    .footer-brand p { font-size: 0.85rem; line-height: 1.7; color: rgba(245,243,238,0.35); max-width: 280px; }
+    .footer-col-title { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,243,238,0.3); margin-bottom: 1.5rem; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+    .footer-links a { font-size: 0.88rem; color: rgba(245,243,238,0.5); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 2rem; display: flex; justify-content: space-between; align-items: center; }
+    .footer-copy { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em; color: rgba(245,243,238,0.2); }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav { padding: 1.5rem 2rem; }
+      .nav-links, .nav-cta { display: none; }
+      .nav-hamburger { display: flex; }
+      .page-hero { padding: 9rem 2rem 4rem; min-height: auto; }
+      .resenas-section { padding: 3rem 2rem 5rem; }
+      .form-section { padding: 5rem 2rem; }
+      .form-grid { grid-template-columns: 1fr; }
+      footer { padding: 3rem 2rem 2rem; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    }
+    @media (max-width: 768px) {
+      .footer-top { grid-template-columns: 1fr !important; }
+      .footer-bottom { flex-direction: column !important; align-items: flex-start !important; gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="/" class="nav-logo">
+      <svg viewBox="0 0 60 60" fill="none" style="width:28px;height:28px;flex-shrink:0;">
+        <rect x="8" y="10" width="44" height="40" rx="2" fill="#1a3260"/>
+        <circle cx="30" cy="30" r="10" fill="#0f1f3d" stroke="rgba(201,168,76,0.6)" stroke-width="1.5"/>
+      </svg>
+      <span class="nav-logo-text">VACÍO LLENO</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="vaciolleno-proyecto.html">El Proyecto</a></li>
+      <li><a href="vaciolleno-voluntarios.html">Voluntarios</a></li>
+      <li><a href="vaciolleno-libros.html">Libros</a></li>
+      <li><a href="vaciolleno-impacto.html">Impacto</a></li>
+      <li><a href="vaciolleno-manifiesto.html">Manifiesto</a></li>
+    </ul>
+    <a href="vaciolleno-donaciones.html" class="nav-cta">Donar</a>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Abrir menú"><span></span><span></span><span></span></button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="page-hero">
+    <div class="page-hero-eyebrow">Testimonios reales</div>
+    <h1 class="page-hero-title">Voces del proyecto</h1>
+    <p class="page-hero-sub">
+      Donantes, voluntarios y personas que han recibido libros perforados
+      cuentan su experiencia. Cada voz es una prueba de que la circulación
+      funciona.
+    </p>
+  </section>
+
+  <!-- LISTADO -->
+  <section class="resenas-section">
+    <div class="resenas-toolbar">
+      <div class="resenas-contador" id="resenas-contador">Cargando testimonios…</div>
+      <div class="resenas-filtros">
+        <button data-filtro-tipo="todas" class="active">Todas</button>
+        <button data-filtro-tipo="donante">Donantes</button>
+        <button data-filtro-tipo="voluntario">Voluntarios</button>
+        <button data-filtro-tipo="receptor">Receptores</button>
+        <button data-filtro-tipo="organizacion">Organizaciones</button>
+      </div>
+    </div>
+    <div class="resenas-grid" id="resenas-listado">
+      <div class="resenas-loading">Cargando voces…</div>
+    </div>
+  </section>
+
+  <!-- FORMULARIO -->
+  <section class="form-section" id="compartir">
+    <div class="form-inner">
+      <div class="form-eyebrow">Comparte tu experiencia</div>
+      <h2 class="form-title">Cuenta tu historia<br/>con Vacío Lleno</h2>
+      <p class="form-lead">
+        Si has donado, distribuido, recibido o colaborado con el proyecto
+        de cualquier forma, tu voz nos importa. Antes de aparecer en la
+        web, cada reseña pasa por una revisión rápida del equipo. Te
+        avisamos por email cuando quede publicada.
+      </p>
+
+      <form id="resenaForm" autocomplete="on">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="rNombre">Tu nombre <span class="req">*</span></label>
+            <input type="text" id="rNombre" name="rNombre" required maxlength="80" placeholder="ej. María López">
+          </div>
+          <div class="form-field">
+            <label for="rEmail">Email <span class="req">*</span></label>
+            <input type="email" id="rEmail" name="rEmail" required maxlength="120" placeholder="tu@email.com">
+            <div class="hint">Solo para avisarte cuando se publique. No lo mostramos.</div>
+          </div>
+          <div class="form-field">
+            <label for="rTipoPerfil">¿Cómo te relacionas con el proyecto? <span class="req">*</span></label>
+            <select id="rTipoPerfil" name="rTipoPerfil" required>
+              <option value="donante">He donado libros o dinero</option>
+              <option value="voluntario">Soy o he sido voluntario/a</option>
+              <option value="receptor">He recibido un libro perforado</option>
+              <option value="organizacion">Represento a una organización</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="rCiudad">Ciudad</label>
+            <input type="text" id="rCiudad" name="rCiudad" maxlength="80" placeholder="ej. Bogotá">
+          </div>
+          <div class="form-field full">
+            <label for="rPais">País</label>
+            <input type="text" id="rPais" name="rPais" maxlength="80" placeholder="ej. Colombia">
+          </div>
+          <div class="form-field full">
+            <label for="rCita">Tu testimonio <span class="req">*</span></label>
+            <textarea id="rCita" name="rCita" required minlength="20" maxlength="600" placeholder="Cuéntanos brevemente tu experiencia con Vacío Lleno..."></textarea>
+            <div class="hint">Entre 20 y 600 caracteres. Sé auténtico/a — funciona mejor que perfecto.</div>
+          </div>
+        </div>
+
+        <button type="submit" class="form-submit">Enviar reseña</button>
+        <div id="resenaFormMsg" class="resena-form-msg"></div>
+
+        <div class="form-note">
+          Al enviar aceptas nuestra <a href="vaciolleno-legal-privacidad.html" style="color:rgba(201,168,76,0.9);">política de privacidad</a>.
+          No compartimos tu email con terceros. Si en algún momento quieres
+          que retiremos tu reseña, escríbenos a <a href="mailto:hola@vaciolleno.org" style="color:rgba(201,168,76,0.9);">hola@vaciolleno.org</a>.
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <span class="nav-logo-text" style="font-family:'Playfair Display',serif;font-size:1.4rem;display:block;margin-bottom:1rem;color:#f5f3ee;">VACÍO LLENO</span>
+          <p>Insurgencia intelectual. Distribución libre de conocimiento en Latinoamérica a través del sistema de perforación único.</p>
+          <div style="display:flex;gap:1rem;margin-top:1.5rem;">
+            <a href="https://instagram.com/vaciolleno" target="_blank" aria-label="Instagram" style="color:rgba(245,243,238,0.4);transition:color 0.2s;" onmouseover="this.style.color='rgba(201,168,76,0.9)'" onmouseout="this.style.color='rgba(245,243,238,0.4)'">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            </a>
+            <a href="https://twitter.com/vaciolleno" target="_blank" aria-label="Twitter / X" style="color:rgba(245,243,238,0.4);transition:color 0.2s;" onmouseover="this.style.color='rgba(201,168,76,0.9)'" onmouseout="this.style.color='rgba(245,243,238,0.4)'">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+            <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn" style="color:rgba(245,243,238,0.4);transition:color 0.2s;" onmouseover="this.style.color='rgba(201,168,76,0.9)'" onmouseout="this.style.color='rgba(245,243,238,0.4)'">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Proyecto</div>
+          <ul class="footer-links">
+            <li><a href="vaciolleno-manifiesto.html">El Manifiesto</a></li>
+            <li><a href="vaciolleno-proyecto.html">Cómo Funciona</a></li>
+            <li><a href="vaciolleno-libros.html">Categorías de Libros</a></li>
+            <li><a href="vaciolleno-impacto.html">Impacto</a></li>
+            <li><a href="vaciolleno-resenas.html">Testimonios</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Participar</div>
+          <ul class="footer-links">
+            <li><a href="vaciolleno-donaciones.html">Donar Libros</a></li>
+            <li><a href="vaciolleno-donaciones.html">Donar Dinero</a></li>
+            <li><a href="vaciolleno-voluntarios.html">Ser Voluntario/a</a></li>
+            <li><a href="vaciolleno-organizaciones.html">Organizaciones</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Contacto</div>
+          <ul class="footer-links">
+            <li><a href="mailto:hola@vaciolleno.org">hola@vaciolleno.org</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom" style="flex-direction:column;gap:1rem;align-items:flex-start;">
+        <div style="display:flex;align-items:center;justify-content:space-between;width:100%;flex-wrap:wrap;gap:1rem;">
+          <span class="footer-copy">© 2025 Vacío Lleno · Todos los libros circulan libres</span>
+        </div>
+        <div style="display:flex;gap:1.5rem;flex-wrap:wrap;">
+          <a href="vaciolleno-legal-privacidad.html" style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.08em;color:rgba(245,243,238,0.2);text-decoration:none;">Privacidad</a>
+          <a href="vaciolleno-legal-cookies.html" style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.08em;color:rgba(245,243,238,0.2);text-decoration:none;">Cookies</a>
+          <a href="vaciolleno-legal-terminos.html" style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.08em;color:rgba(245,243,238,0.2);text-decoration:none;">Términos</a>
+          <a href="vaciolleno-legal-aviso.html" style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.08em;color:rgba(245,243,238,0.2);text-decoration:none;">Aviso Legal</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MOBILE DRAWER -->
+  <div class="nav-drawer" id="navDrawer">
+    <button class="drawer-close" onclick="document.getElementById('navDrawer').classList.remove('open')" aria-label="Cerrar">&#x00D7;</button>
+    <ul>
+      <li><a href="vaciolleno-proyecto.html">El Proyecto</a></li>
+      <li><a href="vaciolleno-voluntarios.html">Voluntarios</a></li>
+      <li><a href="vaciolleno-libros.html">Libros</a></li>
+      <li><a href="vaciolleno-impacto.html">Impacto</a></li>
+      <li><a href="vaciolleno-resenas.html">Testimonios</a></li>
+      <li><a href="vaciolleno-manifiesto.html">Manifiesto</a></li>
+    </ul>
+    <a href="vaciolleno-donaciones.html" class="drawer-cta">Donar</a>
+  </div>
+
+  <script>
+    // CURSOR
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+    document.addEventListener('mousemove', e => {
+      mouseX = e.clientX; mouseY = e.clientY;
+      cursor.style.left = mouseX + 'px';
+      cursor.style.top = mouseY + 'px';
+    });
+    function animateRing() {
+      ringX += (mouseX - ringX) * 0.12;
+      ringY += (mouseY - ringY) * 0.12;
+      ring.style.left = ringX + 'px';
+      ring.style.top = ringY + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.transform = 'translate(-50%,-50%) scale(2)';
+        ring.style.transform = 'translate(-50%,-50%) scale(1.5)';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+        ring.style.transform = 'translate(-50%,-50%) scale(1)';
+      });
+    });
+
+    // NAV scroll
+    window.addEventListener('scroll', () => {
+      const nav = document.querySelector('nav');
+      if (window.scrollY > 50) {
+        nav.style.background = 'rgba(15,31,61,0.98)';
+        nav.style.backdropFilter = 'blur(12px)';
+      } else {
+        nav.style.background = 'linear-gradient(to bottom, rgba(15,31,61,0.98), transparent)';
+        nav.style.backdropFilter = 'none';
+      }
+    });
+
+    // Hamburger
+    document.getElementById('navHamburger').addEventListener('click', function() {
+      document.getElementById('navDrawer').classList.add('open');
+    });
+  </script>
+
+  <!-- COOKIE BANNER -->
+  <div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#0f1f3d;border-top:1px solid rgba(201,168,76,0.25);padding:1.25rem 4rem;font-family:'DM Mono',monospace;">
+    <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;">
+      <div style="flex:1;min-width:280px;">
+        <p style="font-size:0.72rem;line-height:1.7;color:rgba(232,240,255,0.65);margin:0;">
+          Usamos cookies técnicas necesarias para el funcionamiento del sitio y de los pagos (Stripe).
+          No usamos cookies publicitarias ni rastreamos tu navegación con fines comerciales.
+          <a href="vaciolleno-legal-cookies.html" style="color:rgba(201,168,76,0.8);text-decoration:none;border-bottom:1px solid rgba(201,168,76,0.3);">Política de cookies →</a>
+        </p>
+      </div>
+      <div style="display:flex;gap:0.75rem;flex-shrink:0;flex-wrap:wrap;align-items:center;">
+        <button onclick="rejectCookies()" style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.6rem 1.1rem;background:transparent;border:1px solid rgba(232,240,255,0.15);color:rgba(232,240,255,0.4);cursor:pointer;">Solo técnicas</button>
+        <button onclick="acceptCookies()" style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.6rem 1.25rem;background:rgba(201,168,76,0.9);border:1px solid transparent;color:#0f1f3d;cursor:pointer;font-weight:500;">Aceptar</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function() {
+      var consent = localStorage.getItem('vl_cookie_consent');
+      if (!consent) {
+        setTimeout(function() {
+          var banner = document.getElementById('cookieBanner');
+          if (banner) banner.style.display = 'block';
+        }, 1200);
+      }
+    })();
+    function acceptCookies() { localStorage.setItem('vl_cookie_consent', 'all'); hideBanner(); }
+    function rejectCookies() { localStorage.setItem('vl_cookie_consent', 'essential'); hideBanner(); }
+    function hideBanner() {
+      var banner = document.getElementById('cookieBanner');
+      if (banner) {
+        banner.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        banner.style.opacity = '0';
+        banner.style.transform = 'translateY(100%)';
+        setTimeout(function() { banner.style.display = 'none'; }, 300);
+      }
+    }
+  </script>
+
+  <script src="/js/resenas.js"></script>
+</body>
+</html>
