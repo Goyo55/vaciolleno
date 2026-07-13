@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Vacío Lleno — Blog" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="Vacío Lleno" />
+  <link rel="canonical" href="https://vaciolleno.org/blog" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Vacío Lleno" />
+  <meta property="og:title" content="Blog — Vacío Lleno" />
+  <meta property="og:description" content="Ensayos, historias y actualizaciones del proyecto Vacío Lleno." />
+  <meta property="og:url" content="https://vaciolleno.org/blog" />
+  <meta property="og:image" content="https://vaciolleno.org/og-image.png" />
+  <meta property="og:locale" content="es_ES" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Blog — Vacío Lleno" />
+  <meta name="twitter:description" content="Ensayos, historias y actualizaciones del proyecto Vacío Lleno." />
+  <meta name="twitter:image" content="https://vaciolleno.org/og-image.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <meta name="theme-color" content="#0f1f3d" />
+  <title>Cargando… — Vacío Lleno</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0f1f3d; --navy-mid: #1a3260; --navy-light: #243f78;
+      --white: #f5f3ee; --cream: #ede9df; --gold: #c9a84c; --red: #c0392b;
+      --mono: 'DM Mono', monospace;
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans: 'DM Sans', sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--navy); color: var(--white); font-family: var(--sans); font-weight: 300; overflow-x: hidden; cursor: none; }
+
+    .cursor { position: fixed; width: 12px; height: 12px; border-radius: 50%; background: var(--gold); pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: transform 0.1s, width 0.2s, height 0.2s, opacity 0.2s; mix-blend-mode: difference; }
+    .cursor-ring { position: fixed; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(201,168,76,0.5); pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); transition: transform 0.15s ease-out; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1.5rem 4rem; background: linear-gradient(to bottom, rgba(15,31,61,0.98), transparent); }
+    .nav-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+    .nav-logo-text { font-family: var(--serif); font-size: 1.1rem; font-weight: 700; color: var(--white); letter-spacing: 0.05em; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a { font-family: var(--mono); font-size: 0.75rem; color: rgba(245,243,238,0.6); text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+    .nav-cta { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.6rem 1.5rem; border: 1px solid var(--gold); color: var(--gold); text-decoration: none; transition: all 0.25s; }
+    .nav-cta:hover { background: var(--gold); color: var(--navy); }
+    .nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 42px; height: 42px; padding: 9px; background: none; border: none; cursor: pointer; z-index: 101; }
+    .nav-hamburger span { display: block; width: 100%; height: 2px; background: var(--white); border-radius: 2px; }
+    .nav-drawer { position: fixed; inset: 0; z-index: 9999; background: var(--navy); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2rem; opacity: 0; visibility: hidden; transform: translateY(-12px); transition: opacity .3s ease, transform .3s ease, visibility .3s; }
+    .nav-drawer.open { opacity: 1; visibility: visible; transform: translateY(0); }
+    .nav-drawer ul { list-style: none; display: flex; flex-direction: column; align-items: center; gap: 1.75rem; margin: 0; padding: 0; }
+    .nav-drawer ul a { font-family: var(--serif); font-size: 1.85rem; font-weight: 700; color: var(--white); text-decoration: none; }
+    .nav-drawer ul a:hover { color: var(--gold); }
+    .nav-drawer .drawer-cta { font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.9rem 2.5rem; border: 1px solid var(--gold); color: var(--gold); text-decoration: none; margin-top: 1rem; }
+    .nav-drawer .drawer-close { position: absolute; top: 1.5rem; right: 2rem; font-size: 2rem; line-height: 1; background: none; border: none; color: var(--white); cursor: pointer; }
+
+    /* Volver al blog */
+    .volver-link {
+      position: relative; z-index: 3; max-width: 800px; margin: 0 auto;
+      padding: 8rem 2rem 0;
+    }
+    .volver-link a {
+      font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: rgba(245,243,238,0.5);
+      text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;
+    }
+    .volver-link a:hover { color: var(--gold); }
+
+    /* Hero de entrada */
+    .entrada-hero {
+      min-height: 60vh; padding: 3rem 4rem 4rem;
+      display: flex; align-items: flex-end; justify-content: center;
+      background-size: cover; background-position: center;
+      position: relative;
+    }
+    .entrada-hero-plain { background: linear-gradient(180deg, var(--navy-mid), var(--navy)); min-height: 45vh; }
+    .entrada-hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(15,31,61,0.4) 0%, rgba(15,31,61,0.95) 100%);
+    }
+    .entrada-hero-content {
+      position: relative; z-index: 2; max-width: 800px; width: 100%; text-align: center;
+    }
+    .entrada-tags {
+      display: flex; justify-content: center; flex-wrap: wrap; gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .blog-tag {
+      font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--gold);
+      padding: 0.25rem 0.7rem; border: 1px solid rgba(201,168,76,0.4);
+      text-decoration: none; transition: all 0.2s;
+    }
+    .blog-tag:hover { background: rgba(201,168,76,0.15); }
+    .entrada-titulo {
+      font-family: var(--serif); font-size: clamp(2.2rem, 5vw, 4rem);
+      line-height: 1.1; font-weight: 900; letter-spacing: -0.015em;
+      margin-bottom: 1.5rem; color: var(--white);
+    }
+    .entrada-meta {
+      font-family: var(--mono); font-size: 0.75rem;
+      letter-spacing: 0.05em; color: rgba(245,243,238,0.6);
+      display: flex; justify-content: center; gap: 0.6rem; flex-wrap: wrap;
+    }
+    .blog-sep { opacity: 0.4; }
+
+    /* Contenido */
+    .entrada-resumen {
+      max-width: 720px; margin: 4rem auto 0; padding: 0 2rem;
+      font-family: var(--serif); font-size: 1.35rem; font-style: italic;
+      line-height: 1.5; color: rgba(245,243,238,0.75);
+      text-align: center;
+      border-left: none;
+    }
+    .entrada-contenido {
+      max-width: 720px; margin: 4rem auto; padding: 0 2rem;
+      font-family: var(--sans); font-size: 1.1rem; line-height: 1.85;
+      color: rgba(245,243,238,0.85); font-weight: 300;
+    }
+    .entrada-contenido h1, .entrada-contenido h2, .entrada-contenido h3, .entrada-contenido h4 {
+      font-family: var(--serif); font-weight: 700; color: var(--white);
+      margin: 2.5rem 0 1rem; line-height: 1.2;
+    }
+    .entrada-contenido h1 { font-size: 2.2rem; }
+    .entrada-contenido h2 { font-size: 1.7rem; }
+    .entrada-contenido h3 { font-size: 1.35rem; }
+    .entrada-contenido h4 { font-size: 1.15rem; }
+    .entrada-contenido p { margin: 1.25rem 0; }
+    .entrada-contenido a { color: var(--gold); text-decoration: underline; text-decoration-color: rgba(201,168,76,0.4); text-underline-offset: 3px; }
+    .entrada-contenido a:hover { text-decoration-color: var(--gold); }
+    .entrada-contenido strong { color: var(--white); font-weight: 500; }
+    .entrada-contenido em { color: rgba(245,243,238,0.95); }
+    .entrada-contenido blockquote {
+      border-left: 3px solid var(--gold); padding: 0.5rem 0 0.5rem 1.5rem;
+      margin: 2rem 0; font-family: var(--serif); font-style: italic;
+      font-size: 1.25rem; color: rgba(245,243,238,0.85); line-height: 1.5;
+    }
+    .entrada-contenido code {
+      background: rgba(0,0,0,0.35); padding: 0.15rem 0.4rem;
+      font-family: var(--mono); font-size: 0.9em; color: var(--gold);
+    }
+    .entrada-contenido pre {
+      background: rgba(0,0,0,0.4); padding: 1.25rem; overflow-x: auto;
+      margin: 1.5rem 0; border-left: 3px solid rgba(201,168,76,0.4);
+    }
+    .entrada-contenido pre code { background: none; padding: 0; color: rgba(245,243,238,0.85); font-size: 0.85rem; }
+    .entrada-contenido ul, .entrada-contenido ol { padding-left: 1.75rem; margin: 1.25rem 0; }
+    .entrada-contenido li { margin: 0.5rem 0; }
+    .entrada-contenido img { max-width: 100%; height: auto; margin: 2rem 0; }
+    .entrada-contenido hr { border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 3rem auto; max-width: 200px; }
+
+    /* Footer de la entrada */
+    .entrada-footer-tags, .entrada-compartir {
+      max-width: 720px; margin: 3rem auto 0; padding: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .entrada-footer-tags-label {
+      font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: rgba(245,243,238,0.4);
+      margin-bottom: 1rem;
+    }
+    .entrada-footer-tags > div:last-child, .entrada-compartir-botones {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+    }
+    .entrada-compartir-botones a, .entrada-compartir-botones button {
+      font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 0.6rem 1.2rem;
+      background: transparent; border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(245,243,238,0.7); text-decoration: none; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .entrada-compartir-botones a:hover, .entrada-compartir-botones button:hover {
+      border-color: var(--gold); color: var(--gold);
+    }
+
+    /* CTA final */
+    .entrada-cta {
+      max-width: 720px; margin: 5rem auto 8rem; padding: 3rem 2rem;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(201,168,76,0.1), transparent);
+      border: 1px solid rgba(201,168,76,0.2);
+    }
+    .entrada-cta h3 { font-family: var(--serif); font-size: 1.8rem; margin-bottom: 0.5rem; }
+    .entrada-cta p { font-size: 1rem; line-height: 1.7; color: rgba(245,243,238,0.65); max-width: 480px; margin: 0 auto 2rem; }
+    .entrada-cta-botones { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+    .btn-primary, .btn-secondary {
+      display: inline-block; padding: 1rem 2.5rem;
+      font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
+      text-transform: uppercase; text-decoration: none; transition: all 0.25s;
+    }
+    .btn-primary { background: var(--gold); color: var(--navy); font-weight: 500; }
+    .btn-primary:hover { background: rgba(201,168,76,0.85); }
+    .btn-secondary { border: 1px solid rgba(245,243,238,0.3); color: var(--white); }
+    .btn-secondary:hover { border-color: var(--white); background: rgba(245,243,238,0.05); }
+
+    /* Loading */
+    .blog-loading {
+      padding: 6rem 2rem; text-align: center;
+      font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.1em;
+      color: rgba(245,243,238,0.4); font-style: italic;
+    }
+
+    /* FOOTER */
+    footer { background: #080f1e; padding: 5rem 4rem 3rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; }
+    .footer-brand p { font-size: 0.85rem; line-height: 1.7; color: rgba(245,243,238,0.35); max-width: 280px; }
+    .footer-col-title { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,243,238,0.3); margin-bottom: 1.5rem; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+    .footer-links a { font-size: 0.88rem; color: rgba(245,243,238,0.5); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 2rem; }
+    .footer-copy { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em; color: rgba(245,243,238,0.2); }
+
+    @media (max-width: 900px) {
+      nav { padding: 1.5rem 2rem; }
+      .nav-links, .nav-cta { display: none; }
+      .nav-hamburger { display: flex; }
+      .volver-link { padding: 6rem 1.5rem 0; }
+      .entrada-hero { padding: 2rem 1.5rem 3rem; min-height: 50vh; }
+      .entrada-hero-plain { min-height: 40vh; }
+      .entrada-resumen, .entrada-contenido { padding: 0 1.5rem; }
+      .entrada-cta { margin: 4rem 1.5rem 5rem; }
+      footer { padding: 3rem 2rem 2rem; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    }
+    @media (max-width: 768px) {
+      .footer-top { grid-template-columns: 1fr !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="/" class="nav-logo">
+      <svg viewBox="0 0 60 60" fill="none" style="width:28px;height:28px;flex-shrink:0;">
+        <rect x="8" y="10" width="44" height="40" rx="2" fill="#1a3260"/>
+        <circle cx="30" cy="30" r="10" fill="#0f1f3d" stroke="rgba(201,168,76,0.6)" stroke-width="1.5"/>
+      </svg>
+      <span class="nav-logo-text">VACÍO LLENO</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/vaciolleno-proyecto.html">El Proyecto</a></li>
+      <li><a href="/vaciolleno-libros.html">Libros</a></li>
+      <li><a href="/vaciolleno-impacto.html">Impacto</a></li>
+      <li><a href="/blog" class="active">Blog</a></li>
+      <li><a href="/vaciolleno-manifiesto.html">Manifiesto</a></li>
+    </ul>
+    <a href="/vaciolleno-donaciones.html" class="nav-cta">Donar</a>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Abrir menú"><span></span><span></span><span></span></button>
+  </nav>
+
+  <div class="volver-link">
+    <a href="/blog">← Volver al blog</a>
+  </div>
+
+  <!-- ENTRADA -->
+  <div id="blog-entrada">
+    <div class="blog-loading">Cargando…</div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <span class="nav-logo-text" style="font-family:'Playfair Display',serif;font-size:1.4rem;display:block;margin-bottom:1rem;color:#f5f3ee;">VACÍO LLENO</span>
+          <p>Insurgencia intelectual. Distribución libre de conocimiento en Latinoamérica a través del sistema de perforación único.</p>
+        </div>
+        <div>
+          <div class="footer-col-title">Proyecto</div>
+          <ul class="footer-links">
+            <li><a href="/vaciolleno-manifiesto.html">El Manifiesto</a></li>
+            <li><a href="/vaciolleno-proyecto.html">Cómo Funciona</a></li>
+            <li><a href="/vaciolleno-libros.html">Categorías de Libros</a></li>
+            <li><a href="/vaciolleno-impacto.html">Impacto</a></li>
+            <li><a href="/vaciolleno-resenas.html">Testimonios</a></li>
+            <li><a href="/blog">Blog</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Participar</div>
+          <ul class="footer-links">
+            <li><a href="/vaciolleno-donaciones.html">Donar Libros</a></li>
+            <li><a href="/vaciolleno-donaciones.html">Donar Dinero</a></li>
+            <li><a href="/vaciolleno-voluntarios.html">Ser Voluntario/a</a></li>
+            <li><a href="/vaciolleno-organizaciones.html">Organizaciones</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Contacto</div>
+          <ul class="footer-links">
+            <li><a href="mailto:hola@vaciolleno.org">hola@vaciolleno.org</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2025 Vacío Lleno · Todos los libros circulan libres</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MOBILE DRAWER -->
+  <div class="nav-drawer" id="navDrawer">
+    <button class="drawer-close" onclick="document.getElementById('navDrawer').classList.remove('open')" aria-label="Cerrar">&#x00D7;</button>
+    <ul>
+      <li><a href="/vaciolleno-proyecto.html">El Proyecto</a></li>
+      <li><a href="/vaciolleno-libros.html">Libros</a></li>
+      <li><a href="/vaciolleno-impacto.html">Impacto</a></li>
+      <li><a href="/blog">Blog</a></li>
+      <li><a href="/vaciolleno-resenas.html">Testimonios</a></li>
+      <li><a href="/vaciolleno-manifiesto.html">Manifiesto</a></li>
+    </ul>
+    <a href="/vaciolleno-donaciones.html" class="drawer-cta">Donar</a>
+  </div>
+
+  <script>
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+    document.addEventListener('mousemove', e => {
+      mouseX = e.clientX; mouseY = e.clientY;
+      cursor.style.left = mouseX + 'px'; cursor.style.top = mouseY + 'px';
+    });
+    function animateRing() {
+      ringX += (mouseX - ringX) * 0.12; ringY += (mouseY - ringY) * 0.12;
+      ring.style.left = ringX + 'px'; ring.style.top = ringY + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+    window.addEventListener('scroll', () => {
+      const nav = document.querySelector('nav');
+      if (window.scrollY > 50) { nav.style.background = 'rgba(15,31,61,0.98)'; nav.style.backdropFilter = 'blur(12px)'; }
+      else { nav.style.background = 'linear-gradient(to bottom, rgba(15,31,61,0.98), transparent)'; nav.style.backdropFilter = 'none'; }
+    });
+    document.getElementById('navHamburger').addEventListener('click', () => document.getElementById('navDrawer').classList.add('open'));
+  </script>
+
+  <script src="/js/blog.js"></script>
+</body>
+</html>
