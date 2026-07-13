@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/blog", "destination": "/vaciolleno-blog.html" },
+    { "source": "/blog/:slug", "destination": "/vaciolleno-blog-entrada.html?slug=:slug" }
+  ]
+}
