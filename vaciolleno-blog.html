@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Ensayos, historias y actualizaciones del proyecto Vacío Lleno. Reflexiones sobre libros, circulación del conocimiento y resistencia intelectual." />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="Vacío Lleno" />
+  <link rel="canonical" href="https://vaciolleno.org/blog" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Vacío Lleno" />
+  <meta property="og:title" content="El blog — Vacío Lleno" />
+  <meta property="og:description" content="Ensayos, historias y actualizaciones del proyecto Vacío Lleno." />
+  <meta property="og:url" content="https://vaciolleno.org/blog" />
+  <meta property="og:image" content="https://vaciolleno.org/og-image.png" />
+  <meta property="og:locale" content="es_ES" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="El blog — Vacío Lleno" />
+  <meta name="twitter:description" content="Ensayos, historias y actualizaciones del proyecto Vacío Lleno." />
+  <meta name="twitter:image" content="https://vaciolleno.org/og-image.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <meta name="theme-color" content="#0f1f3d" />
+  <title>El blog — Vacío Lleno</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0f1f3d; --navy-mid: #1a3260; --navy-light: #243f78;
+      --white: #f5f3ee; --cream: #ede9df; --gold: #c9a84c; --red: #c0392b;
+      --mono: 'DM Mono', monospace;
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans: 'DM Sans', sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--navy); color: var(--white); font-family: var(--sans); font-weight: 300; overflow-x: hidden; cursor: none; }
+
+    /* CURSOR */
+    .cursor { position: fixed; width: 12px; height: 12px; border-radius: 50%; background: var(--gold); pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: transform 0.1s, width 0.2s, height 0.2s, opacity 0.2s; mix-blend-mode: difference; }
+    .cursor-ring { position: fixed; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(201,168,76,0.5); pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); transition: transform 0.15s ease-out; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1.5rem 4rem; background: linear-gradient(to bottom, rgba(15,31,61,0.98), transparent); }
+    .nav-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+    .nav-logo-text { font-family: var(--serif); font-size: 1.1rem; font-weight: 700; color: var(--white); letter-spacing: 0.05em; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a { font-family: var(--mono); font-size: 0.75rem; color: rgba(245,243,238,0.6); text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+    .nav-cta { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.6rem 1.5rem; border: 1px solid var(--gold); color: var(--gold); text-decoration: none; transition: all 0.25s; }
+    .nav-cta:hover { background: var(--gold); color: var(--navy); }
+    .nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 42px; height: 42px; padding: 9px; background: none; border: none; cursor: pointer; z-index: 101; }
+    .nav-hamburger span { display: block; width: 100%; height: 2px; background: var(--white); border-radius: 2px; }
+    .nav-drawer { position: fixed; inset: 0; z-index: 9999; background: var(--navy); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2rem; opacity: 0; visibility: hidden; transform: translateY(-12px); transition: opacity .3s ease, transform .3s ease, visibility .3s; }
+    .nav-drawer.open { opacity: 1; visibility: visible; transform: translateY(0); }
+    .nav-drawer ul { list-style: none; display: flex; flex-direction: column; align-items: center; gap: 1.75rem; margin: 0; padding: 0; }
+    .nav-drawer ul a { font-family: var(--serif); font-size: 1.85rem; font-weight: 700; color: var(--white); text-decoration: none; }
+    .nav-drawer ul a:hover { color: var(--gold); }
+    .nav-drawer .drawer-cta { font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.9rem 2.5rem; border: 1px solid var(--gold); color: var(--gold); text-decoration: none; margin-top: 1rem; }
+    .nav-drawer .drawer-close { position: absolute; top: 1.5rem; right: 2rem; font-size: 2rem; line-height: 1; background: none; border: none; color: var(--white); cursor: pointer; }
+
+    /* HERO */
+    .page-hero { min-height: 55vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 12rem 4rem 6rem; position: relative; background: radial-gradient(ellipse at center top, rgba(36,63,120,0.4), transparent 60%); }
+    .page-hero-eyebrow { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem; }
+    .page-hero-eyebrow::before, .page-hero-eyebrow::after { content: ''; display: block; width: 40px; height: 1px; background: var(--gold); }
+    .page-hero-title { font-family: var(--serif); font-size: clamp(3rem, 5.5vw, 5.5rem); line-height: 1; font-weight: 900; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+    .page-hero-sub { font-family: var(--sans); font-size: 1.05rem; font-weight: 300; line-height: 1.7; color: rgba(245,243,238,0.6); max-width: 620px; }
+
+    /* Barra de etiquetas */
+    .blog-etiquetas-section { max-width: 1200px; margin: 0 auto; padding: 2rem 4rem 0; }
+    .blog-etiquetas-label { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(245,243,238,0.4); margin-bottom: 1rem; }
+    .blog-etiquetas-barra { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .blog-tag-btn { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.05em; padding: 0.45rem 0.9rem; background: transparent; border: 1px solid rgba(255,255,255,0.15); color: rgba(245,243,238,0.65); cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem; }
+    .blog-tag-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .blog-tag-btn.active { background: var(--gold); color: var(--navy); border-color: var(--gold); font-weight: 500; }
+    .blog-tag-count { opacity: 0.6; font-size: 0.65rem; }
+
+    /* Grid */
+    .blog-listado-section { max-width: 1200px; margin: 0 auto; padding: 3rem 4rem 8rem; }
+    .blog-listado { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem; }
+    .blog-loading { grid-column: 1 / -1; padding: 4rem 2rem; text-align: center; font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.1em; color: rgba(245,243,238,0.4); font-style: italic; }
+
+    /* Tarjeta */
+    .blog-card { text-decoration: none; color: inherit; display: flex; flex-direction: column; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); transition: all 0.3s; overflow: hidden; }
+    .blog-card:hover { background: rgba(255,255,255,0.06); border-color: rgba(201,168,76,0.3); transform: translateY(-4px); }
+    .blog-card-imagen { width: 100%; height: 200px; background-size: cover; background-position: center; position: relative; background-color: var(--navy-light); }
+    .blog-card-imagen-placeholder { display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--navy-mid), var(--navy-light)); }
+    .placeholder-glyph { font-size: 3rem; color: rgba(201,168,76,0.35); }
+    .blog-card-badge { position: absolute; top: 0.8rem; right: 0.8rem; background: var(--gold); color: var(--navy); font-family: var(--mono); font-size: 0.6rem; padding: 0.25rem 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
+    .blog-card-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; flex: 1; }
+    .blog-card-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .blog-tag { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(201,168,76,0.85); padding: 0.15rem 0.45rem; border: 1px solid rgba(201,168,76,0.3); text-decoration: none; }
+    .blog-card-title { font-family: var(--serif); font-size: 1.35rem; font-weight: 700; line-height: 1.25; color: var(--white); margin: 0.3rem 0; }
+    .blog-card-resumen { font-size: 0.9rem; line-height: 1.6; color: rgba(245,243,238,0.6); flex: 1; }
+    .blog-card-meta { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.05em; color: rgba(245,243,238,0.4); display: flex; gap: 0.5rem; flex-wrap: wrap; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.06); }
+    .blog-sep { opacity: 0.5; }
+    .blog-card-destacada { grid-column: span 2; }
+    .blog-card-destacada .blog-card-imagen { height: 280px; }
+    .blog-card-destacada .blog-card-title { font-size: 1.7rem; }
+
+    /* Ver más */
+    .blog-ver-mas-wrap { display: flex; justify-content: center; margin-top: 3rem; }
+    #blog-ver-mas { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 1rem 2.5rem; background: transparent; border: 1px solid var(--gold); color: var(--gold); cursor: pointer; transition: all 0.2s; }
+    #blog-ver-mas:hover { background: var(--gold); color: var(--navy); }
+
+    /* FOOTER */
+    footer { background: #080f1e; padding: 5rem 4rem 3rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; margin-bottom: 4rem; }
+    .footer-brand p { font-size: 0.85rem; line-height: 1.7; color: rgba(245,243,238,0.35); max-width: 280px; }
+    .footer-col-title { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,243,238,0.3); margin-bottom: 1.5rem; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+    .footer-links a { font-size: 0.88rem; color: rgba(245,243,238,0.5); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 2rem; }
+    .footer-copy { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em; color: rgba(245,243,238,0.2); }
+
+    @media (max-width: 900px) {
+      nav { padding: 1.5rem 2rem; }
+      .nav-links, .nav-cta { display: none; }
+      .nav-hamburger { display: flex; }
+      .page-hero { padding: 9rem 2rem 4rem; min-height: auto; }
+      .blog-etiquetas-section { padding: 2rem 2rem 0; }
+      .blog-listado-section { padding: 2rem 2rem 5rem; }
+      .blog-card-destacada { grid-column: auto; }
+      .blog-card-destacada .blog-card-imagen { height: 200px; }
+      footer { padding: 3rem 2rem 2rem; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    }
+    @media (max-width: 768px) {
+      .footer-top { grid-template-columns: 1fr !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="/" class="nav-logo">
+      <svg viewBox="0 0 60 60" fill="none" style="width:28px;height:28px;flex-shrink:0;">
+        <rect x="8" y="10" width="44" height="40" rx="2" fill="#1a3260"/>
+        <circle cx="30" cy="30" r="10" fill="#0f1f3d" stroke="rgba(201,168,76,0.6)" stroke-width="1.5"/>
+      </svg>
+      <span class="nav-logo-text">VACÍO LLENO</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="/vaciolleno-proyecto.html">El Proyecto</a></li>
+      <li><a href="/vaciolleno-libros.html">Libros</a></li>
+      <li><a href="/vaciolleno-impacto.html">Impacto</a></li>
+      <li><a href="/blog" class="active">Blog</a></li>
+      <li><a href="/vaciolleno-manifiesto.html">Manifiesto</a></li>
+    </ul>
+    <a href="/vaciolleno-donaciones.html" class="nav-cta">Donar</a>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Abrir menú"><span></span><span></span><span></span></button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="page-hero">
+    <div class="page-hero-eyebrow">El Blog</div>
+    <h1 class="page-hero-title">Ideas que<br/>circulan</h1>
+    <p class="page-hero-sub">
+      Ensayos, historias y actualizaciones sobre libros, circulación del conocimiento
+      y resistencia intelectual. Escrito por el equipo y colaboradores de Vacío Lleno.
+    </p>
+  </section>
+
+  <!-- FILTROS -->
+  <section class="blog-etiquetas-section">
+    <div class="blog-etiquetas-label">Filtrar por etiqueta</div>
+    <div class="blog-etiquetas-barra" id="blog-etiquetas-barra"></div>
+  </section>
+
+  <!-- LISTADO -->
+  <section class="blog-listado-section">
+    <div class="blog-listado" id="blog-listado">
+      <div class="blog-loading">Cargando entradas…</div>
+    </div>
+    <div class="blog-ver-mas-wrap">
+      <button id="blog-ver-mas" style="display:none;">Ver más entradas</button>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <span class="nav-logo-text" style="font-family:'Playfair Display',serif;font-size:1.4rem;display:block;margin-bottom:1rem;color:#f5f3ee;">VACÍO LLENO</span>
+          <p>Insurgencia intelectual. Distribución libre de conocimiento en Latinoamérica a través del sistema de perforación único.</p>
+        </div>
+        <div>
+          <div class="footer-col-title">Proyecto</div>
+          <ul class="footer-links">
+            <li><a href="/vaciolleno-manifiesto.html">El Manifiesto</a></li>
+            <li><a href="/vaciolleno-proyecto.html">Cómo Funciona</a></li>
+            <li><a href="/vaciolleno-libros.html">Categorías de Libros</a></li>
+            <li><a href="/vaciolleno-impacto.html">Impacto</a></li>
+            <li><a href="/vaciolleno-resenas.html">Testimonios</a></li>
+            <li><a href="/blog">Blog</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Participar</div>
+          <ul class="footer-links">
+            <li><a href="/vaciolleno-donaciones.html">Donar Libros</a></li>
+            <li><a href="/vaciolleno-donaciones.html">Donar Dinero</a></li>
+            <li><a href="/vaciolleno-voluntarios.html">Ser Voluntario/a</a></li>
+            <li><a href="/vaciolleno-organizaciones.html">Organizaciones</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Contacto</div>
+          <ul class="footer-links">
+            <li><a href="mailto:hola@vaciolleno.org">hola@vaciolleno.org</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2025 Vacío Lleno · Todos los libros circulan libres</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MOBILE DRAWER -->
+  <div class="nav-drawer" id="navDrawer">
+    <button class="drawer-close" onclick="document.getElementById('navDrawer').classList.remove('open')" aria-label="Cerrar">&#x00D7;</button>
+    <ul>
+      <li><a href="/vaciolleno-proyecto.html">El Proyecto</a></li>
+      <li><a href="/vaciolleno-libros.html">Libros</a></li>
+      <li><a href="/vaciolleno-impacto.html">Impacto</a></li>
+      <li><a href="/blog">Blog</a></li>
+      <li><a href="/vaciolleno-resenas.html">Testimonios</a></li>
+      <li><a href="/vaciolleno-manifiesto.html">Manifiesto</a></li>
+    </ul>
+    <a href="/vaciolleno-donaciones.html" class="drawer-cta">Donar</a>
+  </div>
+
+  <script>
+    // Cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+    document.addEventListener('mousemove', e => {
+      mouseX = e.clientX; mouseY = e.clientY;
+      cursor.style.left = mouseX + 'px'; cursor.style.top = mouseY + 'px';
+    });
+    function animateRing() {
+      ringX += (mouseX - ringX) * 0.12; ringY += (mouseY - ringY) * 0.12;
+      ring.style.left = ringX + 'px'; ring.style.top = ringY + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+    // Nav scroll
+    window.addEventListener('scroll', () => {
+      const nav = document.querySelector('nav');
+      if (window.scrollY > 50) { nav.style.background = 'rgba(15,31,61,0.98)'; nav.style.backdropFilter = 'blur(12px)'; }
+      else { nav.style.background = 'linear-gradient(to bottom, rgba(15,31,61,0.98), transparent)'; nav.style.backdropFilter = 'none'; }
+    });
+    // Hamburger
+    document.getElementById('navHamburger').addEventListener('click', () => document.getElementById('navDrawer').classList.add('open'));
+  </script>
+
+  <script src="/js/blog.js"></script>
+</body>
+</html>
