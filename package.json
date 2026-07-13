@@ -5,6 +5,7 @@
   "description": "Sitio web de Vacío Lleno con función serverless para formularios",
   "type": "module",
   "dependencies": {
-    "resend": "^4.0.0"
+    "resend": "^4.0.0",
+    "stripe": "^17.5.0"
   }
 }
