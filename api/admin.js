@@ -49,6 +49,16 @@ const PERMISOS_REQUERIDOS = {
   usuarios_actualizar_permisos: 'admin',
   usuarios_desactivar: 'admin',
   usuarios_activar: 'admin',
+
+  blog_listar: 'blog',
+  blog_obtener: 'blog',
+  blog_crear: 'blog',
+  blog_actualizar: 'blog',
+  blog_eliminar: 'blog',
+  blog_publicar: 'blog',
+  blog_despublicar: 'blog',
+  blog_generar_slug: 'blog',
+  blog_etiquetas_todas: 'blog',
 };
 
 // ─── Cliente REST Supabase ───
@@ -473,15 +483,109 @@ export default async function handler(req, res) {
         });
       }
 
+      // ─── BLOG ───
+      case 'blog_listar': {
+        let filtro = '';
+        if (datos.estado) filtro += `&estado=eq.${datos.estado}`;
+        if (datos.busqueda) filtro += `&or=(titulo.ilike.*${encodeURIComponent(datos.busqueda)}*,resumen.ilike.*${encodeURIComponent(datos.busqueda)}*)`;
+        return res.status(200).json({
+          ok: true,
+          data: await supa(`blog_entradas?select=id,slug,titulo,resumen,etiquetas,imagen_url,autor_nombre,estado,fecha_publicacion,destacada,vistas,creado_en,actualizado_en&order=creado_en.desc&limit=200${filtro}`),
+        });
+      }
+      case 'blog_obtener': {
+        if (!datos.id) return res.status(400).json({ error: 'Falta id' });
+        const rows = await supa(`blog_entradas?id=eq.${datos.id}&select=*`);
+        if (!rows || rows.length === 0) return res.status(404).json({ error: 'Entrada no encontrada' });
+        return res.status(200).json({ ok: true, data: rows[0] });
+      }
+      case 'blog_generar_slug': {
+        if (!datos.texto_base) return res.status(400).json({ error: 'Falta texto_base' });
+        const rpcRes = await fetch(`${SUPABASE_URL}/rest/v1/rpc/generar_slug_blog`, {
+          method: 'POST',
+          headers: {
+            apikey: SERVICE_KEY,
+            Authorization: `Bearer ${SERVICE_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ texto_base: datos.texto_base }),
+        });
+        const slug = await rpcRes.json();
+        return res.status(200).json({ ok: true, data: { slug } });
+      }
+      case 'blog_crear': {
+        const nuevaEntrada = {
+          ...datos,
+          autor_id: perfil.user_id,
+          autor_nombre: datos.autor_nombre || perfil.nombre || perfil.email.split('@')[0],
+        };
+        // Si no viene slug o viene vacío, genera uno desde el título
+        if (!nuevaEntrada.slug) {
+          const slugRes = await fetch(`${SUPABASE_URL}/rest/v1/rpc/generar_slug_blog`, {
+            method: 'POST',
+            headers: {
+              apikey: SERVICE_KEY,
+              Authorization: `Bearer ${SERVICE_KEY}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ texto_base: nuevaEntrada.titulo }),
+          });
+          nuevaEntrada.slug = await slugRes.json();
+        }
+        return res.status(200).json({ ok: true, data: await supa(`blog_entradas`, { method: 'POST', body: JSON.stringify(nuevaEntrada) }) });
+      }
+      case 'blog_actualizar': {
+        const { id, cambios } = datos;
+        if (!id) return res.status(400).json({ error: 'Falta id' });
+        return res.status(200).json({ ok: true, data: await supa(`blog_entradas?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify(cambios) }) });
+      }
+      case 'blog_eliminar': {
+        if (!datos.id) return res.status(400).json({ error: 'Falta id' });
+        await supa(`blog_entradas?id=eq.${datos.id}`, { method: 'DELETE' });
+        return res.status(200).json({ ok: true });
+      }
+      case 'blog_publicar': {
+        if (!datos.id) return res.status(400).json({ error: 'Falta id' });
+        return res.status(200).json({
+          ok: true,
+          data: await supa(`blog_entradas?id=eq.${datos.id}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+              estado: 'publicado',
+              fecha_publicacion: datos.fecha_publicacion || new Date().toISOString(),
+            }),
+          }),
+        });
+      }
+      case 'blog_despublicar': {
+        if (!datos.id) return res.status(400).json({ error: 'Falta id' });
+        return res.status(200).json({
+          ok: true,
+          data: await supa(`blog_entradas?id=eq.${datos.id}`, {
+            method: 'PATCH',
+            body: JSON.stringify({ estado: 'borrador' }),
+          }),
+        });
+      }
+      case 'blog_etiquetas_todas': {
+        // Devuelve todas las etiquetas únicas usadas en las entradas (para autocompletar)
+        const filas = await supa(`blog_entradas?select=etiquetas&limit=500`);
+        const set = new Set();
+        (filas || []).forEach(f => (f.etiquetas || []).forEach(e => set.add(e)));
+        return res.status(200).json({ ok: true, data: Array.from(set).sort() });
+      }
+
       // ─── RESUMEN ───
       case 'resumen': {
-        const [formNuevos, voluntarios, libros, resenasPendientes, resenasTotal, donaciones] = await Promise.all([
+        const [formNuevos, voluntarios, libros, resenasPendientes, resenasTotal, donaciones, blogBorradores, blogPublicadas] = await Promise.all([
           supa(`formularios?select=id&estado=eq.nuevo`),
           supa(`voluntarios?select=id`),
           supa(`libros?select=id`),
           supa(`resenas?select=id&publicada=eq.false`),
           supa(`resenas?select=id`),
           supa(`donaciones?select=id&estado=eq.confirmada`),
+          supa(`blog_entradas?select=id&estado=eq.borrador`),
+          supa(`blog_entradas?select=id&estado=eq.publicado`),
         ]);
         return res.status(200).json({
           ok: true,
@@ -492,6 +596,8 @@ export default async function handler(req, res) {
             resenas_pendientes: resenasPendientes.length,
             resenas_total: resenasTotal.length,
             donaciones_confirmadas: donaciones.length,
+            blog_borradores: blogBorradores.length,
+            blog_publicadas: blogPublicadas.length,
           },
         });
       }
