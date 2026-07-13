@@ -1093,6 +1093,36 @@
       .voces { padding: 5rem 2rem; }
       #resenas-home-grid { grid-template-columns: 1fr; }
     }
+    /* ═══ DEL BLOG en Home ═══ */
+    .del-blog { background: var(--navy); padding: 8rem 4rem; border-top: 1px solid rgba(255,255,255,0.05); }
+    .del-blog-inner { max-width: 1200px; margin: 0 auto; }
+    .del-blog-cta-row { display: flex; justify-content: flex-end; margin-top: 3rem; }
+    .del-blog-cta-row a {
+      font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--gold); text-decoration: none;
+      border-bottom: 1px solid rgba(201,168,76,0.3); padding-bottom: 0.3rem;
+      transition: border-color 0.2s;
+    }
+    .del-blog-cta-row a:hover { border-color: var(--gold); }
+    #blog-home-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+    .blog-card { text-decoration: none; color: inherit; display: flex; flex-direction: column; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); transition: all 0.3s; overflow: hidden; }
+    .blog-card:hover { background: rgba(255,255,255,0.06); border-color: rgba(201,168,76,0.3); transform: translateY(-4px); }
+    .blog-card-imagen { width: 100%; height: 180px; background-size: cover; background-position: center; position: relative; background-color: var(--navy-light); }
+    .blog-card-imagen-placeholder { display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--navy-mid), var(--navy-light)); }
+    .placeholder-glyph { font-size: 2.5rem; color: rgba(201,168,76,0.35); }
+    .blog-card-badge { position: absolute; top: 0.8rem; right: 0.8rem; background: var(--gold); color: var(--navy); font-family: var(--mono); font-size: 0.6rem; padding: 0.25rem 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
+    .blog-card-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; flex: 1; }
+    .blog-card-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .blog-tag { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(201,168,76,0.85); padding: 0.15rem 0.45rem; border: 1px solid rgba(201,168,76,0.3); text-decoration: none; }
+    .blog-card-title { font-family: var(--serif); font-size: 1.25rem; font-weight: 700; line-height: 1.25; color: var(--white); margin: 0.3rem 0; }
+    .blog-card-resumen { font-size: 0.9rem; line-height: 1.6; color: rgba(245,243,238,0.6); flex: 1; }
+    .blog-card-meta { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.05em; color: rgba(245,243,238,0.4); display: flex; gap: 0.5rem; flex-wrap: wrap; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.06); }
+    .blog-sep { opacity: 0.5; }
+    .blog-loading { grid-column: 1 / -1; padding: 3rem 2rem; text-align: center; font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.1em; color: rgba(245,243,238,0.4); font-style: italic; }
+    @media (max-width: 900px) {
+      .del-blog { padding: 5rem 2rem; }
+      #blog-home-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -1115,6 +1145,7 @@
       <li><a href="vaciolleno-voluntarios.html">Voluntarios</a></li>
       <li><a href="vaciolleno-libros.html">Libros</a></li>
       <li><a href="vaciolleno-impacto.html">Impacto</a></li>
+      <li><a href="/blog">Blog</a></li>
       <li><a href="vaciolleno-manifiesto.html">Manifiesto</a></li>
     </ul>
     <a href="vaciolleno-donaciones.html" class="nav-cta">Donar</a>
@@ -1428,7 +1459,28 @@
     </div>
   </section>
 
-<!-- VOCES / RESEÑAS -->
+<!-- DEL BLOG -->
+  <section class="del-blog" id="blog">
+    <div class="del-blog-inner">
+      <div class="section-header reveal">
+        <div>
+          <div class="section-number">05 — Del blog</div>
+          <h2 class="section-title">Ideas que<br/>circulan</h2>
+        </div>
+        <p style="max-width:320px;font-size:0.9rem;line-height:1.7;color:rgba(245,243,238,0.45);text-align:right;">
+          Ensayos y actualizaciones del proyecto. La reflexión que acompaña al trabajo.
+        </p>
+      </div>
+      <div id="blog-home-grid">
+        <div class="blog-loading">Cargando entradas…</div>
+      </div>
+      <div class="del-blog-cta-row">
+        <a href="/blog">Leer todas las entradas →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- VOCES / RESEÑAS -->
   <section class="voces">
     <div class="voces-inner">
       <div class="section-header reveal">
@@ -1492,6 +1544,7 @@
             <li><a href="vaciolleno-proyecto.html">Cómo Funciona</a></li>
             <li><a href="vaciolleno-libros.html">Categorías de Libros</a></li>
             <li><a href="vaciolleno-impacto.html">Impacto</a></li>
+            <li><a href="/blog">Blog</a></li>
             <li><a href="vaciolleno-resenas.html">Testimonios</a></li>
           </ul>
         </div>
@@ -1728,6 +1781,7 @@
       <li><a href="vaciolleno-voluntarios.html">Voluntarios</a></li>
       <li><a href="vaciolleno-libros.html">Libros</a></li>
       <li><a href="vaciolleno-impacto.html">Impacto</a></li>
+      <li><a href="/blog">Blog</a></li>
       <li><a href="vaciolleno-manifiesto.html">Manifiesto</a></li>
     </ul>
     <a href="vaciolleno-donaciones.html" class="drawer-cta">Donar</a>
@@ -1735,5 +1789,6 @@
   <script>document.getElementById('navHamburger').addEventListener('click',function(){document.getElementById('navDrawer').classList.add('open');});</script>
 <script src="/js/metricas.js"></script>
 <script src="/js/resenas.js"></script>
+<script src="/js/blog.js"></script>
 </body>
 </html>
