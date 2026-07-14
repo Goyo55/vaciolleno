@@ -1,12 +1,12 @@
 // ═══════════════════════════════════════════════════════════════════
 // VACÍO LLENO — Crear donación (PaymentIntent único o Subscription)
 // ═══════════════════════════════════════════════════════════════════
-// Recibe del formulario los datos de la donación, crea el registro
-// pendiente en Supabase y devuelve el clientSecret al frontend para
-// que Stripe Elements confirme el pago.
-//
-// La confirmación real la maneja el webhook (/api/stripe-webhook.js),
-// que es donde se genera el código anónimo y se envían los emails.
+// Modelo:
+//   - Si anonimo=true: el importe debe ser euro entero. El backend le
+//     añade céntimos únicos irrepetibles (5€ → 5,07€). Ese importe con
+//     céntimos ES el código anónimo del donante en el año en curso.
+//   - Si anonimo=false: el importe puede ser cualquier decimal.
+//   - En mensual anónimo: se cobra el mismo importe único cada mes.
 // ═══════════════════════════════════════════════════════════════════
 
 import Stripe from 'stripe';
@@ -15,9 +15,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SERVICE_KEY  = process.env.SUPABASE_SERVICE_KEY;
 
-// Límites (en euros)
-const IMPORTE_MIN = 1;
-const IMPORTE_MAX = 5000;
+const IMPORTE_MIN = 1;      // 1 EUR
+const IMPORTE_MAX = 5000;   // 5000 EUR
 
 // ─── Cliente REST Supabase ───
 async function supa(path, opciones = {}) {
@@ -39,6 +38,20 @@ async function supa(path, opciones = {}) {
   return text ? JSON.parse(text) : null;
 }
 
+async function generarImporteAnonimo(baseCents) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/generar_importe_anonimo`, {
+    method: 'POST',
+    headers: {
+      apikey: SERVICE_KEY,
+      Authorization: `Bearer ${SERVICE_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ base_cents: baseCents }),
+  });
+  if (!res.ok) throw new Error(`No se pudo generar importe único: ${res.status}`);
+  return await res.json();
+}
+
 // ═══════════════════════════════════════════════════════════════════
 // HANDLER
 // ═══════════════════════════════════════════════════════════════════
@@ -51,6 +64,7 @@ export default async function handler(req, res) {
     const {
       importe,
       tipo = 'unica',
+      anonimo = false,
       email,
       nombre,
       mensaje,
@@ -62,14 +76,11 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Email no válido' });
     }
     if (!['unica', 'mensual'].includes(tipo)) {
-      return res.status(400).json({ error: 'Tipo no válido (debe ser unica o mensual)' });
+      return res.status(400).json({ error: 'Tipo no válido' });
     }
 
     const importeNum = Number(importe);
-    if (!importeNum || isNaN(importeNum)) {
-      return res.status(400).json({ error: 'Importe no válido' });
-    }
-    if (importeNum < IMPORTE_MIN) {
+    if (!importeNum || isNaN(importeNum) || importeNum < IMPORTE_MIN) {
       return res.status(400).json({ error: `El importe mínimo es ${IMPORTE_MIN}€` });
     }
     if (importeNum > IMPORTE_MAX) {
@@ -78,21 +89,35 @@ export default async function handler(req, res) {
       });
     }
 
-    const importeCent = Math.round(importeNum * 100);
+    // Si es anónimo, el importe debe ser euro entero
+    if (anonimo && !Number.isInteger(importeNum)) {
+      return res.status(400).json({
+        error: 'Para donación anónima el importe debe ser un euro entero (5€, 15€, 30€…). El sistema le añade los céntimos únicos.',
+      });
+    }
+
+    // ─── Calcular importe final en céntimos ───
+    let importeCent;
+    if (anonimo) {
+      const baseCents = Math.round(importeNum) * 100;
+      importeCent = await generarImporteAnonimo(baseCents);
+    } else {
+      importeCent = Math.round(importeNum * 100);
+    }
 
     // ─── Crear o recuperar Customer en Stripe ───
     let customer;
     const existentes = await stripe.customers.list({ email: email.trim(), limit: 1 });
     if (existentes.data.length > 0) {
       customer = existentes.data[0];
-      if (nombre && !customer.name) {
+      if (!anonimo && nombre && !customer.name) {
         customer = await stripe.customers.update(customer.id, { name: nombre.trim() });
       }
     } else {
       customer = await stripe.customers.create({
         email: email.trim(),
-        name: nombre ? nombre.trim() : undefined,
-        metadata: { origen: 'vaciolleno.org' },
+        name: !anonimo && nombre ? nombre.trim() : undefined,
+        metadata: { origen: 'vaciolleno.org', anonimo: String(anonimo) },
       });
     }
 
@@ -103,8 +128,9 @@ export default async function handler(req, res) {
         importe: importeCent,
         moneda: 'eur',
         tipo,
+        anonimo,
         email: email.trim(),
-        nombre: nombre ? nombre.trim() : null,
+        nombre: !anonimo && nombre ? nombre.trim() : null,
         mensaje: mensaje ? String(mensaje).trim().slice(0, 500) : null,
         mostrar_publica: !!mostrar_publica,
         stripe_customer_id: customer.id,
@@ -122,11 +148,12 @@ export default async function handler(req, res) {
         currency: 'eur',
         customer: customer.id,
         automatic_payment_methods: { enabled: true },
-        description: 'Donación única a Vacío Lleno',
+        description: anonimo ? 'Donación anónima a Vacío Lleno' : 'Donación a Vacío Lleno',
         receipt_email: email.trim(),
         metadata: {
           donacion_id: donacion.id,
           origen: 'vaciolleno.org',
+          anonimo: String(anonimo),
         },
       });
       clientSecret = pi.client_secret;
@@ -152,13 +179,12 @@ export default async function handler(req, res) {
         metadata: {
           donacion_id: donacion.id,
           origen: 'vaciolleno.org',
+          anonimo: String(anonimo),
         },
       });
 
       const paymentIntent = sub.latest_invoice?.payment_intent;
-      if (!paymentIntent) {
-        throw new Error('No se pudo obtener el PaymentIntent de la suscripción');
-      }
+      if (!paymentIntent) throw new Error('No se pudo obtener el PaymentIntent de la suscripción');
 
       clientSecret = paymentIntent.client_secret;
       updates.stripe_subscription_id = sub.id;
@@ -177,11 +203,10 @@ export default async function handler(req, res) {
       clientSecret,
       donacion_id: donacion.id,
       publishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
+      importe_real: importeCent,  // devolvemos el importe real (con céntimos únicos si anónimo)
     });
   } catch (err) {
     console.error('Error en /api/crear-donacion:', err);
-
-    // Errores de Stripe con mensaje útil
     if (err?.type?.startsWith('Stripe')) {
       return res.status(400).json({ error: err.message });
     }
