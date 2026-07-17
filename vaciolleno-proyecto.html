@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- SEO & Open Graph -->
-  <meta name="description" content="Cómo funciona Vacío Lleno: el sistema A/B/C, la filosofía de la perforación y las 10 categorías de conocimiento que distribuimos en Latinoamérica." />
+  <meta name="description" content="Cómo funciona Vacío Lleno: los tres destinos de cada libro donado, la filosofía de la perforación y las diez categorías de conocimiento que ponemos en circulación en Latinoamérica." />
   <meta name="robots" content="index, follow" />
   <meta name="author" content="Vacío Lleno" />
   <link rel="canonical" href="https://vaciolleno.org/vaciolleno-proyecto.html" />
@@ -12,14 +12,14 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Vacío Lleno" />
   <meta property="og:title" content="El Proyecto — Vacío Lleno" />
-  <meta property="og:description" content="Cómo funciona Vacío Lleno: el sistema A/B/C, la filosofía de la perforación y las 10 categorías de conocimiento que distribuimos en Latinoamérica." />
+  <meta property="og:description" content="Cómo funciona Vacío Lleno: los tres destinos de cada libro donado, la filosofía de la perforación y las diez categorías de conocimiento que ponemos en circulación en Latinoamérica." />
   <meta property="og:url" content="https://vaciolleno.org/vaciolleno-proyecto.html" />
   <meta property="og:image" content="https://vaciolleno.org/og-image.png" />
   <meta property="og:locale" content="es_ES" />
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="El Proyecto — Vacío Lleno" />
-  <meta name="twitter:description" content="Cómo funciona Vacío Lleno: el sistema A/B/C, la filosofía de la perforación y las 10 categorías de conocimiento que distribuimos en Latinoamérica." />
+  <meta name="twitter:description" content="Cómo funciona Vacío Lleno: los tres destinos de cada libro donado, la filosofía de la perforación y las diez categorías de conocimiento que ponemos en circulación en Latinoamérica." />
   <meta name="twitter:image" content="https://vaciolleno.org/og-image.png" />
   <!-- Favicon -->
   <link rel="icon" type="image/png" sizes="512x512" href="favicon.png" />
@@ -654,6 +654,16 @@
 
     @keyframes fadeIn { to { opacity: 1; } }
 
+    /* ── HAMBURGER + DRAWER MÓVIL (estilos base, ocultos en desktop) ── */
+    .nav-hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:4px; background:none; border:none; z-index:101; }
+    .nav-hamburger span { display:block; width:22px; height:2px; background:var(--ink); border-radius:2px; }
+    .nav-drawer { display:none; position:fixed; inset:0; z-index:9999; background:rgba(240,236,227,0.98); backdrop-filter:blur(12px); flex-direction:column; align-items:center; justify-content:center; gap:2.5rem; }
+    .nav-drawer.open { display:flex; }
+    .nav-drawer ul { list-style:none; text-align:center; padding:0; margin:0; display:flex; flex-direction:column; gap:1.75rem; }
+    .nav-drawer ul a { font-family:var(--serif); font-size:1.5rem; font-weight:700; color:var(--ink); text-decoration:none; }
+    .drawer-cta { font-family:var(--mono); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; padding:0.9rem 2.5rem; background:var(--navy); color:var(--cream); text-decoration:none; }
+    .drawer-close { position:absolute; top:1.5rem; right:2rem; font-size:1.75rem; cursor:pointer; background:none; border:none; color:var(--ink); line-height:1; }
+
     /* RESPONSIVE — TABLET Y MÓVIL */
     @media (max-width: 900px) {
       /* Nav */
@@ -755,16 +765,6 @@
       .perf-book { width: 100px; height: 135px; }
     }
   
-    /* ── HAMBURGER + DRAWER MÓVIL ── */
-    .nav-hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:4px; background:none; border:none; }
-    .nav-hamburger span { display:block; width:22px; height:2px; background:var(--ink); border-radius:2px; }
-    .nav-drawer { display:none; position:fixed; inset:0; z-index:300; background:rgba(240,236,227,0.98); backdrop-filter:blur(12px); flex-direction:column; align-items:center; justify-content:center; gap:2.5rem; }
-    .nav-drawer.open { display:flex; }
-    .nav-drawer ul { list-style:none; text-align:center; padding:0; margin:0; display:flex; flex-direction:column; gap:1.75rem; }
-    .nav-drawer ul a { font-family:var(--serif); font-size:1.5rem; font-weight:700; color:var(--ink); text-decoration:none; }
-    .drawer-cta { font-family:var(--mono); font-size:0.75rem; letter-spacing:0.15em; text-transform:uppercase; padding:0.9rem 2.5rem; background:var(--navy); color:var(--cream); text-decoration:none; }
-    .drawer-close { position:absolute; top:1.5rem; right:2rem; font-size:1.75rem; cursor:pointer; background:none; border:none; color:var(--ink); line-height:1; }
-
     /* Ocultar cursor personalizado en pantallas táctiles */
     @media (pointer: coarse) {
       .cursor { display: none; }
@@ -811,17 +811,17 @@
     <div class="hero-deck">
       <p class="hero-lede">
         Una perforación circular atraviesa las páginas de un libro.
-        No es daño. Es una declaración — este libro ya no tiene dueño,
-        solo viajeros. Y eso lo cambia absolutamente todo.
+        No es daño. Es una decisión — este libro deja de pertenecer a una persona
+        y empieza a pertenecer a su recorrido. Y eso lo cambia absolutamente todo.
       </p>
       <div class="hero-meta">
         <div class="hero-meta-item">
           <span class="meta-label">Misión</span>
-          <span class="meta-value">Distribuir conocimiento libre en Latinoamérica a través del sistema de perforación</span>
+          <span class="meta-value">Poner en circulación conocimiento en Latinoamérica mediante un sistema de perforación</span>
         </div>
         <div class="hero-meta-item">
           <span class="meta-label">Operación</span>
-          <span class="meta-value">España → Latinoamérica · Sistema A/B/C</span>
+          <span class="meta-value">España → Latinoamérica · Tres destinos por libro</span>
         </div>
         <div class="hero-meta-item">
           <span class="meta-label">Alcance</span>
@@ -855,54 +855,55 @@
   <!-- ARTICLE -->
   <div class="article">
 
-    <!-- CHAPTER 1: EL VACÍO -->
+    <!-- CHAPTER 1: LA DISTANCIA -->
     <div class="chapter">
       <div class="chapter-sidebar reveal-left">
         <div class="chapter-num">01</div>
-        <div class="chapter-label">El problema</div>
-        <div class="chapter-title">El vacío que no es accidente</div>
+        <div class="chapter-label">El punto de partida</div>
+        <div class="chapter-title">La distancia entre libros y lectores</div>
       </div>
       <div class="chapter-body reveal">
         <h2>Hay libros que nunca llegan</h2>
         <p>
-          En Latinoamérica existe un <strong>vacío diseñado.</strong>
-          No es pobreza de ideas — es arquitectura deliberada.
-          Los sistemas educativos de la región llevan décadas omitiendo
-          sistemáticamente ciertos libros: economía de libre mercado,
-          filosofía del individuo, pensamiento crítico independiente,
-          historia económica real.
+          En Latinoamérica, millones de personas terminan sus estudios sin haber
+          tenido acceso a libros que en otras partes del mundo se consideran
+          <strong>conocimiento básico.</strong> No siempre por falta de interés.
+          A veces por falta de distribución. A veces porque su precio los hace
+          inalcanzables. A veces porque sencillamente nunca llegaron.
         </p>
         <p>
           No es que esos libros no existan. Es que <em>no llegan.</em>
           No están en las bibliotecas escolares. No aparecen en los
           programas universitarios. No se venden en las librerías de
-          las ciudades medianas. Y cuando existen, su precio los hace
-          inalcanzables para quien más los necesita.
+          las ciudades medianas. La distancia entre el libro y el lector
+          es a veces geográfica, a veces económica, a veces simplemente
+          de circulación.
         </p>
 
         <div class="pull-quote">
           <p class="pull-quote-text">
-            El vacío más peligroso no es el que se ve.
-            Es el que la gente no sabe que tiene.
+            Un libro alcanza su mayor valor
+            cuando deja de tener un último lector.
           </p>
-          <span class="pull-quote-attr">— Filosofía fundacional de Vacío Lleno</span>
+          <span class="pull-quote-attr">— Frase eje de Vacío Lleno</span>
         </div>
 
         <p>
           Vacío Lleno nació de una pregunta simple:
-          <strong>¿Qué pasaría si los libros que más necesita
-          Latinoamérica llegaran gratis, de forma masiva,
-          y no pudieran dejar de circular?</strong>
+          <strong>¿Qué pasaría si los libros que hoy están inmóviles
+          en estanterías europeas empezaran a viajar a los lugares
+          donde todavía pueden encontrar nuevos lectores,
+          y no dejaran de circular una vez llegados?</strong>
         </p>
 
         <div class="stat-blocks">
           <div class="stat-block">
             <div class="stat-block-num">10</div>
-            <div class="stat-block-label">Categorías de conocimiento sistemáticamente ausentes</div>
+            <div class="stat-block-label">Categorías de conocimiento seleccionadas para circular</div>
           </div>
           <div class="stat-block">
-            <div class="stat-block-num">40+</div>
-            <div class="stat-block-label">Personas que lee un libro perforado antes de desgastarse</div>
+            <div class="stat-block-num">Decenas</div>
+            <div class="stat-block-label">De lectores potenciales por cada libro perforado</div>
           </div>
           <div class="stat-block">
             <div class="stat-block-num">∞</div>
@@ -928,14 +929,14 @@
     <div class="chapter">
       <div class="chapter-sidebar reveal-left d1">
         <div class="chapter-num">02</div>
-        <div class="chapter-label">La solución</div>
-        <div class="chapter-title">Por qué perforar un libro es liberarlo</div>
+        <div class="chapter-label">El gesto</div>
+        <div class="chapter-title">Por qué perforamos</div>
       </div>
       <div class="chapter-body reveal d1">
-        <h2>Una perforación que lo transforma todo</h2>
+        <h2>Una perforación que cambia el destino del libro</h2>
         <p>
-          Un libro en una repisa impacta a <strong>una persona</strong>
-          en toda su vida útil. Ese mismo libro, una vez perforado,
+          Un libro en una estantería termina su historia con quien lo compró.
+          Ese mismo libro, una vez perforado,
           <strong>no puede venderse.</strong> Solo puede regalarse.
           Y eso lo convierte en algo completamente distinto.
         </p>
@@ -953,33 +954,35 @@
             <div class="perf-book-small" style="opacity:0.4"></div>
             <div class="perf-book-small" style="opacity:0.3"></div>
           </div>
-          <div class="perf-label">1 libro perforado → 40+ lectores</div>
+          <div class="perf-label">1 libro perforado → decenas de lectores</div>
         </div>
 
         <p>
-          El agujero hace dos cosas simultáneamente:
-          <em>elimina el libro del sistema de propiedad capitalista</em>
-          y lo convierte en bien común permanente. Nadie puede comprarlo.
-          Nadie puede venderlo. Solo puede pasarlo hacia adelante.
+          El agujero cambia el destino del ejemplar:
+          <em>deja de ser un objeto pensado para permanecer</em>
+          y se convierte en un objeto pensado para circular.
+          Nadie puede volver a comprarlo. Nadie puede volver a venderlo.
+          Solo puede pasarlo hacia adelante.
         </p>
 
         <div class="callout">
           <div class="callout-label">El simbolismo</div>
           <p>
-            El agujero <em>es</em> el vacío educativo que deja el sistema.
-            El libro <em>es</em> el conocimiento que lo llena.
-            Juntos, son Vacío Lleno: el vacío que se convierte en lleno
-            a través de cada par de manos que lo sostiene.
+            El agujero <em>es</em> la marca visible de esa decisión.
+            El libro <em>es</em> el conocimiento que sigue viajando.
+            Juntos, son Vacío Lleno: el vacío que se llena
+            en cada par de manos que sostiene el ejemplar.
           </p>
         </div>
 
         <p>
-          La perforación es un acto de <strong>resistencia en cinco dimensiones:</strong>
-          económica (quiebra el modelo de propiedad informacional),
-          filosófica (el conocimiento no puede ser propiedad),
-          psicológica (crea ciclos de generosidad en lugar de acumulación),
-          social (construye redes de circulación comunitaria),
-          y política (desafía a sistemas que dependen de la ignorancia organizada).
+          No perforamos el papel: <strong>perforamos una costumbre.</strong>
+          La costumbre de pensar que un libro termina donde acaba su
+          propietario. A partir del agujero, cada nuevo lector recibe
+          un ejemplar con una única condición — que siga circulando.
+          Y esa condición, sostenida en el tiempo por miles de personas
+          que probablemente nunca llegarán a conocerse, es lo que convierte
+          la donación en una cadena de confianza cultural.
         </p>
       </div>
     </div>
@@ -992,7 +995,7 @@
         <div class="chapter-title">Cómo se sostiene todo</div>
       </div>
       <div class="chapter-body reveal d2">
-        <h2>El sistema A/B/C: nada se desperdicia</h2>
+        <h2>Tres destinos por libro donado</h2>
         <p>
           El gran reto de cualquier proyecto así es la sostenibilidad.
           Los libros cuestan dinero. Los envíos internacionales cuestan
@@ -1016,37 +1019,38 @@
           </div>
         </div>
 
-        <h3>Categoría A — Los mejores (30%)</h3>
+        <h3>Categoría A — Libros que circulan (30%)</h3>
         <p>
-          Los libros de mayor impacto potencial. Los que más falta hacen
-          en Latinoamérica. Se perforan con el símbolo de Vacío Lleno
-          y se distribuyen <strong>completamente gratis.</strong>
-          No tienen precio. Solo tienen destino.
+          Los libros con mayor potencial de circulación internacional
+          se perforan con el símbolo de Vacío Lleno y viajan
+          <strong>gratuitamente</strong> a Latinoamérica.
+          Ya no tienen precio: solo tienen recorrido.
         </p>
 
-        <h3>Categoría B — El motor (50%)</h3>
+        <h3>Categoría B — Libros que financian la circulación (50%)</h3>
         <p>
-          Buenos libros que no cumplen los criterios de Categoría A
+          Libros que no cumplen los criterios de Categoría A
           — pueden estar repetidos, ser de categorías menos urgentes,
           o tener un estado físico que no justifica el envío internacional.
-          Se venden en nuestra tienda a <strong>precios justos.</strong>
-          Sus ingresos financian el envío de los libros Categoría A.
-          Son el corazón económico del proyecto.
+          Se ofrecen en nuestra tienda a <strong>precios justos.</strong>
+          Sus ingresos hacen posible el envío de los libros perforados.
+          Son el mecanismo que permite que el proyecto siga en marcha.
         </p>
 
-        <h3>Categoría C — Lo local (20%)</h3>
+        <h3>Categoría C — Libros que fortalecen comunidades locales (20%)</h3>
         <p>
           Van a bibliotecas comunitarias, escuelas y centros culturales
-          del entorno inmediato. El impacto empieza en casa.
+          del entorno inmediato. La circulación no siempre requiere
+          cruzar un océano.
         </p>
 
         <div class="callout">
           <div class="callout-label">La frase que lo resume</div>
           <p>
-            "Cada libro donado tiene dos vidas: o se perfora y viaja gratis
-            al otro lado del mundo llenando vacíos, o se vende para
-            financiar ese viaje. <strong>Nada se desperdicia.
-            Todo sirve al conocimiento.</strong>"
+            "Cada libro donado empieza aquí una nueva etapa: algunos viajan perforados
+            a Latinoamérica, otros hacen posible ese viaje, otros fortalecen bibliotecas
+            cercanas. <strong>Ningún libro termina su historia
+            cuando llega a nosotros.</strong>"
           </p>
         </div>
       </div>
@@ -1057,16 +1061,18 @@
       <div class="chapter-sidebar reveal-left d3">
         <div class="chapter-num">04</div>
         <div class="chapter-label">Los libros</div>
-        <div class="chapter-title">Qué conocimiento necesita Latinoamérica</div>
+        <div class="chapter-title">Qué conocimiento ponemos en circulación</div>
       </div>
       <div class="chapter-body reveal d3">
-        <h2>Diez vacíos que necesitamos llenar</h2>
+        <h2>Diez categorías de conocimiento</h2>
         <p>
-          No distribuimos cualquier libro. Distribuimos los libros que
-          los sistemas educativos de Latinoamérica <strong>deciden
-          no enseñar.</strong> Las diez categorías de Vacío Lleno son
-          diez tipos de conocimiento que forman personas libres,
-          críticas y capaces de transformar su entorno.
+          No perforamos cualquier libro. Ponemos en circulación
+          libros que <strong>abren conversación:</strong>
+          ideas que forman criterio, herramientas para pensar
+          con autonomía y textos capaces de acompañar decisiones
+          importantes de la vida. Las diez categorías de Vacío Lleno
+          son diez tipos de conocimiento que pueden seguir generando
+          valor mucho después de haber sido leídos por primera vez.
         </p>
 
         <div class="cats-grid">
@@ -1166,7 +1172,7 @@
               <span class="phase-time">Ahora mismo</span>
             </div>
             <div class="phase-title">Los primeros 10 libros</div>
-            <p class="phase-desc">Libros personales. Envíos desde casa. Contactos directos en Latinoamérica. Aprender el proceso antes de escalarlo. La insurgencia empieza en el salón.</p>
+            <p class="phase-desc">Libros personales. Envíos desde casa. Contactos directos en Latinoamérica. Aprender el proceso antes de escalarlo. La circulación empieza en el salón.</p>
           </div>
           <div class="phase">
             <div class="phase-header">
@@ -1198,7 +1204,7 @@
               <span class="phase-time">Año 2</span>
             </div>
             <div class="phase-title">HOLEPUNCH — Versión en inglés</div>
-            <p class="phase-desc">La misma misión, distinta cultura. Libros en inglés, mercado angloparlante, mensajes adaptados. Dos marcas hermanas, una sola insurgencia.</p>
+            <p class="phase-desc">La misma misión, distinta cultura. Libros en inglés, mercado angloparlante, mensajes adaptados. Dos marcas hermanas, un solo principio: que el conocimiento circule.</p>
           </div>
           <div class="phase">
             <div class="phase-header">
@@ -1223,8 +1229,8 @@
         <span class="gold">únete.</span>
       </h2>
       <p class="final-cta-sub">
-        Hay tres formas de ser parte de la insurgencia intelectual.
-        Todas son igual de poderosas.
+        Hay tres formas de sumarte a la circulación.
+        Todas son igual de importantes.
       </p>
       <div class="cta-buttons">
         <a href="vaciolleno-donaciones.html#libros" class="btn-primary">Donar libros</a>
@@ -1240,7 +1246,7 @@
       <div class="footer-top">
         <div class="footer-brand">
           <span class="nav-logo-text">VACÍO LLENO</span>
-          <p>Insurgencia intelectual. Distribución libre de conocimiento en Latinoamérica a través del sistema de perforación único.</p>
+          <p>Libros que circulan. Distribución gratuita de conocimiento en Latinoamérica mediante un sistema de perforación que devuelve al libro su capacidad de seguir viajando.</p>
           <div class="footer-social">
             <a href="https://www.instagram.com/vaciolleno.oficial" target="_blank" rel="noopener" aria-label="Instagram">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
