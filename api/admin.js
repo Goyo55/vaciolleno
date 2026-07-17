@@ -406,7 +406,7 @@ export default async function handler(req, res) {
       <hr style="border:none;border-top:1px solid rgba(28,26,20,0.15);margin:32px 0 20px;">
       <p style="margin:0 0 4px 0;font-style:italic;color:#555;">Nos vemos dentro,</p>
       <p style="margin:0;font-weight:bold;">El equipo de Vacío Lleno</p>
-      <p style="margin:4px 0 0 0;font-family:'Courier New',monospace;font-size:11px;color:#888;letter-spacing:0.1em;text-transform:uppercase;">Insurgencia intelectual · vaciolleno.org</p>
+      <p style="margin:4px 0 0 0;font-family:'Courier New',monospace;font-size:11px;color:#888;letter-spacing:0.1em;text-transform:uppercase;">vaciolleno.org · Libros que circulan</p>
     </td></tr>
     <tr><td style="padding:20px 32px;background:rgba(15,31,61,0.04);font-family:Arial,sans-serif;font-size:11px;color:#888;line-height:1.6;">
       Si no esperabas esta invitación, puedes ignorar este mensaje.<br>El enlace expira en 24 horas.

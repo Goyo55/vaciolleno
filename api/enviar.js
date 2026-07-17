@@ -218,7 +218,7 @@ function renderAutoresponder(tipo, datos) {
       const disp = Array.isArray(datos.disponibilidad) ? datos.disponibilidad.join(', ') : (datos.disponibilidad || '—');
       return wrapper(`
         <p class="salutation">Hola, ${nombre}.</p>
-        <p>Hemos recibido tu solicitud de voluntariado. Bienvenido/a a la insurgencia.</p>
+        <p>Hemos recibido tu solicitud de voluntariado. Bienvenido/a al equipo.</p>
         <p>En las próximas <strong>48 horas</strong> te escribimos personalmente para presentarte al equipo, confirmarte el rol que más encaja con tu disponibilidad y contarte los próximos pasos concretos.</p>
         <div class="highlight">
           <p><strong>Lo que seleccionaste:</strong><br>
@@ -226,12 +226,12 @@ function renderAutoresponder(tipo, datos) {
           Disponibilidad: ${escapeHtml(disp)}<br>
           Ciudad: ${escapeHtml(datos.ciudad || '—')}</p>
         </div>
-        <p>Mientras tanto, si quieres conocer el proyecto en profundidad — la filosofía detrás de la perforación, el sistema A/B/C y hacia dónde vamos — puedes leer el manifiesto completo:</p>
+        <p>Mientras tanto, si quieres conocer el proyecto en profundidad — la filosofía detrás de la perforación, cómo funciona la circulación de cada libro y hacia dónde apuntamos — puedes leer el manifiesto completo:</p>
         <p><a href="https://vaciolleno.org/vaciolleno-manifiesto.html" class="btn">Leer el manifiesto →</a></p>
         <hr class="divider">
         <p class="sign">Un saludo,</p>
         <p class="sign-name">El equipo de Vacío Lleno</p>
-        <p class="sign-role">Insurgencia intelectual · vaciolleno.org</p>
+        <p class="sign-role">vaciolleno.org · Libros que circulan</p>
       `, 'voluntariado');
     },
     'donacion-libros': () => wrapper(`
@@ -244,17 +244,17 @@ function renderAutoresponder(tipo, datos) {
         Ciudad: ${escapeHtml(datos.ciudad || '—')}<br>
         Método preferido: ${escapeHtml(datos.metodoEntrega || '—')}</p>
       </div>
-      <p>Una vez recibamos los libros, los clasificaremos según el sistema A/B/C del proyecto:</p>
+      <p>Una vez recibamos los libros, cada uno seguirá uno de los tres destinos del proyecto:</p>
       <p style="padding-left:16px;border-left:2px solid #ddd;">
-        <strong>30% (Categoría A)</strong> — perforados y distribuidos gratis en Latinoamérica.<br>
-        <strong>50% (Categoría B)</strong> — vendidos para financiar los envíos.<br>
-        <strong>20% (Categoría C)</strong> — donados a bibliotecas locales.
+        <strong>Libros que circulan (~30%)</strong> — perforados y enviados gratuitamente a Latinoamérica.<br>
+        <strong>Libros que financian la circulación (~50%)</strong> — vendidos a precios justos para hacer posible el envío internacional.<br>
+        <strong>Libros que fortalecen comunidades locales (~20%)</strong> — donados a bibliotecas y centros culturales cercanos.
       </p>
-      <p>Cada libro tuyo tiene posibilidades reales de pasar por 40 manos distintas en los próximos años. Eso empieza contigo.</p>
+      <p>Cada libro tuyo tiene posibilidades reales de encontrar decenas de nuevos lectores en los próximos años. Eso empieza contigo.</p>
       <hr class="divider">
       <p class="sign">Hasta pronto,</p>
       <p class="sign-name">El equipo de Vacío Lleno</p>
-      <p class="sign-role">Insurgencia intelectual · vaciolleno.org</p>
+      <p class="sign-role">vaciolleno.org · Libros que circulan</p>
     `, 'donación de libros'),
     'donacion-dinero': () => wrapper(`
       <p class="salutation">Gracias.</p>
@@ -264,13 +264,13 @@ function renderAutoresponder(tipo, datos) {
         Importe indicado: <strong>${escapeHtml(datos.cantidad || '—')}€</strong><br>
         Frecuencia: ${escapeHtml(datos.frecuencia || 'Una vez')}</p>
       </div>
-      <p>Con <strong>${escapeHtml(datos.cantidad || 'tu aportación')}€</strong>, el proyecto puede distribuir libros perforados a Latinoamérica. Cada libro pasará por unas 40 manos antes de que deje de circular — si alguna vez lo hace.</p>
+      <p>Con <strong>${escapeHtml(datos.cantidad || 'tu aportación')}€</strong>, el proyecto puede poner en circulación libros perforados hacia Latinoamérica. Cada uno de esos ejemplares está pensado para seguir encontrando nuevos lectores durante años — mientras el papel resista.</p>
       <p>Puedes ver el impacto en tiempo real de lo que estás contribuyendo a construir:</p>
       <p><a href="https://vaciolleno.org/vaciolleno-impacto.html" class="btn">Ver impacto en vivo →</a></p>
       <hr class="divider">
       <p class="sign">Con gratitud,</p>
       <p class="sign-name">El equipo de Vacío Lleno</p>
-      <p class="sign-role">Insurgencia intelectual · vaciolleno.org</p>
+      <p class="sign-role">vaciolleno.org · Libros que circulan</p>
     `, 'donación'),
     contacto: () => wrapper(`
       <p class="salutation">Hola, ${nombre}.</p>
@@ -287,7 +287,7 @@ function renderAutoresponder(tipo, datos) {
       <hr class="divider">
       <p class="sign">Hasta pronto,</p>
       <p class="sign-name">El equipo de Vacío Lleno</p>
-      <p class="sign-role">Insurgencia intelectual · vaciolleno.org</p>
+      <p class="sign-role">vaciolleno.org · Libros que circulan</p>
     `, 'contacto'),
     resena: () => {
       const citaOriginal = datos.cita || datos.mensaje || datos.texto || '';
@@ -304,7 +304,7 @@ function renderAutoresponder(tipo, datos) {
         <hr class="divider">
         <p class="sign">Gracias de verdad,</p>
         <p class="sign-name">El equipo de Vacío Lleno</p>
-        <p class="sign-role">Insurgencia intelectual · vaciolleno.org</p>
+        <p class="sign-role">vaciolleno.org · Libros que circulan</p>
       `, 'reseña');
     },
   };

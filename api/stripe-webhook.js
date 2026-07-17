@@ -275,7 +275,7 @@ function renderConfirmacionDonante(donacion, importeStr) {
         </p>
       </div>
 
-      <p>Con <strong>${importeStr}</strong> el proyecto puede financiar la perforación y envío de libros a Latinoamérica. Cada libro pasará por unas 40 manos antes de dejar de circular — si es que alguna vez lo hace.</p>
+      <p>Con <strong>${importeStr}</strong> el proyecto puede poner en circulación libros perforados hacia Latinoamérica. Cada uno de esos ejemplares está pensado para seguir encontrando nuevos lectores durante años — mientras el papel resista.</p>
 
       <p><a href="https://vaciolleno.org/vaciolleno-impacto.html" class="btn">Ver impacto en vivo →</a></p>
 
@@ -292,7 +292,7 @@ function renderConfirmacionDonante(donacion, importeStr) {
       <p class="salutation">Gracias, ${escapeHtml(nombre)}.</p>
       <p>Tu donación${esRecurrente ? ' mensual' : ''} de <strong>${importeStr}</strong> ha sido confirmada correctamente. Gracias por sumarte a la circulación.</p>
 
-      <p>Con <strong>${importeStr}</strong> el proyecto puede financiar la perforación y envío de libros a Latinoamérica. Cada libro pasará por unas 40 manos antes de dejar de circular — si es que alguna vez lo hace.</p>
+      <p>Con <strong>${importeStr}</strong> el proyecto puede poner en circulación libros perforados hacia Latinoamérica. Cada uno de esos ejemplares está pensado para seguir encontrando nuevos lectores durante años — mientras el papel resista.</p>
 
       <p><a href="https://vaciolleno.org/vaciolleno-impacto.html" class="btn">Ver impacto en vivo →</a></p>
 
@@ -311,7 +311,7 @@ function renderConfirmacionDonante(donacion, importeStr) {
     <hr class="divider">
     <p class="sign">Con gratitud,</p>
     <p class="sign-name">El equipo de Vacío Lleno</p>
-    <p class="sign-role">Insurgencia intelectual · vaciolleno.org</p>
+    <p class="sign-role">vaciolleno.org · Libros que circulan</p>
   `;
 
   return wrapperEmail(inner, 'donación');
