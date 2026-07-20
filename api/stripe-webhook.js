@@ -84,9 +84,7 @@ async function confirmarDonacion(donacionId, camposExtra = {}) {
     }),
   });
 
-  enviarEmailsConfirmacion(actualizada).catch(err =>
-    console.error('Error enviando emails:', err)
-  );
+  await enviarEmailsConfirmacion(actualizada);
 
   return actualizada;
 }
@@ -212,9 +210,7 @@ export default async function handler(req, res) {
           }),
         });
 
-        enviarEmailsConfirmacion(nuevaDonacion).catch(err =>
-          console.error('Error email renovación:', err)
-        );
+        await enviarEmailsConfirmacion(nuevaDonacion);
         break;
       }
 
